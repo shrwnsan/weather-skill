@@ -1,0 +1,4 @@
+# Standard Library dependencies are not listed here.
+# This project currently uses urllib.request for network calls, 
+# meaning it has no external mandatory dependencies for core functionality.
+# If 'requests' or 'httpx' are added in the future, they will be listed here.
