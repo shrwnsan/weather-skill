@@ -38,6 +38,8 @@ The skill automatically selects the best provider based on location:
 | NWS | USA | Free | 7 | 7-day | No |
 | BMKG | Indonesia | Free | 8 | 3-day | No |
 | DWD (Bright Sky) | Germany | Free | 8 | 10-day | No |
+| KMA | South Korea | Required | 9 | 3-day | No |
+| TMD | Thailand | Required | 9 | 7-day | No |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI |
 
 ## Selection Flow

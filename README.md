@@ -78,6 +78,8 @@ await skill.send(message, channel="telegram")
 | NWS | USA | Free | 7 | 7-day | No |
 | BMKG | Indonesia | Free | 8 | 3-day | No |
 | DWD (Bright Sky) | Germany | Free | 8 | 10-day | No |
+| KMA | South Korea | Required | 9 | 3-day | No |
+| TMD | Thailand | Required | 9 | 7-day | No |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API |
 
 ### Provider Selection Logic
@@ -92,7 +94,9 @@ await skill.send(message, channel="telegram")
 8. **USA locations** → NWS provider (priority 7)
 9. **Indonesia locations** → BMKG provider (priority 8)
 10. **Germany locations** → DWD provider (priority 8)
-11. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
+11. **South Korea locations** → KMA provider (priority 9, requires API key)
+12. **Thailand locations** → TMD provider (priority 9, requires API key)
+13. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
 
 ### Default Behavior
 
@@ -135,6 +139,8 @@ await skill.send(message, channel="telegram")
 | `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key |
 | `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
 | `METOFFICE_API_KEY` | For UK | UK Met Office API key |
+| `KMA_SERVICE_KEY` | For S. Korea | Korea KMA service key |
+| `TMD_API_TOKEN` | For Thailand | Thailand TMD API token |
 
 ### Free vs Paid Providers
 
@@ -151,6 +157,8 @@ await skill.send(message, channel="telegram")
 **Requires API key:**
 - Taiwan (CWA) - Sign up at [opendata.cwa.gov.tw](https://opendata.cwa.gov.tw/)
 - UK (Met Office) - Sign up at [datahub.metoffice.gov.uk](https://datahub.metoffice.gov.uk/)
+- South Korea (KMA) - Sign up at [data.go.kr](https://data.go.kr/)
+- Thailand (TMD) - Sign up at [data.tmd.go.th](https://data.tmd.go.th/)
 - Global (OpenWeatherMap) - Sign up at [openweathermap.org/api](https://openweathermap.org/api)
 
 ### Default Location

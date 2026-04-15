@@ -12,6 +12,8 @@ Available providers:
 - NWSProvider: US National Weather Service (priority 7, US only)
 - BMKGProvider: Indonesia BMKG (priority 8, Indonesia only)
 - DWDProvider: Germany DWD via Bright Sky (priority 8, Germany only)
+- KMAProvider: South Korea KMA (priority 9, Korea only, requires API key)
+- TMDProvider: Thailand TMD (priority 9, Thailand only, requires API key)
 - OpenWeatherMapProvider: Global fallback (priority 10, requires API key)
 """
 
@@ -32,6 +34,8 @@ from .nz_metservice import MetServiceProvider
 from .us_nws import NWSProvider
 from .id_bmkg import BMKGProvider
 from .de_dwd import DWDProvider
+from .kr_kma import KMAProvider
+from .th_tmd import TMDProvider
 from .openweathermap import OpenWeatherMapProvider
 
 __all__ = [
@@ -49,6 +53,8 @@ __all__ = [
     "NWSProvider",
     "BMKGProvider",
     "DWDProvider",
+    "KMAProvider",
+    "TMDProvider",
     "OpenWeatherMapProvider",
 ]
 
@@ -101,6 +107,20 @@ def get_dwd_provider():
     from .de_dwd import DWDProvider
 
     return DWDProvider()
+
+
+def get_kma_provider(api_key: str = ""):
+    """Get South Korea KMA provider."""
+    from .kr_kma import KMAProvider
+
+    return KMAProvider(api_key)
+
+
+def get_tmd_provider(api_key: str = ""):
+    """Get Thailand TMD provider."""
+    from .th_tmd import TMDProvider
+
+    return TMDProvider(api_key)
 
 
 def get_openweathermap_provider(api_key: str):
