@@ -1,6 +1,7 @@
 ---
 name: weather
-description: Get current weather and forecasts for any location, with special support for Hong Kong via HKO API
+description: Retrieves current weather and forecasts for user-specified locations and formats results for chat platforms. Use when users ask about weather conditions, forecast outlooks, AQHI or UV levels, or location-based weather summaries.
+compatibility: Designed for Python agent runtimes with network access. Telegram send flow requires TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
 ---
 
 # Weather Skill
@@ -85,10 +86,10 @@ This skill provides weather information for any location, with special support f
 ### NanoClaw
 
 ```python
-from skills.weather import WeatherSkill
-from skills.weather.providers.hko import HKOProvider
-from skills.weather.formatters.telegram import TelegramFormatter
-from skills.weather.senders.telegram import TelegramSender
+from weather import WeatherSkill
+from weather.providers.hko import HKOProvider
+from weather.formatters.telegram import TelegramFormatter
+from weather.senders.telegram import TelegramSender
 
 # Initialize
 skill = WeatherSkill()
@@ -107,7 +108,7 @@ await skill.send(message, channel="telegram")
 
 ### OpenClaw
 
-Same integration as NanoClaw - import from `skills.weather`.
+Same integration as NanoClaw - import from `weather`.
 
 ## Agent Execution
 
@@ -116,27 +117,35 @@ When a user requests weather information, execute the following:
 ### Current Weather
 
 ```bash
-python /workspace/group/skills/weather/cli.py --location "<location>"
+python -m weather.cli --location "<location>"
 ```
 
 ### Forecast
 
 ```bash
-python /workspace/group/skills/weather/cli.py --location "<location>" --forecast --days 3
+python -m weather.cli --location "<location>" --forecast --days 3
 ```
 
 ### Send to Telegram
 
 ```bash
-python /workspace/group/skills/weather/cli.py --location "<location>" --platform telegram --send
+python -m weather.cli --location "<location>" --platform telegram --send
 ```
+
+## Safety Guardrails
+
+1. Default to read-only weather retrieval and formatting.
+2. Execute outbound actions (`--send`) only when the user explicitly asks to send.
+3. Before sending, confirm destination details (chat/channel and location) if not explicitly provided.
+4. Never print, log, or echo secrets (API keys, bot tokens, chat IDs).
 
 ### Parse User Input
 
-1. Extract location from user message (or infer from context)
+1. Extract location from user message (or infer from context for read-only weather requests)
 2. Detect if forecast is requested (keywords: "forecast", "預報", "未來幾天")
 3. Parse number of days if specified (default: 3, max: 9 for HKO)
-4. Execute appropriate command and return output to user
+4. For send actions, require explicit user intent before running `--send`
+5. Execute appropriate command and return output to user
 
 ## CLI Usage
 
@@ -161,22 +170,22 @@ skills/weather/
 ├── SKILL.md              # This file (skill definition)
 ├── docs/                 # Documentation
 │   └── provider-selection.md
-├── __init__.py           # Package exports
-├── cli.py                # CLI interface
-├── models.py             # Data models
-├── providers/
-│   ├── __init__.py
-│   ├── base.py           # WeatherProvider ABC
-│   ├── hko.py            # HK Observatory
-│   └── openweathermap.py # OpenWeatherMap
-├── formatters/
-│   ├── __init__.py
-│   ├── base.py           # WeatherFormatter ABC
-│   └── telegram.py       # Telegram MarkdownV2
-└── senders/
-    ├── __init__.py
-    ├── base.py           # WeatherSender ABC
-    └── telegram.py       # Telegram Bot API
+├── weather/              # Python package
+│   ├── __init__.py       # Package exports
+│   ├── cli.py            # CLI interface
+│   ├── models.py         # Data models
+│   ├── providers/
+│   │   ├── hko.py
+│   │   ├── au_bom.py
+│   │   ├── nz_metservice.py
+│   │   ├── us_nws.py
+│   │   └── openweathermap.py
+│   ├── formatters/
+│   │   ├── telegram.py
+│   │   └── whatsapp.py
+│   └── senders/
+│       └── telegram.py
+└── tests/                # Test suite
 ```
 
 ## Error Handling

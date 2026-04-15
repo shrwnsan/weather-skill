@@ -6,19 +6,19 @@ A platform-agnostic weather skill for AI agents. Fetches weather data from multi
 
 ```bash
 # Current weather (uses agent location or prompts user)
-python scripts/weather
+python -m weather.cli
 
 # Specific location
-python scripts/weather --location "Hong Kong"
+python -m weather.cli --location "Hong Kong"
 
 # 3-day forecast
-python scripts/weather --location "Tokyo" --forecast --days 3
+python -m weather.cli --location "Tokyo" --forecast --days 3
 
 # Telegram format
-python scripts/weather --location "Hong Kong" --platform telegram
+python -m weather.cli --location "Hong Kong" --platform telegram
 
 # Send to Telegram
-python scripts/weather --location "Hong Kong" --platform telegram --send
+python -m weather.cli --location "Hong Kong" --platform telegram --send
 ```
 
 ## Usage Examples
@@ -69,10 +69,6 @@ await skill.send(message, channel="telegram")
 | Provider | Coverage | API Key | Priority | Forecast | Air Quality |
 |----------|----------|---------|----------|----------|-------------|
 | HKO | Hong Kong | Free | 1 | 9-day | AQHI (HK scale) |
-| SG NEA | Singapore | Free | 2 | 4-day | PSI (1-hr) |
-| JMA | Japan | Free | 3 | 7-day | No |
-| CWA | Taiwan | Required | 4 | 7-day | No |
-| UK Met Office | United Kingdom | Required | 5 | 7-day | No |
 | BOM | Australia | Free | 6 | 7-day | No |
 | MetService | New Zealand | Free | 7 | Current only | No |
 | NWS | USA | Free | 7 | 7-day | No |
@@ -81,14 +77,10 @@ await skill.send(message, channel="telegram")
 ### Provider Selection Logic
 
 1. **Hong Kong locations** → HKO provider (priority 1)
-2. **Singapore locations** → SG NEA provider (priority 2)
-3. **Japan locations** → JMA provider (priority 3)
-4. **Taiwan locations** → CWA provider (priority 4, requires API key)
-5. **UK locations** → UK Met Office provider (priority 5, requires API key)
-6. **Australia locations** → BOM provider (priority 6)
-7. **New Zealand locations** → MetService provider (priority 7, current weather only)
-8. **USA locations** → NWS provider (priority 7)
-9. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
+2. **Australia locations** → BOM provider (priority 6)
+3. **New Zealand locations** → MetService provider (priority 7, current weather only)
+4. **USA locations** → NWS provider (priority 7)
+5. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
 
 ### Default Behavior
 
@@ -127,34 +119,21 @@ await skill.send(message, channel="telegram")
 | `TELEGRAM_BOT_TOKEN` | For Telegram | Telegram bot token |
 | `TELEGRAM_CHAT_ID` | For Telegram | Default chat ID |
 | `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key |
-| `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
-| `METOFFICE_API_KEY` | For UK | UK Met Office API key |
 
 ### Free vs Paid Providers
 
 **Free (no API key required):**
 - Hong Kong (HKO)
-- Singapore (NEA)
-- Japan (JMA)
 - Australia (BOM)
 - New Zealand (MetService)
 - USA (NWS)
 
 **Requires API key:**
-- Taiwan (CWA) - Sign up at [opendata.cwa.gov.tw](https://opendata.cwa.gov.tw/)
-- UK (Met Office) - Sign up at [metoffice.gov.uk](https://www.metoffice.gov.uk/services/data/datapoint/)
 - Global (OpenWeatherMap) - Sign up at [openweathermap.org/api](https://openweathermap.org/api)
 
 ### Default Location
 
 Default location is **Hong Kong**. The HKO provider is used automatically for HK locations.
-
-## Extending
-
-See [references/EXTENDING.md](references/EXTENDING.md) for guides on:
-- Adding new weather providers
-- Creating custom formatters
-- Implementing new senders
 
 ## Documentation
 
@@ -163,35 +142,19 @@ See [references/EXTENDING.md](references/EXTENDING.md) for guides on:
 ## File Structure
 
 ```
-weather/
+weather-skill/
 ├── SKILL.md              # Skill definition (triggers, instructions)
 ├── README.md             # This file
-├── scripts/weather       # CLI entry point
 ├── docs/                 # Documentation
 │   └── provider-selection.md
-├── references/           # Reference docs
-│   ├── ARCHITECTURE.md   # Design documentation
-│   └── EXTENDING.md      # Extension guide
-├── cli.py                # CLI implementation
-├── models.py             # Data models
-├── skill.py              # WeatherSkill orchestrator
-├── providers/            # Weather data providers
-│   ├── base.py           # Base provider class
-│   ├── hko.py            # Hong Kong Observatory
-│   ├── sg_nea.py         # Singapore NEA
-│   ├── jma.py            # Japan Meteorological Agency
-│   ├── tw_cwa.py         # Taiwan CWA
-│   ├── uk_metoffice.py   # UK Met Office
-│   ├── au_bom.py         # Australia Bureau of Meteorology
-│   ├── nz_metservice.py  # New Zealand MetService
-│   ├── us_nws.py         # US National Weather Service
-│   └── openweathermap.py # OpenWeatherMap (global fallback)
-├── formatters/           # Output formatters
-│   ├── base.py
-│   └── telegram.py
-└── senders/              # Message senders
-    ├── base.py
-    └── telegram.py
+├── weather/              # Python package (single source of truth)
+│   ├── cli.py            # CLI implementation
+│   ├── models.py         # Data models
+│   ├── skill.py          # WeatherSkill orchestrator
+│   ├── providers/        # Weather data providers
+│   ├── formatters/       # Output formatters
+│   └── senders/          # Message senders
+└── tests/                # Test suite
 ```
 
 ## License

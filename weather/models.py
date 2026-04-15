@@ -89,7 +89,7 @@ class WeatherData:
 
     # Timestamps
     observed_at: Optional[datetime] = None
-    fetched_at: datetime = field(default_factory=datetime.utcnow)
+    fetched_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Forecast-specific
     forecast_date: Optional[date] = None

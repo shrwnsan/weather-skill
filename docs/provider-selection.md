@@ -15,24 +15,16 @@
 The skill automatically selects the best provider based on location:
 
 1. **Hong Kong** → HKO (free)
-2. **Singapore** → SG NEA (free)
-3. **Japan** → JMA (www.jma.go.jp)
-4. **Taiwan** → CWA (www.cwa.gov.tw)
-5. **United Kingdom** → Met Office (api.hub.metoffice.gov.uk)
-6. **Australia** → BOM (www.bom.gov.au)
-7. **New Zealand** → MetService (www.metservice.com)
-8. **USA** → NWS(www.weather.gov)
-9. **Other** → OpenWeatherMap(www.openweathermap.org)
+2. **Australia** → BOM (www.bom.gov.au)
+3. **New Zealand** → MetService (www.metservice.com)
+4. **USA** → NWS(www.weather.gov)
+5. **Other** → OpenWeatherMap(www.openweathermap.org)
 
 ## Provider Matrix
 
 | Provider | Coverage | API Key | Priority | Forecast | Air Quality |
 |----------|----------|---------|----------|----------|-------------|
 | HKO | Hong Kong | Free | 1 | 9-day | AQHI (HK scale) |
-| SG NEA | Singapore | Free | 2 | 4-day | PSI (1-hr) |
-| JMA | Japan | Free | 3 | 7-day | No |
-| CWA | Taiwan | Required | 4 | 7-day | No |
-| UK Met Office | United Kingdom | Required | 5 | 7-day | No |
 | BOM | Australia | Free | 6 | 7-day | No |
 | MetService | New Zealand | Free | 7 | Current only | No |
 | NWS | USA | Free | 7 | 7-day | No |
@@ -56,13 +48,9 @@ The skill automatically selects the best provider based on location:
 │           Try Providers by Priority          │
 ├─────────────────────────────────────────────┤
 │ 1. HKO (HK only)                            │
-│ 2. SG NEA (Singapore only)                  │
-│ 3. JMA (Japan only)                         │
-│ 4. CWA (Taiwan, needs API key)              │
-│ 5. UK Met Office (UK, needs API key)        │
 │ 6. BOM (Australia)                          │
 │ 7. MetService (NZ, current only)            │
-│ 8. NWS (USA)                                │
+│ 7. NWS (USA)                                │
 │ 10. OpenWeatherMap (global fallback)        │
 └──────────────┬──────────────────────────────┘
                │
@@ -79,8 +67,6 @@ The skill automatically selects the best provider based on location:
 | Provider | Coverage | Registration |
 |----------|----------|--------------|
 | HKO | Hong Kong | None |
-| SG NEA | Singapore | None |
-| JMA | Japan | None |
 | BOM | Australia | None |
 | MetService | New Zealand | None |
 | NWS | USA | None |
@@ -89,8 +75,6 @@ The skill automatically selects the best provider based on location:
 
 | Provider | Coverage | Sign Up URL |
 |----------|----------|-------------|
-| CWA | Taiwan | https://opendata.cwa.gov.tw/ |
-| UK Met Office | United Kingdom | https://www.metoffice.gov.uk/services/data/datapoint/ |
 | OpenWeatherMap | Global | https://openweathermap.org/api |
 
 ## Feels-like Temperature
@@ -122,7 +106,6 @@ return round(temp)
 | Provider | Air Quality Source |
 |----------|-------------------|
 | HKO | AQHI (HK scale 1-10+) |
-| SG NEA | PSI (1-hr, 24-hr) |
 | OpenWeatherMap | AQI (US EPA scale 1-500) |
 
 ### HKO Air Quality Health Index (AQHI)
@@ -133,15 +116,6 @@ The HK scale:
 - 7: High
 - 8-10: Very High
 - 10+: Serious
-
-### SG NEA Pollutant Standards Index (PSI)
-
-Singapore's 24-hour PSI:
-- 0-50: Good
-- 51-100: Moderate
-- 101-200: Unhealthy
-- 201-300: Very Unhealthy
-- 300+: Hazardous
 
 ## Output Format
 
@@ -167,5 +141,3 @@ UV Index: 7 (High)
 | `TELEGRAM_BOT_TOKEN` | For Telegram | Telegram bot token |
 | `TELEGRAM_CHAT_ID` | For Telegram | Default chat ID |
 | `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key |
-| `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
-| `METOFFICE_API_KEY` | For UK | UK Met Office API key |
