@@ -45,6 +45,11 @@ credentials.json
 logs/
 *.log
 
+# Local tooling and test caches
+.factory/
+.pytest_cache/
+.ruff_cache/
+
 # Conversations and data
 conversations/
 .backups/

@@ -151,7 +151,9 @@ class OpenWeatherMapProvider(WeatherProvider):
                 "units": "metric",
                 "cnt": 8,  # Next 24 hours (3-hour intervals)
             }
-            forecast_url = f"{self.BASE_URL}/forecast?{urllib.parse.urlencode(forecast_params)}"
+            forecast_url = (
+                f"{self.BASE_URL}/forecast?{urllib.parse.urlencode(forecast_params)}"
+            )
             with urllib.request.urlopen(forecast_url, timeout=10) as resp:
                 forecast_data = json.loads(resp.read().decode("utf-8"))
 
@@ -233,7 +235,12 @@ class OpenWeatherMapProvider(WeatherProvider):
 
         return self._parse_forecast(data, days)
 
-    def _parse_current(self, data: dict, today_high: float | None = None, today_low: float | None = None) -> WeatherData:
+    def _parse_current(
+        self,
+        data: dict,
+        today_high: float | None = None,
+        today_low: float | None = None,
+    ) -> WeatherData:
         """Parse OpenWeatherMap current weather response."""
         weather = data.get("weather", [{}])[0]
         main = data.get("main", {})
@@ -307,7 +314,9 @@ class OpenWeatherMapProvider(WeatherProvider):
 
             main = item.get("main", {})
             weather = item.get("weather", [{}])[0]
-            pop = item.get("pop", 0) * 100  # Probability of precipitation (0-1 -> 0-100)
+            pop = (
+                item.get("pop", 0) * 100
+            )  # Probability of precipitation (0-1 -> 0-100)
 
             daily_data[date_key]["temps"].append(main.get("temp"))
             daily_data[date_key]["humidity"].append(main.get("humidity"))
@@ -335,7 +344,9 @@ class OpenWeatherMapProvider(WeatherProvider):
                     else None,
                     condition=condition,
                     description=description,
-                    precipitation_chance=int(max(d["rain_prob"])) if d["rain_prob"] else None,
+                    precipitation_chance=int(max(d["rain_prob"]))
+                    if d["rain_prob"]
+                    else None,
                     forecast_date=date,
                     provider_name=self.name,
                 )
@@ -394,4 +405,3 @@ class OpenWeatherMapProvider(WeatherProvider):
             "co": components.get("co"),
             "so2": components.get("so2"),
         }
-

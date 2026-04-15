@@ -314,7 +314,7 @@ def _dict_to_weather_data(data: dict) -> "WeatherData":
     if WeatherData is None:
         raise ImportError("WeatherData model not available")
 
-    from datetime import datetime, date
+    from datetime import timezone, datetime, date
 
     # Determine condition from icon or text
     condition = WeatherCondition.UNKNOWN if WeatherCondition else None
@@ -351,7 +351,7 @@ def _dict_to_weather_data(data: dict) -> "WeatherData":
         aqhi=data.get("aqhi"),
         uv_index=data.get("uv_index"),
         forecast_date=forecast_date,
-        observed_at=datetime.now(),
+        observed_at=datetime.now(timezone.utc),
         provider_name=data.get("provider_name", "unknown")
     )
 
