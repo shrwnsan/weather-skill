@@ -98,6 +98,10 @@ await skill.send(message, channel="telegram")
 12. **Thailand locations** → TMD provider (priority 9, requires API key)
 13. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
 
+**Location aliases with no dedicated provider** (routed to OpenWeatherMap):
+- 🇮🇳 India — 20 cities including Hindi names (दिल्ली, मुंबई) and legacy names (Bombay, Calcutta)
+- 🇨🇦 Canada — 15 cities including airport codes (YYZ, YVR, YUL) and French names (Montréal, Québec)
+
 ### Default Behavior
 
 - **No location specified?** Agent attempts to infer from user context or prompts for location
