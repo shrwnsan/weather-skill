@@ -76,6 +76,8 @@ await skill.send(message, channel="telegram")
 | BOM | Australia | Free | 6 | 7-day | No |
 | MetService | New Zealand | Free | 7 | Current only | No |
 | NWS | USA | Free | 7 | 7-day | No |
+| BMKG | Indonesia | Free | 8 | 3-day | No |
+| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API |
 
 ### Provider Selection Logic
@@ -88,7 +90,9 @@ await skill.send(message, channel="telegram")
 6. **Australia locations** → BOM provider (priority 6)
 7. **New Zealand locations** → MetService provider (priority 7, current weather only)
 8. **USA locations** → NWS provider (priority 7)
-9. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
+9. **Indonesia locations** → BMKG provider (priority 8)
+10. **Germany locations** → DWD provider (priority 8)
+11. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
 
 ### Default Behavior
 
@@ -141,6 +145,8 @@ await skill.send(message, channel="telegram")
 - Australia (BOM)
 - New Zealand (MetService)
 - USA (NWS)
+- Indonesia (BMKG)
+- Germany (DWD via Bright Sky)
 
 **Requires API key:**
 - Taiwan (CWA) - Sign up at [opendata.cwa.gov.tw](https://opendata.cwa.gov.tw/)
