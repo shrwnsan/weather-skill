@@ -36,6 +36,8 @@ The skill automatically selects the best provider based on location:
 | BOM | Australia | Free | 6 | 7-day | No |
 | MetService | New Zealand | Free | 7 | Current only | No |
 | NWS | USA | Free | 7 | 7-day | No |
+| BMKG | Indonesia | Free | 8 | 3-day | No |
+| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI |
 
 ## Selection Flow

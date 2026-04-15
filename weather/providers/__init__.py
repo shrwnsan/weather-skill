@@ -10,6 +10,8 @@ Available providers:
 - BOMProvider: Australian Bureau of Meteorology (priority 6, AU only)
 - MetServiceProvider: New Zealand MetService (priority 7, NZ only)
 - NWSProvider: US National Weather Service (priority 7, US only)
+- BMKGProvider: Indonesia BMKG (priority 8, Indonesia only)
+- DWDProvider: Germany DWD via Bright Sky (priority 8, Germany only)
 - OpenWeatherMapProvider: Global fallback (priority 10, requires API key)
 """
 
@@ -28,6 +30,8 @@ from .uk_metoffice import UKMetOfficeProvider
 from .au_bom import BOMProvider
 from .nz_metservice import MetServiceProvider
 from .us_nws import NWSProvider
+from .id_bmkg import BMKGProvider
+from .de_dwd import DWDProvider
 from .openweathermap import OpenWeatherMapProvider
 
 __all__ = [
@@ -43,6 +47,8 @@ __all__ = [
     "BOMProvider",
     "MetServiceProvider",
     "NWSProvider",
+    "BMKGProvider",
+    "DWDProvider",
     "OpenWeatherMapProvider",
 ]
 
@@ -81,6 +87,20 @@ def get_metoffice_provider(api_key: str = ""):
     from .uk_metoffice import UKMetOfficeProvider
 
     return UKMetOfficeProvider(api_key)
+
+
+def get_bmkg_provider():
+    """Get Indonesia BMKG provider."""
+    from .id_bmkg import BMKGProvider
+
+    return BMKGProvider()
+
+
+def get_dwd_provider():
+    """Get Germany DWD provider via Bright Sky."""
+    from .de_dwd import DWDProvider
+
+    return DWDProvider()
 
 
 def get_openweathermap_provider(api_key: str):
