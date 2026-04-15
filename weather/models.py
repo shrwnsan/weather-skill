@@ -458,6 +458,31 @@ LOCATION_ALIASES = {
     "freiburg": "Freiburg",
     "heidelberg": "Heidelberg",
     "bonn": "Bonn",
+    # South Korea
+    "south korea": "South Korea",
+    "korea": "South Korea",
+    "kr": "South Korea",
+    "한국": "South Korea",
+    "seoul": "Seoul",
+    "서울": "Seoul",
+    "busan": "Busan",
+    "부산": "Busan",
+    "incheon": "Incheon",
+    "daegu": "Daegu",
+    "jeju": "Jeju",
+    "제주": "Jeju",
+    # Thailand
+    "thailand": "Thailand",
+    "th": "Thailand",
+    "ไทย": "Thailand",
+    "bangkok": "Bangkok",
+    "กรุงเทพ": "Bangkok",
+    "chiang mai": "Chiang Mai",
+    "เชียงใหม่": "Chiang Mai",
+    "phuket": "Phuket",
+    "ภูเก็ต": "Phuket",
+    "pattaya": "Pattaya",
+    "krabi": "Krabi",
 }
 
 
