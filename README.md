@@ -193,4 +193,4 @@ weather-skill/
 
 ## License
 
-Apache License 2.0 - See [LICENSE](LICENSE) for details.
+MIT License - See [LICENSE](LICENSE) for details.
