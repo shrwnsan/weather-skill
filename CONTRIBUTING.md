@@ -5,7 +5,7 @@ Thanks for your interest in contributing to Weather Skill!
 ## Getting Started
 
 ```bash
-git clone https://github.com/nano-ade/weather-skill.git
+git clone https://github.com/shrwnsan/weather-skill.git
 cd weather-skill
 python -m pytest tests/ -v
 ```
