@@ -43,6 +43,8 @@ This skill provides weather information for any location, with special support f
 | `TELEGRAM_BOT_TOKEN` | For Telegram | Telegram bot token |
 | `TELEGRAM_CHAT_ID` | For Telegram | Default chat ID |
 | `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key (fallback) |
+| `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
+| `METOFFICE_API_KEY` | For UK | UK Met Office API key |
 
 ### Default Behavior
 
@@ -56,6 +58,13 @@ This skill provides weather information for any location, with special support f
 | Provider | Coverage | API Key | Priority |
 |----------|----------|---------|----------|
 | HKO | Hong Kong | Free | 1 (primary for HK) |
+| SG NEA | Singapore | Free | 2 |
+| JMA | Japan | Free | 3 |
+| CWA | Taiwan | Required | 4 |
+| UK Met Office | United Kingdom | Required | 5 |
+| BOM | Australia | Free | 6 |
+| MetService | New Zealand | Free | 7 |
+| NWS | USA | Free | 7 |
 | OpenWeatherMap | Global | Required | 10 (fallback) |
 
 ## Output Formats
@@ -176,6 +185,10 @@ weather-skill/
 │   ├── models.py         # Data models
 │   ├── providers/
 │   │   ├── hko.py
+│   │   ├── sg_nea.py
+│   │   ├── jma.py
+│   │   ├── tw_cwa.py
+│   │   ├── uk_metoffice.py
 │   │   ├── au_bom.py
 │   │   ├── nz_metservice.py
 │   │   ├── us_nws.py

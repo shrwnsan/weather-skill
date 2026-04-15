@@ -3,6 +3,10 @@ Weather providers package.
 
 Available providers:
 - HKOProvider: Hong Kong Observatory (priority 1, HK only)
+- SGNEAProvider: Singapore NEA (priority 2, Singapore only)
+- JMAProvider: Japan Meteorological Agency (priority 3, Japan only)
+- CWAProvider: Taiwan Central Weather Administration (priority 4, Taiwan only)
+- UKMetOfficeProvider: UK Met Office (priority 5, UK only)
 - BOMProvider: Australian Bureau of Meteorology (priority 6, AU only)
 - MetServiceProvider: New Zealand MetService (priority 7, NZ only)
 - NWSProvider: US National Weather Service (priority 7, US only)
@@ -17,11 +21,14 @@ from .base import (
 )
 
 from .hko import HKOProvider
+from .sg_nea import SGNEAProvider
+from .jma import JMAProvider
+from .tw_cwa import CWAProvider
+from .uk_metoffice import UKMetOfficeProvider
 from .au_bom import BOMProvider
 from .nz_metservice import MetServiceProvider
 from .us_nws import NWSProvider
 from .openweathermap import OpenWeatherMapProvider
-
 
 __all__ = [
     "WeatherProvider",
@@ -29,6 +36,10 @@ __all__ = [
     "ProviderError",
     "LocationNotSupportedError",
     "HKOProvider",
+    "SGNEAProvider",
+    "JMAProvider",
+    "CWAProvider",
+    "UKMetOfficeProvider",
     "BOMProvider",
     "MetServiceProvider",
     "NWSProvider",
@@ -42,6 +53,34 @@ def get_hko_provider():
     from .hko import HKOProvider
 
     return HKOProvider()
+
+
+def get_sg_nea_provider():
+    """Get Singapore NEA provider."""
+    from .sg_nea import SGNEAProvider
+
+    return SGNEAProvider()
+
+
+def get_jma_provider():
+    """Get Japan Meteorological Agency provider."""
+    from .jma import JMAProvider
+
+    return JMAProvider()
+
+
+def get_cwa_provider(api_key: str = ""):
+    """Get Taiwan CWA provider."""
+    from .tw_cwa import CWAProvider
+
+    return CWAProvider(api_key)
+
+
+def get_metoffice_provider(api_key: str = ""):
+    """Get UK Met Office provider."""
+    from .uk_metoffice import UKMetOfficeProvider
+
+    return UKMetOfficeProvider(api_key)
 
 
 def get_openweathermap_provider(api_key: str):
