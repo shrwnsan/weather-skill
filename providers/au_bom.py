@@ -9,7 +9,7 @@ API Documentation: http://www.bom.gov.au/catalogue/
 
 import asyncio
 import re
-from datetime import datetime, date
+from datetime import timezone, datetime, date
 from typing import Optional
 import urllib.request
 import json
@@ -261,7 +261,7 @@ class BOMProvider(WeatherProvider):
         try:
             observed_at = datetime.strptime(obs_time, "%Y%m%d%H%M%S")
         except (ValueError, TypeError):
-            observed_at = datetime.utcnow()
+            observed_at = datetime.now(timezone.utc)
 
         # Get display name
         display_name = self._get_display_name(location)
@@ -276,7 +276,7 @@ class BOMProvider(WeatherProvider):
             pressure=pressure,
             condition=WeatherCondition.UNKNOWN,  # BOM observations don't include condition
             observed_at=observed_at,
-            fetched_at=datetime.utcnow(),
+            fetched_at=datetime.now(timezone.utc),
             provider_name=self.name,
         )
 
@@ -335,7 +335,7 @@ class BOMProvider(WeatherProvider):
                 description=fc.get("extended_text", ""),
                 precipitation_chance=precip_chance,
                 uv_index=uv_index,
-                fetched_at=datetime.utcnow(),
+                fetched_at=datetime.now(timezone.utc),
                 provider_name=self.name,
             ))
 

@@ -1,20 +1,12 @@
 """
-Weather formatters package.
+Weather Skill package.
 
-Available formatters:
-- TelegramFormatter: Telegram MarkdownV2 format
-- WhatsAppFormatter: WhatsApp formatting (future)
+This package provides a platform-agnostic way to fetch weather data
+from multiple providers and format it for different messaging platforms.
 """
 
-from .base import WeatherFormatter, FormatterError
-from .telegram import TelegramFormatter
+from .skill import WeatherSkill
 
 __all__ = [
-    "WeatherFormatter",
-    "FormatterError",
-    "TelegramFormatter",
+    "WeatherSkill",
 ]
-
-def get_telegram_formatter():
-    """Get Telegram MarkdownV2 formatter."""
-    return TelegramFormatter()

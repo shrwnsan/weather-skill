@@ -5,7 +5,7 @@ Telegram MarkdownV2 formatter for weather data.
 Formats weather data for Telegram using MarkdownV2 syntax.
 """
 
-from datetime import date
+from datetime import timezone, date
 from ..models import WeatherData, WeatherCondition
 from .base import WeatherFormatter, FormatterError
 

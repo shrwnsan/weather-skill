@@ -4,7 +4,7 @@ Weather data models for the Weather Skill.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime, date
+from datetime import timezone, datetime, date
 from enum import Enum
 from typing import Optional
 

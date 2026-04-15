@@ -116,19 +116,19 @@ When a user requests weather information, execute the following:
 ### Current Weather
 
 ```bash
-python /workspace/group/skills/weather/scripts/weather --location "<location>"
+python /workspace/group/skills/weather/cli.py --location "<location>"
 ```
 
 ### Forecast
 
 ```bash
-python /workspace/group/skills/weather/scripts/weather --location "<location>" --forecast --days 3
+python /workspace/group/skills/weather/cli.py --location "<location>" --forecast --days 3
 ```
 
 ### Send to Telegram
 
 ```bash
-python /workspace/group/skills/weather/scripts/weather --location "<location>" --platform telegram --send
+python /workspace/group/skills/weather/cli.py --location "<location>" --platform telegram --send
 ```
 
 ### Parse User Input
@@ -159,13 +159,8 @@ weather --location "Hong Kong" --platform telegram --send
 ```
 skills/weather/
 ├── SKILL.md              # This file (skill definition)
-├── scripts/              # Executable scripts
-│   └── weather           # CLI entry point
 ├── docs/                 # Documentation
 │   └── provider-selection.md
-├── references/           # Reference docs
-│   ├── ARCHITECTURE.md   # Design documentation
-│   └── EXTENDING.md      # Extension guide
 ├── __init__.py           # Package exports
 ├── cli.py                # CLI interface
 ├── models.py             # Data models

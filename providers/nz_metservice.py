@@ -11,7 +11,7 @@ API Documentation: https://www.metservice.com/
 """
 
 import asyncio
-from datetime import datetime
+from datetime import timezone, datetime
 from typing import Optional
 import urllib.request
 import json
@@ -246,7 +246,7 @@ class MetServiceProvider(WeatherProvider):
         try:
             observed_at = datetime.fromisoformat(obs_time.replace("Z", "+00:00"))
         except (ValueError, TypeError):
-            observed_at = datetime.utcnow()
+            observed_at = datetime.now(timezone.utc)
 
         return WeatherData(
             location=display_name,
@@ -259,7 +259,7 @@ class MetServiceProvider(WeatherProvider):
             condition=condition,
             condition_raw=condition_raw,
             observed_at=observed_at,
-            fetched_at=datetime.utcnow(),
+            fetched_at=datetime.now(timezone.utc),
             provider_name=self.name,
         )
 

@@ -9,7 +9,7 @@ API Documentation: https://www.weather.gov/documentation/services-web-api
 
 import asyncio
 import re
-from datetime import datetime, date
+from datetime import timezone, datetime, date
 from typing import Optional
 import urllib.request
 import json
@@ -304,7 +304,7 @@ class NWSProvider(WeatherProvider):
         try:
             observed_at = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
         except (ValueError, TypeError):
-            observed_at = datetime.utcnow()
+            observed_at = datetime.now(timezone.utc)
 
         # Get display name
         display_name = self._get_display_name(location)
@@ -325,7 +325,7 @@ class NWSProvider(WeatherProvider):
             condition_raw=description,
             description=description,
             observed_at=observed_at,
-            fetched_at=datetime.utcnow(),
+            fetched_at=datetime.now(timezone.utc),
             provider_name=self.name,
         )
 
@@ -390,7 +390,7 @@ class NWSProvider(WeatherProvider):
                 description=period.get("detailedForecast", ""),
                 wind_speed=wind_speed,
                 wind_direction=wind_dir,
-                fetched_at=datetime.utcnow(),
+                fetched_at=datetime.now(timezone.utc),
                 provider_name=self.name,
             ))
 

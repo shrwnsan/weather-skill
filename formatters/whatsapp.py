@@ -6,7 +6,7 @@ WhatsApp supports: *bold*, _italic_, ~strikethrough~, ```code```
 No MarkdownV2 escaping needed — WhatsApp uses simpler formatting.
 """
 
-from datetime import date
+from datetime import timezone, date
 from ..models import WeatherData, WeatherCondition
 from .base import WeatherFormatter, FormatterError
 
