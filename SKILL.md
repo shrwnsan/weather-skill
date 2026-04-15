@@ -1,5 +1,5 @@
 ---
-name: weather
+name: weather-skill
 description: Retrieves current weather and forecasts for user-specified locations and formats results for chat platforms. Use when users ask about weather conditions, forecast outlooks, AQHI or UV levels, or location-based weather summaries.
 compatibility: Designed for Python agent runtimes with network access. Telegram send flow requires TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
 ---
@@ -28,11 +28,11 @@ This skill provides weather information for any location, with special support f
 
 ### Examples
 
-- `@Claw weather` - Current weather for default location (Hong Kong)
-- `@Claw weather Tokyo` - Current weather for Tokyo
-- `@Claw weather forecast` - 3-day forecast for default location
-- `@Claw weather forecast --days 5` - 5-day forecast
-- `@Claw 天氣` - Current weather in Chinese (defaults to HK)
+- `@agent weather` - Current weather for default location (Hong Kong)
+- `@agent weather Tokyo` - Current weather for Tokyo
+- `@agent weather forecast` - 3-day forecast for default location
+- `@agent weather forecast --days 5` - 5-day forecast
+- `@agent 天氣` - Current weather in Chinese (defaults to HK)
 
 ## Configuration
 
@@ -166,7 +166,7 @@ weather --location "Hong Kong" --platform telegram --send
 ## File Structure
 
 ```
-skills/weather/
+weather-skill/
 ├── SKILL.md              # This file (skill definition)
 ├── docs/                 # Documentation
 │   └── provider-selection.md
