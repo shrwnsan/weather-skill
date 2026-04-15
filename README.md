@@ -101,7 +101,6 @@ await skill.send(message, channel="telegram")
 
 ```
 🌧️ Hong Kong Weather — Tuesday, Mar 31
-
 🌡️ 26°C (feels 26°C) • High 28° / Low 23°
 🌧️ Rain
 💧 Humidity: 78% | 💨 Wind: South force 3
@@ -113,8 +112,11 @@ await skill.send(message, channel="telegram")
 
 ```
 🌤️ Weather for Hong Kong
-🌡️ Temperature: 26°C
-💧 Humidity: 78%
+🌡️ Temperature: 28.3°C
+   Range: 25.0° - 30.0°
+💧 Humidity: 73%
+🌧️ Rain chance: 10%
+☀️ UV Index: 3
 📍 Provider: hko
 ```
 
