@@ -17,10 +17,10 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/nano-ade/weather-skill"
-Repository = "https://github.com/nano-ade/weather-skill"
-Issues = "https://github.com/nano-ade/weather-skill/issues"
-Changelog = "https://github.com/nano-ade/weather-skill/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/shrwnsan/weather-skill"
+Repository = "https://github.com/shrwnsan/weather-skill"
+Issues = "https://github.com/shrwnsan/weather-skill/issues"
+Changelog = "https://github.com/shrwnsan/weather-skill/blob/main/CHANGELOG.md"
 
 [project.scripts]
 weather = "weather.cli:main"
