@@ -8,7 +8,7 @@ Free, no API key required. Hong Kong coverage only.
 
 import asyncio
 import re
-from datetime import datetime, date
+from datetime import timezone, datetime, date
 from typing import Optional
 import urllib.request
 import json
@@ -184,7 +184,7 @@ class HKOProvider(WeatherProvider):
             precipitation_chance=precip_chance,
             uv_index=uv_index,
             observed_at=observed_at,
-            fetched_at=datetime.utcnow(),
+            fetched_at=datetime.now(timezone.utc),
             provider_name=self.name,
         )
 
@@ -223,7 +223,7 @@ class HKOProvider(WeatherProvider):
                 condition_raw=fc.get("IconDesc", ""),
                 description=fc.get("ForecastWeather", ""),
                 precipitation_chance=precip_chance,
-                fetched_at=datetime.utcnow(),
+                fetched_at=datetime.now(timezone.utc),
                 provider_name=self.name,
             ))
 
