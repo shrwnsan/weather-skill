@@ -51,7 +51,7 @@ from weather.senders.telegram import TelegramSender
 # Initialize with providers
 skill = WeatherSkill()
 skill.add_provider(HKOProvider())  # Hong Kong (priority 1)
-skill.add_provider(OpenWeatherMapProvider(api_key="your-api-key"))  # Global (priority 10)
+skill.add_provider(OpenWeatherMapProvider(api_key=os.environ["OPENWEATHERMAP_API_KEY"]))  # Global (priority 10)
 skill.add_formatter("telegram", TelegramFormatter())
 skill.add_sender("telegram", TelegramSender(
     bot_token=os.environ["TELEGRAM_BOT_TOKEN"],
