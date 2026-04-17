@@ -25,6 +25,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - ~300 lines of dead code from `cli.py`: manual dict serialization, HKO-only fetch, curl-based Telegram send, icon-to-condition mapping, PSR conversion
 
+## [0.1.0] - 2026-04-15
+
 ### Added
 - **9 weather providers** with priority-based automatic selection:
   - HKO (Hong Kong, free, priority 1)
