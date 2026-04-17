@@ -180,7 +180,7 @@ class MetServiceProvider(WeatherProvider):
         """Fetch current observations from MetService."""
         url = f"{METSERVICE_LOCAL_OBS}_{location_info['id']}"
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

@@ -175,25 +175,15 @@ class OpenWeatherMapProvider(WeatherProvider):
 
     async def get_current_with_air_quality(self, location: Location) -> WeatherData:
         """Fetch current weather with air quality data."""
-        # First get weather data
+        # First get weather data (includes coordinates from _parse_current)
         weather_data = await self.get_current(location)
 
-        # Get coordinates from weather response for air quality
-        params = {
-            "q": location.normalized,
-            "appid": self.api_key,
-            "units": "metric",
-        }
-        url = f"{self.BASE_URL}/weather?{urllib.parse.urlencode(params)}"
+        # Use coordinates from weather data for air quality lookup
+        lat = weather_data.latitude
+        lon = weather_data.longitude
 
-        try:
-            with urllib.request.urlopen(url, timeout=10) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            coords = data.get("coord", {})
-            lat = coords.get("lat")
-            lon = coords.get("lon")
-
-            if lat and lon:
+        if lat and lon:
+            try:
                 air_quality = await self.get_air_quality(lat, lon)
                 # Add air quality to weather data
                 weather_data.aqi = air_quality.get("aqi")
@@ -201,8 +191,8 @@ class OpenWeatherMapProvider(WeatherProvider):
                 weather_data.pm10 = air_quality.get("pm10")
                 weather_data.o3 = air_quality.get("o3")
                 weather_data.no2 = air_quality.get("no2")
-        except Exception:
-            pass  # Air quality is optional
+            except Exception:
+                pass  # Air quality is optional
 
         return weather_data
 
@@ -275,8 +265,13 @@ class OpenWeatherMapProvider(WeatherProvider):
         if description:
             description = description.capitalize()
 
+        # Extract coordinates from response
+        coords = data.get("coord", {})
+
         return WeatherData(
             location=data.get("name", "Unknown"),
+            latitude=coords.get("lat"),
+            longitude=coords.get("lon"),
             temperature=main.get("temp"),
             feels_like=main.get("feels_like"),
             temp_high=today_high,

@@ -107,7 +107,7 @@ class HKOProvider(WeatherProvider):
 
     async def _fetch_api(self) -> dict:
         """Fetch data from HKO JSON API."""
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             with urllib.request.urlopen(HKO_API_URL, timeout=10) as response:

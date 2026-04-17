@@ -137,7 +137,9 @@ class WeatherSkill:
             )
             if not provider:
                 raise NoProviderError(f"Provider not found: {provider_name}")
-            return await provider.get_current(loc)
+            data = await provider.get_current(loc)
+            data.provider_name = provider.name
+            return data
 
         # Try providers in priority order
         errors = []
@@ -182,7 +184,10 @@ class WeatherSkill:
             )
             if not provider:
                 raise NoProviderError(f"Provider not found: {provider_name}")
-            return await provider.get_forecast(loc, days)
+            data = await provider.get_forecast(loc, days)
+            for d in data:
+                d.provider_name = provider.name
+            return data
 
         for provider in self._providers:
             if not provider.supports_location(loc):

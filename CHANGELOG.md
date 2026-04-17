@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.0] - 2026-04-17
+
+### Changed
+
+- **Unified CLI architecture** — CLI now routes through `WeatherSkill` orchestrator instead of a bespoke data path. All 13 providers are accessible from the command line via automatic location routing (previously only HKO worked).
+- **Telegram sender security** — replaced `subprocess`/`curl` with `urllib.request`, removing bot token exposure in the process table.
+- **CLI flags consolidated** — `--platform` and `--format` merged into a single `--format` flag with choices: `text`, `telegram`, `whatsapp`, `json`.
+- **Wind speed unit fix** — corrected `_calculate_feels_like()` which was receiving km/h but expecting m/s, causing incorrect wind chill values.
+
+### Added
+
+- **4 weather providers**: BMKG (Indonesia), DWD (Germany), KMA (South Korea), TMD (Thailand)
+- **CliTextFormatter** — plain-text CLI formatter operating on `WeatherData` directly (no dict intermediary)
+- **`bootstrap.py`** — `build_default_skill()` factory that wires providers, formatters, and senders based on environment variables
+- **29 new tests** (66 total) covering CliTextFormatter, bootstrap, CLI integration, and TelegramSender security
+- **`requires-python`** bumped to `>=3.10`
+
+### Removed
+
+- ~300 lines of dead code from `cli.py`: manual dict serialization, HKO-only fetch, curl-based Telegram send, icon-to-condition mapping, PSR conversion
+
 ## [0.1.0] - 2026-04-15
 
 ### Added

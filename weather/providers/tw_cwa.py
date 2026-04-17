@@ -210,7 +210,7 @@ class CWAProvider(WeatherProvider):
         query = urllib.parse.urlencode(params)
         url = f"{CWA_BASE_URL}/{dataset_id}?{query}"
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

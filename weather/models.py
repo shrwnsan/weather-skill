@@ -191,7 +191,7 @@ class WeatherData:
 
         # Calculate from humidity/wind if available
         if self.humidity is not None:
-            wind = self.wind_speed if self.wind_speed is not None else 0.0
+            wind = self.wind_speed / 3.6 if self.wind_speed else 0.0
             return self._calculate_feels_like(self.temperature, self.humidity, wind)
 
         return self.temperature
@@ -207,7 +207,7 @@ class WeatherData:
         Args:
             temp: Temperature in Celsius
             humidity: Relative humidity percentage (0-100)
-            wind_speed: Wind speed in m/s
+            wind_speed: Wind speed in m/s (not km/h — callers must convert)
 
         Returns:
             Feels-like temperature in Celsius
@@ -222,7 +222,7 @@ class WeatherData:
 
         # Wind chill for cold/windy conditions
         if temp <= 10 and wind_speed > 1.33:  # 4.8 km/h = 1.33 m/s
- # Wind chill formula (metric): WC = 13.12 + 0.6215*T - 11.37*V^0.16
+            # Wind chill formula (metric): WC = 13.12 + 0.6215*T - 11.37*V^0.16
             # Where V is wind speed in km/h
             wind_kmh = wind_speed * 3.6
             wc = 13.12 + 0.6215 * temp - 11.37 * (wind_kmh ** 0.16)
