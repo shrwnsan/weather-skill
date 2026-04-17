@@ -13,7 +13,7 @@ Phase 1:  [1.1 ✅] ──┐
 
 Phase 2:  [2.1 ✅]  [2.2 ✅]  [2.3 ✅]   ← all done
 
-Phase 3:  [3.1 ✅]  [3.2 ⏳]  [3.3 ⏳]  [3.4 ⏳]  [3.5 ⏳]  ← 3.1 done, rest independent
+Phase 3:  [3.1 ✅]  [3.2 ✅]  [3.3 ✅]  [3.4 ✅]  [3.5 ✅]  ← all done
 
 Phase 4:  [4.1 ✅]  [4.2 ⏳]   ← 4.1 done by Phase 1 rewrite
 ```
@@ -884,12 +884,11 @@ python -m pytest tests/ -v
 | 2.2 | `providers/kr_kma.py` | ✅ | ✅ | Trivial |
 | 2.3 | `cli.py` epilog | ✅ | — | — |
 | 3.1 | All providers + sender (12 files) | ✅ | ✅ | Small |
-| 3.2 | `formatters/telegram.py`, `whatsapp.py` | ⏳ | ✅ | Trivial |
-| 3.3 | `senders/base.py` | ⏳ | ✅ | Trivial |
-| 3.4 | `pyproject.toml` | ⏳ | ✅ | Trivial |
-| 3.5 | `models.py` | ⏳ | ✅ | Small |
+| 3.2 | `formatters/telegram.py`, `whatsapp.py` | ✅ | ✅ | Trivial |
+| 3.3 | `senders/base.py` | ✅ | ✅ | Trivial |
+| 3.4 | `pyproject.toml` | ✅ | ✅ | Trivial |
+| 3.5 | `models.py` | ✅ | ✅ | Small |
 | 4.1 | `cli.py` | ✅ | — | — |
-| 4.2 | `docs/`, `SKILL.md`, `README.md` | ⏳ | ✅ | Small |
+| 4.2 | `docs/`, `SKILL.md`, `README.md` | ✅ | ✅ | Small |
 
-**Remaining work:** 4 tasks (3.2, 3.3, 3.4, 3.5, 4.2)
-**Test suite:** 66 tests passing (37 existing + 29 new)
+**All tasks complete. Test suite: 66 tests passing (37 existing + 29 new).**

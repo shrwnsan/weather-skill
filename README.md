@@ -15,10 +15,10 @@ python -m weather.cli --location "Hong Kong"
 python -m weather.cli --location "Tokyo" --forecast --days 3
 
 # Telegram format
-python -m weather.cli --location "Hong Kong" --platform telegram
+python -m weather.cli --location "Hong Kong" --format telegram
 
 # Send to Telegram
-python -m weather.cli --location "Hong Kong" --platform telegram --send
+python -m weather.cli --location "Hong Kong" --format telegram --send
 ```
 
 **All environment variables are optional.** 8 of 13 providers work without any API key. The skill outputs to stdout by default — agents capture this and route to their own channels. Env vars are only needed for specific providers or direct Telegram delivery.
@@ -38,7 +38,7 @@ weather -l "Hong Kong" --forecast --days 5
 weather -l "Hong Kong" --format json
 
 # Send directly to Telegram group
-weather -l "Hong Kong" --platform telegram --send --chat-id "<YOUR_CHAT_ID>"
+weather -l "Hong Kong" --format telegram --send --chat-id "<YOUR_CHAT_ID>"
 ```
 
 ### Python API
@@ -205,8 +205,10 @@ weather-skill/
 │   ├── cli.py            # CLI implementation
 │   ├── models.py         # Data models
 │   ├── skill.py          # WeatherSkill orchestrator
+│   ├── bootstrap.py      # Default skill builder
 │   ├── providers/        # Weather data providers
 │   ├── formatters/       # Output formatters
+│   │   └── cli_text.py   # CLI text formatter
 │   └── senders/          # Message senders
 └── tests/                # Test suite
 ```

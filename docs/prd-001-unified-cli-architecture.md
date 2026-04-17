@@ -209,7 +209,7 @@ Completed in worktree `.claude/worktrees/unified-cli` (commit `54a8a21`).
 |-------|-------|--------|-------------|
 | **1** | Unify CLI | ✅ | `CliTextFormatter` + `bootstrap.py` + rewrite `cli.py` |
 | **2** | Security | ✅ | Replace curl with urllib in sender, fix parse_mode, remove hardcoded chat ID, remove OWM duplicate call, switch KMA to HTTPS |
-| **3** | Efficiency | ⏳ open | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version, fix wind_speed unit |
-| **4** | Cleanup | ⏳ 1 of 2 remain | Dead code (done), update docs |
+| **3** | Efficiency | ✅ | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version, fix wind_speed unit |
+| **4** | Cleanup | ✅ | Dead code (done), update docs |
 
 See `docs/tasks-001-prd-001-unified-cli-architecture.md` for detailed task breakdown.

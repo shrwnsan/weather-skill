@@ -45,12 +45,14 @@ This skill provides weather information for any location, with special support f
 | `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key (fallback) |
 | `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
 | `METOFFICE_API_KEY` | For UK | UK Met Office API key |
+| `KMA_SERVICE_KEY` | For S. Korea | Korea KMA service key |
+| `TMD_API_TOKEN` | For Thailand | Thailand TMD API token |
 
 ### Default Behavior
 
 1. **No location specified?** Agent attempts to infer from user context or prompts for location
-2. **Hong Kong location?** Uses HKO provider (free, no API key needed)
-3. **Global location?** Uses OpenWeatherMap (requires API key)
+2. **Provider auto-selection?** `--provider auto` uses the full provider chain — selects the highest-priority provider matching the location
+3. **No API key for required provider?** Falls back to next provider in chain
 4. **No OWM API key?** Agent prompts user to sign up at [openweathermap.org/api](https://openweathermap.org/api)
 
 ## Providers
@@ -65,6 +67,10 @@ This skill provides weather information for any location, with special support f
 | BOM | Australia | Free | 6 |
 | MetService | New Zealand | Free | 7 |
 | NWS | USA | Free | 7 |
+| BMKG | Indonesia | Free | 8 |
+| DWD (Bright Sky) | Germany | Free | 8 |
+| KMA | South Korea | Required | 9 |
+| TMD | Thailand | Required | 9 |
 | OpenWeatherMap | Global | Required | 10 (fallback) |
 
 ## Output Formats
@@ -138,7 +144,7 @@ python -m weather.cli --location "<location>" --forecast --days 3
 ### Send to Telegram
 
 ```bash
-python -m weather.cli --location "<location>" --platform telegram --send
+python -m weather.cli --location "<location>" --format telegram --send
 ```
 
 ## Safety Guardrails
@@ -169,7 +175,7 @@ weather --location "Hong Kong" --forecast --days 5
 weather --location "Hong Kong" --format json
 
 # Send to Telegram
-weather --location "Hong Kong" --platform telegram --send
+weather --location "Hong Kong" --format telegram --send
 ```
 
 ## File Structure
@@ -183,6 +189,7 @@ weather-skill/
 │   ├── __init__.py       # Package exports
 │   ├── cli.py            # CLI interface
 │   ├── models.py         # Data models
+│   ├── bootstrap.py      # Default skill builder
 │   ├── providers/
 │   │   ├── hko.py
 │   │   ├── sg_nea.py
@@ -192,10 +199,15 @@ weather-skill/
 │   │   ├── au_bom.py
 │   │   ├── nz_metservice.py
 │   │   ├── us_nws.py
+│   │   ├── id_bmkg.py
+│   │   ├── de_dwd.py
+│   │   ├── kr_kma.py
+│   │   ├── th_tmd.py
 │   │   └── openweathermap.py
 │   ├── formatters/
 │   │   ├── telegram.py
-│   │   └── whatsapp.py
+│   │   ├── whatsapp.py
+│   │   └── cli_text.py
 │   └── senders/
 │       └── telegram.py
 └── tests/                # Test suite

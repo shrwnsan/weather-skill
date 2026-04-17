@@ -4,7 +4,7 @@ Base weather sender interface.
 """
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Optional
 
 
@@ -19,7 +19,7 @@ class SendResult:
     success: bool
     message_id: Optional[str] = None
     error: Optional[str] = None
-    metadata: dict[str, Any] = None
+    metadata: Optional[dict[str, Any]] = field(default=None)
 
     def __bool__(self) -> bool:
         return self.success

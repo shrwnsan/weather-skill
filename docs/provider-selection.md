@@ -22,7 +22,11 @@ The skill automatically selects the best provider based on location:
 6. **Australia** → BOM (www.bom.gov.au)
 7. **New Zealand** → MetService (www.metservice.com)
 8. **USA** → NWS (www.weather.gov)
-9. **Other** → OpenWeatherMap (www.openweathermap.org)
+9. **Indonesia** → BMKG (free)
+10. **Germany** → DWD via Bright Sky (free)
+11. **South Korea** → KMA (data.go.kr, requires API key)
+12. **Thailand** → TMD (data.tmd.go.th, requires API key)
+13. **Other** → OpenWeatherMap (www.openweathermap.org)
 
 ## Provider Matrix
 
@@ -67,6 +71,10 @@ The skill automatically selects the best provider based on location:
 │ 6. BOM (Australia)                          │
 │ 7. MetService (NZ, current only)            │
 │ 7. NWS (USA)                                │
+│ 8. BMKG (Indonesia)                         │
+│ 8. DWD (Germany)                            │
+│ 9. KMA (S. Korea, needs API key)            │
+│ 9. TMD (Thailand, needs API key)            │
 │ 10. OpenWeatherMap (global fallback)        │
 └──────────────┬──────────────────────────────┘
                │
@@ -88,6 +96,8 @@ The skill automatically selects the best provider based on location:
 | BOM | Australia | None |
 | MetService | New Zealand | None |
 | NWS | USA | None |
+| BMKG | Indonesia | None |
+| DWD (Bright Sky) | Germany | None |
 
 ### Requires API Key
 
@@ -95,6 +105,8 @@ The skill automatically selects the best provider based on location:
 |----------|----------|-------------|
 | CWA | Taiwan | https://opendata.cwa.gov.tw/ |
 | UK Met Office | United Kingdom | https://datahub.metoffice.gov.uk/ |
+| KMA | South Korea | https://data.go.kr/ |
+| TMD | Thailand | https://data.tmd.go.th/ |
 | OpenWeatherMap | Global | https://openweathermap.org/api |
 
 ## Feels-like Temperature
@@ -164,3 +176,5 @@ UV Index: 7 (High)
 | `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key |
 | `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
 | `METOFFICE_API_KEY` | For UK | UK Met Office API key |
+| `KMA_SERVICE_KEY` | For S. Korea | Korea KMA service key |
+| `TMD_API_TOKEN` | For Thailand | Thailand TMD API token |

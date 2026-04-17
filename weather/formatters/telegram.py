@@ -6,7 +6,7 @@ Formats weather data for Telegram using MarkdownV2 syntax.
 """
 
 from datetime import date
-from ..models import WeatherData, WeatherCondition
+from ..models import WeatherData, WeatherCondition, CONDITION_EMOJI
 from .base import WeatherFormatter, FormatterError
 
 
@@ -30,28 +30,9 @@ def escape_mdv2(text: str) -> str:
     return ''.join(result)
 
 
-# Weather condition to emoji mapping
-CONDITION_EMOJI = {
-    WeatherCondition.SUNNY: "☀️",
-    WeatherCondition.PARTLY_CLOUDY: "⛅",
-    WeatherCondition.CLOUDY: "☁️",
-    WeatherCondition.OVERCAST: "🌥️",
-    WeatherCondition.FOG: "🌫️",
-    WeatherCondition.MIST: "🌫️",
-    WeatherCondition.DRIZZLE: "🌧️",
-    WeatherCondition.RAIN: "🌧️",
-    WeatherCondition.HEAVY_RAIN: "⛈️",
-    WeatherCondition.THUNDERSTORM: "⛈️",
-    WeatherCondition.SNOW: "❄️",
-    WeatherCondition.HAIL: "🌨️",
-    WeatherCondition.WINDY: "💨",
-    WeatherCondition.UNKNOWN: "🌡️",
-}
-
-
 def get_condition_emoji(condition: WeatherCondition) -> str:
     """Get emoji for weather condition."""
-    return CONDITION_EMOJI.get(condition, "🌡️")
+    return CONDITION_EMOJI.get(condition, "❓")
 
 
 class TelegramFormatter(WeatherFormatter):
