@@ -84,7 +84,7 @@ Examples:
         "--provider",
         type=str,
         default="auto",
-        help="Weather provider to use (default: auto — uses provider chain)"
+        help="Weather provider name (default: auto — uses priority chain)"
     )
 
     parser.add_argument(
@@ -100,12 +100,20 @@ async def main(args: argparse.Namespace) -> int:
     """Main entry point."""
     try:
         from .bootstrap import build_default_skill
+        from .skill import NoProviderError
 
         if args.verbose:
             print(f"Fetching weather for: {args.location}", file=sys.stderr)
 
         skill = build_default_skill()
         provider_name = None if args.provider == "auto" else args.provider
+
+        if provider_name and not any(p.name == provider_name for p in skill.providers):
+            names = ", ".join(sorted(p.name for p in skill.providers))
+            raise NoProviderError(
+                f"Provider not found: {provider_name}\n"
+                f"Available providers: {names}"
+            )
 
         if args.forecast:
             data = await skill.get_forecast(args.location, args.days, provider_name)
