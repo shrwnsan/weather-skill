@@ -2,7 +2,7 @@
 
 A platform-agnostic weather skill for AI agents. Fetches weather data from multiple providers and delivers formatted reports to various messaging platforms.
 
-## Quick Start
+## Quick Start (Agent Usage)
 
 ```bash
 # Current weather (uses agent location or prompts user)
@@ -20,6 +20,8 @@ python -m weather.cli --location "Hong Kong" --platform telegram
 # Send to Telegram
 python -m weather.cli --location "Hong Kong" --platform telegram --send
 ```
+
+**All environment variables are optional.** 8 of 13 providers work without any API key. The skill outputs to stdout by default — agents capture this and route to their own channels. Env vars are only needed for specific providers or direct Telegram delivery.
 
 ## Usage Examples
 
@@ -138,8 +140,6 @@ await skill.send(message, channel="telegram")
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `TELEGRAM_BOT_TOKEN` | For Telegram | Telegram bot token |
-| `TELEGRAM_CHAT_ID` | For Telegram | Default chat ID |
 | `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key |
 | `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
 | `METOFFICE_API_KEY` | For UK | UK Met Office API key |
@@ -164,6 +164,15 @@ await skill.send(message, channel="telegram")
 - South Korea (KMA) - Sign up at [data.go.kr](https://data.go.kr/)
 - Thailand (TMD) - Sign up at [data.tmd.go.th](https://data.tmd.go.th/)
 - Global (OpenWeatherMap) - Sign up at [openweathermap.org/api](https://openweathermap.org/api)
+
+### Direct Telegram Delivery (Optional)
+
+The `--send` flag bypasses the agent and sends directly to Telegram. This requires:
+
+| Variable | Description |
+|----------|-------------|
+| `TELEGRAM_BOT_TOKEN` | Telegram bot token |
+| `TELEGRAM_CHAT_ID` | Default chat ID |
 
 ### Default Location
 
