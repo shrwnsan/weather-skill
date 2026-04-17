@@ -1,16 +1,13 @@
 """
 Telegram Bot API sender for weather messages.
 
-
 Sends formatted weather messages via Telegram Bot API.
-Uses JSON file approach to avoid shell escaping issues.
+Uses urllib.request for HTTP communication.
 """
 
 import asyncio
 import json
 import os
-import tempfile
-from pathlib import Path
 from typing import Optional
 import urllib.request
 import urllib.error
@@ -23,7 +20,7 @@ class TelegramSender(WeatherSender):
     Telegram Bot API message sender.
 
     Features:
-    - JSON file approach (avoids shell escaping)
+    - JSON payload via urllib.request
     - Supports MarkdownV2 formatting
     - Topic/thread support for Telegram groups
     - Automatic retry on rate limit
@@ -72,9 +69,6 @@ class TelegramSender(WeatherSender):
         """
         Send message via Telegram Bot API.
 
-        Uses JSON file approach to avoid shell escaping issues with
-        complex messages containing special characters.
-
         Args:
             message: Message text to send
             chat_id: Override default chat ID
@@ -107,7 +101,7 @@ class TelegramSender(WeatherSender):
             if disable_notification:
                 payload["disable_notification"] = True
 
-            # Use JSON file approach for complex messages
+            # Use JSON payload via urllib
             result = await self._send_via_json(payload)
 
             if result.get("ok"):
@@ -128,51 +122,21 @@ class TelegramSender(WeatherSender):
             return SendResult(success=False, error=str(e))
 
     async def _send_via_json(self, payload: dict) -> dict:
-        """
-        Send message using JSON file to avoid shell escaping.
-
-        Writes payload to temp file and uses curl with @file syntax.
-        """
+        """Send message using urllib.request with JSON payload."""
         url = self.API_BASE.format(token=self.bot_token, method="sendMessage")
 
         loop = asyncio.get_event_loop()
 
         def send():
-            # Write payload to temp file
-            with tempfile.NamedTemporaryFile(
-                mode='w',
-                suffix='.json',
-                delete=False
-            ) as f:
-                json.dump(payload, f, ensure_ascii=False)
-                temp_path = f.name
-
-            try:
-                # Build curl command
-                cmd = [
-                    "curl", "-s",
-                    "-X", "POST",
-                    "-H", "Content-Type: application/json",
-                    "-d", f"@{temp_path}",
-                    url
-                ]
-
-                # Execute
-                import subprocess
-                result = subprocess.run(
-                    cmd,
-                    capture_output=True,
-                    text=True,
-                    timeout=self.timeout
-                )
-
-                return json.loads(result.stdout)
-            finally:
-                # Cleanup temp file
-                try:
-                    os.unlink(temp_path)
-                except:
-                    pass
+            payload_bytes = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+            req = urllib.request.Request(
+                url,
+                data=payload_bytes,
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                return json.loads(resp.read().decode("utf-8"))
 
         return await loop.run_in_executor(None, send)
 
