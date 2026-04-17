@@ -111,26 +111,37 @@ await skill.send(message, channel="telegram")
 
 ## Output Formats
 
-### Telegram (MarkdownV2)
+### Telegram / WhatsApp (MarkdownV2 / WhatsApp formatting)
+
+Both platforms share the same structure. WhatsApp uses `*bold*` headers and `_italic_` summaries; Telegram uses MarkdownV2 escaping.
 
 ```
-🌧️ Hong Kong Weather — Tuesday, Mar 31
-🌡️ 26°C (feels 26°C) • High 28° / Low 23°
-🌧️ Rain
-💧 Humidity: 78% | 💨 Wind: South force 3
-🌧️ Rain: 60% | 🌫️ AQHI: 5 (Moderate)
-☀️ UV: 7 (High)
+🌧️ Hong Kong Weather — Tuesday, March 31
+
+🌡️ 26°C (feels 28°C) • High 30° / Low 23°
+🌧️ Rain with thunderstorms possible.
+💧 Humidity: 78%
+💨 Wind: South force 3
+🌧️ Rain chance: 60%
+🌬️ Air Quality: Moderate (AQHI 5)
+☀️ UV Index: 7.0 (High)
+🌅 Sunrise: 6:15 AM | 🌇 Sunset: 6:25 PM
+
+Warm and humid with rain expected — perfect weather for a cozy day indoors.
 ```
 
 ### CLI (Text)
 
 ```
 🌤️ Weather for Hong Kong
-🌡️ Temperature: 28.3°C
-   Range: 25.0° - 30.0°
-💧 Humidity: 73%
-🌧️ Rain chance: 10%
-☀️ UV Index: 3
+🌡️ Temperature: 26°C
+   Feels like: 28°C
+   Range: 23° - 30°
+💨 Wind: South force 3
+💧 Humidity: 78%
+🌧️ Rain chance: 60%
+☀️ UV Index: 7.0
+🌫️ AQHI: 5 (Moderate)
 📍 Provider: hko
 ```
 
