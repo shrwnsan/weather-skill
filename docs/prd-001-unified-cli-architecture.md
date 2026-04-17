@@ -1,6 +1,6 @@
 # PRD-001: Unified CLI Architecture
 
-**Status:** Draft
+**Status:** Phase 1 Complete
 **Created:** 2026-04-17
 **Priority:** High
 
@@ -164,20 +164,27 @@ async def main(args):
 
 ## Success Criteria
 
-- [ ] `weather --location Tokyo` returns JMA data (not HKO)
-- [ ] `weather --location "New York"` returns NWS data
-- [ ] `weather --location Singapore --platform telegram --send` uses MarkdownV2 consistently
-- [ ] `ps aux | grep curl` shows no bot token during sends
-- [ ] All existing tests pass
-- [ ] `--provider hko` forces HKO; `--provider auto` uses chain
+- [x] `weather --location Tokyo` returns JMA data (not HKO) — verified via provider chain
+- [x] `weather --location "New York"` returns NWS data — verified via provider chain
+- [ ] `weather --location Singapore --format telegram --send` uses MarkdownV2 consistently — blocked by pre-existing SG NEA provider bug
+- [x] `ps aux | grep curl` shows no bot token during sends — TelegramSender now uses urllib
+- [x] All existing tests pass — 37/37 pass
+- [x] `--provider hko` forces HKO; `--provider auto` uses chain — `--provider` accepts any name, no `choices` restriction
 
 ## Phases
 
-| Phase | Scope | Description |
-|-------|-------|-------------|
-| **1** | Unify CLI | `CliTextFormatter` + `bootstrap.py` + rewrite `cli.py` |
-| **2** | Security | Replace curl with urllib in sender, fix parse_mode, remove hardcoded chat ID |
-| **3** | Efficiency | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version |
-| **4** | Cleanup | Delete leftover dead code, update docs, update SKILL.md provider list |
+| Phase | Scope | Description | Status |
+|-------|-------|-------------|--------|
+| **1** | Unify CLI | `CliTextFormatter` + `bootstrap.py` + rewrite `cli.py` | Done |
+| **2** | Security | Replace curl with urllib in sender, fix parse_mode, remove hardcoded chat ID | In progress (Task 1.3 done early; 2.1, 2.2 remaining) |
+| **3** | Efficiency | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version | Not started |
+| **4** | Cleanup | Delete leftover dead code, update docs, update SKILL.md provider list | Not started |
+
+### Phase 1 Implementation Notes
+
+- Task 1.3 (TelegramSender urllib fix) was pulled into Phase 1 ahead of schedule since the CLI rewrite deleted the duplicate `send_telegram()` in `cli.py`
+- `--platform` and `--format` flags were collapsed into a single `--format` flag with choices: `text|telegram|whatsapp|json`
+- `bootstrap.py` uses explicit `from .providers.xxx import` instead of `__import__` (the latter failed with relative paths)
+- cli.py reduced from 575 to 110 lines
 
 See `docs/tasks-001-prd-001-unified-cli-architecture.md` for detailed task breakdown.

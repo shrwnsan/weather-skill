@@ -21,11 +21,12 @@ Phase 4:  [4.1]  [4.2]   ← after Phase 1
 
 ## Phase 1: Unify CLI through WeatherSkill
 
-### Task 1.1 — Create `CliTextFormatter`
+### Task 1.1 — Create `CliTextFormatter` ✅
 
 **File:** `weather/formatters/cli_text.py`
 **Depends on:** nothing
 **Parallel:** yes (with 1.2, 1.3)
+**Done:** 2026-04-17
 
 Create a new formatter that extends `WeatherFormatter` and produces plain-text CLI output from `WeatherData` objects.
 
@@ -58,11 +59,12 @@ assert "80%" in output
 
 ---
 
-### Task 1.2 — Create `bootstrap.py`
+### Task 1.2 — Create `bootstrap.py` ✅
 
 **File:** `weather/bootstrap.py`
 **Depends on:** nothing
 **Parallel:** yes (with 1.1, 1.3)
+**Done:** 2026-04-17
 
 Create a factory function that wires up a fully-configured `WeatherSkill` instance.
 
@@ -104,11 +106,13 @@ assert "telegram" in skill.platforms
 
 ---
 
-### Task 1.3 — Fix `TelegramSender` to use `urllib` instead of `curl`
+### Task 1.3 — Fix `TelegramSender` to use `urllib` instead of `curl` ✅
 
 **File:** `weather/senders/telegram.py`
 **Depends on:** nothing
-**Parallel:** yes (with 1.1, 1.2)
+**Parallel:** yes (with 1.1, 1.3)
+**Done:** 2026-04-17
+**Note:** Pulled into Phase 1 ahead of schedule. Also removed `import tempfile` and `from pathlib import Path`. `parse_mode` was already `"MarkdownV2"` — no change needed.
 
 Replace the `subprocess.run(["curl", ...])` implementation with `urllib.request`.
 
@@ -146,11 +150,13 @@ from weather.senders.telegram import TelegramSender
 
 ---
 
-### Task 1.4 — Rewrite `cli.py` to use `WeatherSkill`
+### Task 1.4 — Rewrite `cli.py` to use `WeatherSkill` ✅
 
 **File:** `weather/cli.py`
 **Depends on:** 1.1, 1.2, 1.3
 **Parallel:** no
+**Done:** 2026-04-17
+**Note:** `--platform` and `--format` collapsed into single `--format` flag (choices: `text|telegram|whatsapp|json`). `--provider` removed `choices` restriction. `--bot-token` flag removed (env var only). Hardcoded chat ID removed from epilog. cli.py reduced from 575 → 110 lines.
 
 Rewrite `main()` to route through `build_default_skill()` and delete all bypassed code.
 
@@ -233,11 +239,12 @@ python -m weather.cli --location "Hong Kong" --forecast --days 5
 
 ---
 
-### Task 1.5 — Update and run tests
+### Task 1.5 — Update and run tests ⏳
 
 **Files:** `tests/test_cli_text_formatter.py` (new), `tests/test_bootstrap.py` (new), `tests/test_cli_integration.py` (new), `tests/test_core.py` (update)
 **Depends on:** 1.4
 **Parallel:** no (gate — validates all of Phase 1)
+**Status:** Existing 37 tests pass. New unit tests (CliTextFormatter, bootstrap, CLI integration, TelegramSender security) not yet written — test code provided in task spec below.
 
 **Convention:** Follow existing pattern — `unittest.IsolatedAsyncioTestCase`, `@patch.object` at the HTTP-fetch boundary, assert on `WeatherData` properties. See `tests/test_batch1_providers.py` for reference.
 
@@ -707,11 +714,12 @@ grep -rn "fetch_weather\|_fetch_weather_direct\|format_text\|_dict_to_weather_da
 
 ---
 
-### Task 2.3 — Remove hardcoded chat ID from help text
+### Task 2.3 — Remove hardcoded chat ID from help text ✅
 
 **File:** `weather/cli.py`
 **Depends on:** nothing (or after 1.4 if cli.py is being rewritten)
 **Parallel:** yes
+**Done:** 2026-04-17 (completed as part of Task 1.4 — epilog updated to `"YOUR_CHAT_ID"`)
 
 **Steps:**
 
@@ -844,11 +852,12 @@ python -m pytest tests/ -v
 
 ## Phase 4: Cleanup & Documentation
 
-### Task 4.1 — Delete remaining dead code
+### Task 4.1 — Delete remaining dead code ✅
 
 **File:** `weather/cli.py`
 **Depends on:** Phase 1
 **Parallel:** yes
+**Done:** 2026-04-17 (completed as part of Task 1.4 — all dead code removed in the rewrite)
 
 **Steps:**
 
@@ -879,23 +888,23 @@ python -m pytest tests/ -v
 
 ## Summary
 
-| Task | File(s) | Parallelizable | Est. Effort |
-|------|---------|---------------|-------------|
-| 1.1 | `formatters/cli_text.py` | ✅ | Small |
-| 1.2 | `bootstrap.py` | ✅ | Small |
-| 1.3 | `senders/telegram.py` | ✅ | Small |
-| 1.4 | `cli.py` | ❌ (after 1.1-1.3) | Medium |
-| 1.5 | `tests/test_cli_text_formatter.py`, `tests/test_bootstrap.py`, `tests/test_cli_integration.py`, `tests/test_telegram_sender.py` | ❌ (after 1.4) | Medium |
-| 2.1 | `providers/openweathermap.py` | ✅ | Small |
-| 2.2 | `providers/kr_kma.py` | ✅ | Trivial |
-| 2.3 | `cli.py` epilog | ✅ | Trivial |
-| 3.1 | All providers + sender | ✅ | Small |
-| 3.2 | `formatters/telegram.py`, `whatsapp.py` | ✅ | Trivial |
-| 3.3 | `senders/base.py` | ✅ | Trivial |
-| 3.4 | `pyproject.toml` | ✅ | Trivial |
-| 3.5 | `models.py` | ✅ | Small |
-| 4.1 | `cli.py` | ✅ | Trivial |
-| 4.2 | `docs/`, `SKILL.md`, `README.md` | ✅ | Small |
+| Task | File(s) | Parallelizable | Est. Effort | Status |
+|------|---------|---------------|-------------|--------|
+| 1.1 | `formatters/cli_text.py` | ✅ | Small | ✅ Done |
+| 1.2 | `bootstrap.py` | ✅ | Small | ✅ Done |
+| 1.3 | `senders/telegram.py` | ✅ | Small | ✅ Done |
+| 1.4 | `cli.py` | ❌ (after 1.1-1.3) | Medium | ✅ Done |
+| 1.5 | `tests/` (new test files) | ❌ (after 1.4) | Medium | ⏳ Tests pass, new tests not written |
+| 2.1 | `providers/openweathermap.py` | ✅ | Small | Not started |
+| 2.2 | `providers/kr_kma.py` | ✅ | Trivial | Not started |
+| 2.3 | `cli.py` epilog | ✅ | Trivial | ✅ Done (via 1.4) |
+| 3.1 | All providers + sender | ✅ | Small | Not started |
+| 3.2 | `formatters/telegram.py`, `whatsapp.py` | ✅ | Trivial | Not started |
+| 3.3 | `senders/base.py` | ✅ | Trivial | Not started |
+| 3.4 | `pyproject.toml` | ✅ | Trivial | Not started |
+| 3.5 | `models.py` | ✅ | Small | Not started |
+| 4.1 | `cli.py` | ✅ | Trivial | ✅ Done (via 1.4) |
+| 4.2 | `docs/`, `SKILL.md`, `README.md` | ✅ | Small | Not started |
 
 **Max parallel agents for Phase 1:** 3 (tasks 1.1, 1.2, 1.3)
 **Max parallel agents for Phase 2:** 3 (all tasks)
