@@ -1,6 +1,6 @@
 # PRD-001: Unified CLI Architecture
 
-**Status:** Phase 1 Complete
+**Status:** Draft
 **Created:** 2026-04-17
 **Priority:** High
 
@@ -164,27 +164,52 @@ async def main(args):
 
 ## Success Criteria
 
-- [x] `weather --location Tokyo` returns JMA data (not HKO) — verified via provider chain
-- [x] `weather --location "New York"` returns NWS data — verified via provider chain
-- [ ] `weather --location Singapore --format telegram --send` uses MarkdownV2 consistently — blocked by pre-existing SG NEA provider bug
-- [x] `ps aux | grep curl` shows no bot token during sends — TelegramSender now uses urllib
-- [x] All existing tests pass — 37/37 pass
-- [x] `--provider hko` forces HKO; `--provider auto` uses chain — `--provider` accepts any name, no `choices` restriction
+- [x] `weather --location Tokyo` returns JMA data (not HKO)
+- [x] `weather --location "New York"` returns NWS data
+- [x] `weather --location Singapore --format telegram --send` uses MarkdownV2 consistently
+- [x] `ps aux | grep curl` shows no bot token during sends
+- [x] All 37 existing tests pass
+- [x] `--provider hko` forces HKO; `--provider auto` uses chain
+- [ ] New test coverage for Phase 1 code (CliTextFormatter, bootstrap, CLI integration, sender security)
+
+## Phase 1 Review (2026-04-17)
+
+**Status: ✅ Implementation approved, tests outstanding**
+
+Completed in worktree `.claude/worktrees/unified-cli` (commit `54a8a21`).
+
+### Verified results
+
+| Check | Result |
+|-------|--------|
+| `cli.py` reduced from 575 → 156 lines | ✅ ~300 lines dead code deleted |
+| All 8 dead functions removed | ✅ grep confirms zero references |
+| Provider routing: Tokyo→JMA, NYC→NWS, SG→NEA, Berlin→DWD, Sydney→BOM | ✅ |
+| `--send` without `TELEGRAM_BOT_TOKEN` → clean error, exit 1 | ✅ |
+| Hardcoded chat ID removed from epilog | ✅ |
+| `subprocess`/`curl`/`tempfile` removed from sender | ✅ |
+| `**kwargs` passthrough for `chat_id`/`topic_id` in `skill.send()` | ✅ |
+| `--format` unifies old `--platform` + `--format` flags | ✅ |
+
+### Outstanding items (2 minor)
+
+1. **`senders/telegram.py:128` still uses `asyncio.get_event_loop()`** — should be `get_running_loop()`. Originally a Phase 3 item (Task 3.1) but the file was already being edited. Folded into Task 3.1 for tracking.
+
+2. **Task 1.5 tests not shipped** — the 4 new test files specified in the tasks doc (`test_cli_text_formatter.py`, `test_bootstrap.py`, `test_cli_integration.py`, `test_telegram_sender.py`) were not created. Must be completed before merge. Existing 37 tests pass but do not cover the new code.
+
+### Impact on remaining phases
+
+- **Task 2.3 (remove hardcoded chat ID)** — already done by Phase 1 rewrite. Mark complete.
+- **Task 2.2 (fix parse_mode mismatch)** — already resolved. Phase 1 removed the CLI's `send_telegram()` that used `"Markdown"`. All sends now go through `TelegramSender` which uses `"MarkdownV2"`. Mark complete.
+- **Task 4.1 (delete dead code)** — already done by Phase 1 rewrite. Mark complete.
 
 ## Phases
 
-| Phase | Scope | Description | Status |
-|-------|-------|-------------|--------|
-| **1** | Unify CLI | `CliTextFormatter` + `bootstrap.py` + rewrite `cli.py` | Done |
-| **2** | Security | Replace curl with urllib in sender, fix parse_mode, remove hardcoded chat ID | In progress (Task 1.3 done early; 2.1, 2.2 remaining) |
-| **3** | Efficiency | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version | Not started |
-| **4** | Cleanup | Delete leftover dead code, update docs, update SKILL.md provider list | Not started |
-
-### Phase 1 Implementation Notes
-
-- Task 1.3 (TelegramSender urllib fix) was pulled into Phase 1 ahead of schedule since the CLI rewrite deleted the duplicate `send_telegram()` in `cli.py`
-- `--platform` and `--format` flags were collapsed into a single `--format` flag with choices: `text|telegram|whatsapp|json`
-- `bootstrap.py` uses explicit `from .providers.xxx import` instead of `__import__` (the latter failed with relative paths)
-- cli.py reduced from 575 to 110 lines
+| Phase | Scope | Status | Description |
+|-------|-------|--------|-------------|
+| **1** | Unify CLI | ✅ impl / ⏳ tests | `CliTextFormatter` + `bootstrap.py` + rewrite `cli.py` |
+| **2** | Security | ⏳ 1 of 3 remain | Replace curl (done), fix parse_mode (done), remove chat ID (done), OWM duplicate call |
+| **3** | Efficiency | ⏳ open | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version |
+| **4** | Cleanup | ⏳ 1 of 2 remain | Dead code (done), update docs |
 
 See `docs/tasks-001-prd-001-unified-cli-architecture.md` for detailed task breakdown.
