@@ -23,4 +23,4 @@ Issues = "https://github.com/shrwnsan/weather-skill/issues"
 Changelog = "https://github.com/shrwnsan/weather-skill/blob/main/CHANGELOG.md"
 
 [project.scripts]
-weather = "weather.cli:main"
+weather = "weather.cli:cli"
