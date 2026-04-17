@@ -71,7 +71,7 @@ class WhatsAppFormatter(WeatherFormatter):
         if abs(feels - data.temperature) > 0.5:
             temp_str += f" (feels {feels:.0f}°C)"
 
-        if data.temp_high and data.temp_low:
+        if data.temp_high is not None and data.temp_low is not None:
             temp_str += f" • High {data.temp_high:.0f}° / Low {data.temp_low:.0f}°"
 
         lines.append(temp_str)
@@ -159,7 +159,7 @@ class WhatsAppFormatter(WeatherFormatter):
             date_str = day.forecast_date.strftime("%a %b %-d") if day.forecast_date else "Unknown"
 
             temp_str = ""
-            if day.temp_high and day.temp_low:
+            if day.temp_high is not None and day.temp_low is not None:
                 temp_str = f"{day.temp_high:.0f}° / {day.temp_low:.0f}°"
             elif day.temperature is not None:
                 temp_str = f"{day.temperature:.0f}°"

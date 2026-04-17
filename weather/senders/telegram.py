@@ -23,7 +23,6 @@ class TelegramSender(WeatherSender):
     - JSON payload via urllib.request
     - Supports MarkdownV2 formatting
     - Topic/thread support for Telegram groups
-    - Automatic retry on rate limit
     """
 
     # Telegram Bot API base URL

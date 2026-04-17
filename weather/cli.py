@@ -17,6 +17,9 @@ import json
 import sys
 from dataclasses import asdict
 
+from .bootstrap import build_default_skill
+from .skill import NoProviderError
+
 
 def create_parser() -> argparse.ArgumentParser:
     """Create CLI argument parser."""
@@ -99,8 +102,12 @@ Examples:
 async def main(args: argparse.Namespace) -> int:
     """Main entry point."""
     try:
-        from .bootstrap import build_default_skill
-        from .skill import NoProviderError
+        if args.send and args.format == "json":
+            print(
+                "Error: --send is not compatible with --format json",
+                file=sys.stderr,
+            )
+            return 2
 
         if args.verbose:
             print(f"Fetching weather for: {args.location}", file=sys.stderr)

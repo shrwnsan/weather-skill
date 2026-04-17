@@ -84,7 +84,7 @@ def _forecast_data():
 
 class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
 
-    @patch("weather.bootstrap.build_default_skill")
+    @patch("weather.cli.build_default_skill")
     async def test_hk_current_text(self, mock_build):
         """HK current weather with text output contains temp/humidity/wind."""
         hko = HKOProvider()
@@ -109,7 +109,7 @@ class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(result, 0)
 
-    @patch("weather.bootstrap.build_default_skill")
+    @patch("weather.cli.build_default_skill")
     async def test_tokyo_routes_to_jma(self, mock_build):
         """Tokyo request routes to JMA provider."""
         jma = JMAProvider()
@@ -134,7 +134,7 @@ class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(result, 0)
 
-    @patch("weather.bootstrap.build_default_skill")
+    @patch("weather.cli.build_default_skill")
     async def test_nyc_routes_to_nws(self, mock_build):
         """NYC request routes to NWS provider."""
         nws = NWSProvider()
@@ -159,7 +159,7 @@ class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(result, 0)
 
-    @patch("weather.bootstrap.build_default_skill")
+    @patch("weather.cli.build_default_skill")
     async def test_json_output(self, mock_build):
         """JSON format produces valid JSON with correct fields."""
         hko = HKOProvider()
@@ -197,7 +197,7 @@ class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(output["temperature"], 28.0)
         self.assertEqual(output["location"], "Hong Kong")
 
-    @patch("weather.bootstrap.build_default_skill")
+    @patch("weather.cli.build_default_skill")
     async def test_forecast_output(self, mock_build):
         """Forecast output contains multi-day data."""
         hko = HKOProvider()
@@ -235,7 +235,7 @@ class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
         self.assertIn("2026-04-17", output)
         self.assertIn("2026-04-18", output)
 
-    @patch("weather.bootstrap.build_default_skill")
+    @patch("weather.cli.build_default_skill")
     async def test_telegram_format(self, mock_build):
         """Telegram format produces MarkdownV2 output."""
         hko = HKOProvider()
@@ -272,7 +272,7 @@ class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
         # Telegram formatter escapes special MarkdownV2 characters
         self.assertIn("Hong Kong", output)
 
-    @patch("weather.bootstrap.build_default_skill")
+    @patch("weather.cli.build_default_skill")
     async def test_send_without_token_fails(self, mock_build):
         """Sending without telegram token returns exit code 1."""
         hko = HKOProvider()
@@ -301,6 +301,89 @@ class TestCLIIntegration(unittest.IsolatedAsyncioTestCase):
             result = await main(args)
 
         self.assertEqual(result, 1)
+
+    @patch("weather.cli.build_default_skill")
+    async def test_invalid_provider_lists_available(self, mock_build):
+        """Invalid --provider name fails with exit 1 and lists available providers."""
+        from io import StringIO
+        import sys as _sys
+
+        hko = HKOProvider()
+        jma = JMAProvider()
+        mock_build.return_value = WeatherSkill(
+            providers=[hko, jma],
+            formatters={"text": CliTextFormatter()},
+            senders={},
+        )
+
+        from weather.cli import main
+        import argparse
+
+        args = argparse.Namespace(
+            location="Hong Kong",
+            forecast=False,
+            days=3,
+            format="text",
+            send=False,
+            chat_id=None,
+            topic_id=None,
+            provider="hok",  # typo
+            verbose=False,
+        )
+
+        captured = StringIO()
+        old_stderr = _sys.stderr
+        _sys.stderr = captured
+        try:
+            result = await main(args)
+        finally:
+            _sys.stderr = old_stderr
+
+        self.assertEqual(result, 1)
+        err = captured.getvalue()
+        self.assertIn("Provider not found: hok", err)
+        self.assertIn("Available providers:", err)
+        # Both registered providers should appear in the message
+        self.assertIn("hko", err)
+        self.assertIn("jma", err)
+
+    @patch("weather.cli.build_default_skill")
+    async def test_send_with_json_format_rejected(self, mock_build):
+        """--send with --format json exits with usage error (code 2) and does not fetch."""
+        from io import StringIO
+        import sys as _sys
+
+        hko = HKOProvider()
+        mock_build.return_value = _make_skill_with_provider(hko)
+
+        # If fetch were attempted, get_current would return data; we assert it isn't called
+        with patch.object(hko, "get_current") as mock_get:
+            from weather.cli import main
+            import argparse
+
+            args = argparse.Namespace(
+                location="Hong Kong",
+                forecast=False,
+                days=3,
+                format="json",
+                send=True,
+                chat_id=None,
+                topic_id=None,
+                provider="auto",
+                verbose=False,
+            )
+
+            captured = StringIO()
+            old_stderr = _sys.stderr
+            _sys.stderr = captured
+            try:
+                result = await main(args)
+            finally:
+                _sys.stderr = old_stderr
+
+        self.assertEqual(result, 2)
+        self.assertIn("--send is not compatible with --format json", captured.getvalue())
+        mock_get.assert_not_called()
 
 
 if __name__ == "__main__":

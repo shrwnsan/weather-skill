@@ -32,20 +32,17 @@ def build_default_skill(**overrides) -> "WeatherSkill":
     """
     from .skill import WeatherSkill
 
-    if "providers" not in overrides:
+    providers = overrides.pop("providers", None)
+    if providers is None:
         providers = _build_providers()
-    else:
-        providers = overrides.pop("providers")
 
-    if "formatters" not in overrides:
+    formatters = overrides.pop("formatters", None)
+    if formatters is None:
         formatters = _build_formatters()
-    else:
-        formatters = overrides.pop("formatters")
 
-    if "senders" not in overrides:
+    senders = overrides.pop("senders", None)
+    if senders is None:
         senders = _build_senders()
-    else:
-        senders = overrides.pop("senders")
 
     return WeatherSkill(
         providers=providers,
