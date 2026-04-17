@@ -1,6 +1,5 @@
 """Tests for TelegramSender security."""
 
-import asyncio
 import inspect
 import json
 import unittest

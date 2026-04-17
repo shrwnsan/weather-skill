@@ -126,21 +126,19 @@ class TestCliTextFormatter(unittest.TestCase):
 
         self.assertIn("Weather Forecast", result)
 
-    def test_truncation_respected(self):
-        """Messages exceeding max_length are truncated."""
+    def test_truncate_method(self):
+        """truncate() correctly shortens messages exceeding max_length."""
+        long_msg = "A" * 200
         self.formatter.max_length = 50
-        data = WeatherData(
-            location="A" * 100,
-            temperature=25.0,
-            condition=WeatherCondition.CLEAR,
-        )
-        result = self.formatter.format_current(data)
+        result = self.formatter.truncate(long_msg)
+        self.assertEqual(len(result), 50)
+        self.assertTrue(result.endswith("..."))
 
-        # Base formatter truncate() is used implicitly through max_length
-        # The format_current doesn't call truncate directly, but the
-        # max_length is available for subclasses. Verify the output
-        # is produced (truncate is a utility on the base class).
-        self.assertIn("A" * 100, result)
+    def test_truncate_within_limit(self):
+        """truncate() returns message unchanged when within max_length."""
+        short_msg = "Hello"
+        result = self.formatter.truncate(short_msg)
+        self.assertEqual(result, short_msg)
 
     def test_platform_name(self):
         """Platform property returns 'text'."""

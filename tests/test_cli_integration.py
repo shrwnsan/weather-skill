@@ -1,9 +1,8 @@
 """Tests for CLI end-to-end with mocked providers."""
 
-import asyncio
 import json
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from weather.models import WeatherData, WeatherCondition, Location
 from weather.providers.hko import HKOProvider

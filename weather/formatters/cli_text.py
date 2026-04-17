@@ -16,8 +16,6 @@ class CliTextFormatter(WeatherFormatter):
     Only includes fields that have data present (no "N/A" placeholders).
     """
 
-    max_length: int = 65536
-
     @property
     def platform(self) -> str:
         """Target platform name."""

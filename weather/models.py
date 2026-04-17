@@ -222,7 +222,7 @@ class WeatherData:
 
         # Wind chill for cold/windy conditions
         if temp <= 10 and wind_speed > 1.33:  # 4.8 km/h = 1.33 m/s
- # Wind chill formula (metric): WC = 13.12 + 0.6215*T - 11.37*V^0.16
+            # Wind chill formula (metric): WC = 13.12 + 0.6215*T - 11.37*V^0.16
             # Where V is wind speed in km/h
             wind_kmh = wind_speed * 3.6
             wc = 13.12 + 0.6215 * temp - 11.37 * (wind_kmh ** 0.16)
