@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.1] - 2026-04-17
+
+### Fixed
+
+- **CLI entry point** — corrected `pyproject.toml` console script to reference `cli()` instead of `main()`, which requires an `args` parameter. The installed `weather` command now works correctly.
+
 ## [0.2.0] - 2026-04-17
 
 ### Changed
