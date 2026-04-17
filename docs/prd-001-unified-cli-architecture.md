@@ -170,7 +170,7 @@ async def main(args):
 - [x] `ps aux | grep curl` shows no bot token during sends
 - [x] All 37 existing tests pass
 - [x] `--provider hko` forces HKO; `--provider auto` uses chain
-- [ ] New test coverage for Phase 1 code (CliTextFormatter, bootstrap, CLI integration, sender security)
+- [x] New test coverage for Phase 1 code (CliTextFormatter, bootstrap, CLI integration, sender security)
 
 ## Phase 1 Review (2026-04-17)
 
@@ -207,9 +207,9 @@ Completed in worktree `.claude/worktrees/unified-cli` (commit `54a8a21`).
 
 | Phase | Scope | Status | Description |
 |-------|-------|--------|-------------|
-| **1** | Unify CLI | ✅ impl / ⏳ tests | `CliTextFormatter` + `bootstrap.py` + rewrite `cli.py` |
-| **2** | Security | ⏳ 1 of 3 remain | Replace curl (done), fix parse_mode (done), remove chat ID (done), OWM duplicate call |
-| **3** | Efficiency | ⏳ open | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version |
+| **1** | Unify CLI | ✅ | `CliTextFormatter` + `bootstrap.py` + rewrite `cli.py` |
+| **2** | Security | ✅ | Replace curl with urllib in sender, fix parse_mode, remove hardcoded chat ID, remove OWM duplicate call, switch KMA to HTTPS |
+| **3** | Efficiency | ⏳ open | Fix deprecated asyncio, dedupe emoji maps, fix metadata default, bump Python version, fix wind_speed unit |
 | **4** | Cleanup | ⏳ 1 of 2 remain | Dead code (done), update docs |
 
 See `docs/tasks-001-prd-001-unified-cli-architecture.md` for detailed task breakdown.

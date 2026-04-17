@@ -213,7 +213,7 @@ class NWSProvider(WeatherProvider):
         """Fetch gridpoint data from NWS to get forecast URLs."""
         url = NWS_POINTS_URL.format(lat=latitude, lon=longitude)
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)
@@ -232,7 +232,7 @@ class NWSProvider(WeatherProvider):
         if not stations_url:
             raise ProviderError("No observation stations available")
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(stations_url)
@@ -262,7 +262,7 @@ class NWSProvider(WeatherProvider):
         if not forecast_url:
             raise ProviderError("No forecast URL available")
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(forecast_url)

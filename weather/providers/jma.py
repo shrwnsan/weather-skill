@@ -271,7 +271,7 @@ class JMAProvider(WeatherProvider):
 
     async def _fetch_json(self, url: str):
         """Fetch JSON from JMA endpoint."""
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

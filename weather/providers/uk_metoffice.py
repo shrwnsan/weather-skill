@@ -202,7 +202,7 @@ class UKMetOfficeProvider(WeatherProvider):
         query = urllib.parse.urlencode(params)
         url = f"{base_url}?{query}"
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

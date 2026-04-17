@@ -125,7 +125,7 @@ class TelegramSender(WeatherSender):
         """Send message using urllib.request with JSON payload."""
         url = self.API_BASE.format(token=self.bot_token, method="sendMessage")
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def send():
             payload_bytes = json.dumps(payload, ensure_ascii=False).encode("utf-8")

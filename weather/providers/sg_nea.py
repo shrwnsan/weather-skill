@@ -130,7 +130,7 @@ class SGNEAProvider(WeatherProvider):
 
     async def _fetch_json(self, url: str) -> dict:
         """Fetch JSON from data.gov.sg API."""
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

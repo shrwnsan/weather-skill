@@ -201,7 +201,7 @@ class BOMProvider(WeatherProvider):
         station_id = station_info["station_id"]
         url = f"{BOM_OBSERVATION_BASE}/{product}/{product}.{station_id}.json"
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)
@@ -218,7 +218,7 @@ class BOMProvider(WeatherProvider):
         station_id = station_info["station_id"]
         url = f"{BOM_FORECAST_BASE}/{state_code}/{state_code}.{station_id}.json"
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

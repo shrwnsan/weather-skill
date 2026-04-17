@@ -172,7 +172,7 @@ class BMKGProvider(WeatherProvider):
         """Fetch forecast from BMKG API."""
         url = f"{BMKG_API_URL}?adm4={area_code}"
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

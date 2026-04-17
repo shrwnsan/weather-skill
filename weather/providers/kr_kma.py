@@ -4,7 +4,7 @@ South Korea Meteorological Administration (KMA) Weather Provider.
 Fetches weather data from KMA via data.go.kr public data portal.
 Requires free API key (ServiceKey) from https://data.go.kr/
 
-API: http://apis.data.go.kr/1360000/VilageFcstInfoService2.0
+API: https://apis.data.go.kr/1360000/VilageFcstInfoService2.0
 """
 
 import asyncio
@@ -20,7 +20,7 @@ from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
 
 # KMA API endpoint
-KMA_BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService2.0"
+KMA_BASE_URL = "https://apis.data.go.kr/1360000/VilageFcstInfoService2.0"
 KMA_FORECAST_URL = f"{KMA_BASE_URL}/getVilageFcst"
 KMA_NOWCAST_URL = f"{KMA_BASE_URL}/getUltraSrtNcst"
 
@@ -224,7 +224,7 @@ class KMAProvider(WeatherProvider):
         query = urllib.parse.urlencode(params)
         url = f"{base_url}?{query}"
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def fetch():
             req = urllib.request.Request(url)

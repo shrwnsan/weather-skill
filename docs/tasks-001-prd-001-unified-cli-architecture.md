@@ -11,9 +11,9 @@ Phase 1:  [1.1 ✅] ──┐
           [1.2 ✅] ──┼──► [1.4 ✅] ──► [1.5 ⏳]
           [1.3 ✅] ──┘
 
-Phase 2:  [2.1 ⏳]  [2.2 ✅]  [2.3 ✅]   ← 2.2/2.3 done by Phase 1 rewrite
+Phase 2:  [2.1 ✅]  [2.2 ✅]  [2.3 ✅]   ← all done
 
-Phase 3:  [3.1 ⏳]  [3.2 ⏳]  [3.3 ⏳]  [3.4 ⏳]  [3.5 ⏳]  ← all independent
+Phase 3:  [3.1 ✅]  [3.2 ⏳]  [3.3 ⏳]  [3.4 ⏳]  [3.5 ⏳]  ← 3.1 done, rest independent
 
 Phase 4:  [4.1 ✅]  [4.2 ⏳]   ← 4.1 done by Phase 1 rewrite
 ```
@@ -240,12 +240,13 @@ python -m weather.cli --location "Hong Kong" --forecast --days 5
 
 ---
 
-### Task 1.5 — Update and run tests ⏳
+### Task 1.5 — Update and run tests ✅
 
 **Files:** `tests/test_cli_text_formatter.py` (new), `tests/test_bootstrap.py` (new), `tests/test_cli_integration.py` (new), `tests/test_telegram_sender.py` (new)
 **Depends on:** 1.4
 **Parallel:** no (gate — validates all of Phase 1)
-**Status:** Not started. Existing 37 tests pass, but no new tests were created for the Phase 1 code. **Must complete before merge.**
+**Completed:** 2026-04-17
+**Result:** 4 new test files, 29 new tests. Total suite: 66 tests passing.
 
 **Convention:** Follow existing pattern — `unittest.IsolatedAsyncioTestCase`, `@patch.object` at the HTTP-fetch boundary, assert on `WeatherData` properties. See `tests/test_batch1_providers.py` for reference.
 
@@ -684,11 +685,13 @@ grep -rn "fetch_weather\|_fetch_weather_direct\|format_text\|_dict_to_weather_da
 
 ## Phase 2: Security Hardening
 
-### Task 2.1 — Remove duplicate OWM API call
+### Task 2.1 — Remove duplicate OWM API call ✅
 
 **File:** `weather/providers/openweathermap.py`
 **Depends on:** nothing
 **Parallel:** yes
+**Completed:** 2026-04-17
+**Result:** `_parse_current()` now extracts `coord` and sets `latitude`/`longitude` on `WeatherData`. `get_current_with_air_quality()` reads coords from the returned object instead of making a second API call.
 
 **Steps:**
 
@@ -702,11 +705,13 @@ grep -rn "fetch_weather\|_fetch_weather_direct\|format_text\|_dict_to_weather_da
 
 ---
 
-### Task 2.2 — Switch KMA to HTTPS
+### Task 2.2 — Switch KMA to HTTPS ✅
 
 **File:** `weather/providers/kr_kma.py`
 **Depends on:** nothing
 **Parallel:** yes
+**Completed:** 2026-04-17
+**Result:** `KMA_BASE_URL` changed from `http://` to `https://`. Derived URLs (`KMA_FORECAST_URL`, `KMA_NOWCAST_URL`) pick up the change via f-string interpolation.
 
 **Steps:**
 
@@ -724,11 +729,13 @@ grep -rn "fetch_weather\|_fetch_weather_direct\|format_text\|_dict_to_weather_da
 
 ## Phase 3: Efficiency & Code Quality
 
-### Task 3.1 — Replace deprecated `asyncio.get_event_loop()`
+### Task 3.1 — Replace deprecated `asyncio.get_event_loop()` ✅
 
 **Files:** All provider files + `weather/senders/telegram.py`
 **Depends on:** nothing
 **Parallel:** yes
+**Completed:** 2026-04-17
+**Result:** 15 occurrences replaced with `asyncio.get_running_loop()` across 12 files. `grep` confirms zero remaining `get_event_loop` calls.
 
 **Steps:**
 
@@ -872,11 +879,11 @@ python -m pytest tests/ -v
 | 1.2 | `bootstrap.py` | ✅ | ✅ | Small |
 | 1.3 | `senders/telegram.py` | ✅ | ✅ | Small |
 | 1.4 | `cli.py` | ✅ | ❌ (after 1.1-1.3) | Medium |
-| 1.5 | `tests/test_cli_text_formatter.py`, `tests/test_bootstrap.py`, `tests/test_cli_integration.py`, `tests/test_telegram_sender.py` | ⏳ | ❌ (after 1.4) | Medium |
-| 2.1 | `providers/openweathermap.py` | ⏳ | ✅ | Small |
-| 2.2 | `providers/kr_kma.py` | ⏳ | ✅ | Trivial |
+| 1.5 | `tests/` (4 new files) | ✅ | ❌ (after 1.4) | Medium |
+| 2.1 | `providers/openweathermap.py` | ✅ | ✅ | Small |
+| 2.2 | `providers/kr_kma.py` | ✅ | ✅ | Trivial |
 | 2.3 | `cli.py` epilog | ✅ | — | — |
-| 3.1 | All providers + sender | ⏳ | ✅ | Small |
+| 3.1 | All providers + sender (12 files) | ✅ | ✅ | Small |
 | 3.2 | `formatters/telegram.py`, `whatsapp.py` | ⏳ | ✅ | Trivial |
 | 3.3 | `senders/base.py` | ⏳ | ✅ | Trivial |
 | 3.4 | `pyproject.toml` | ⏳ | ✅ | Trivial |
@@ -884,6 +891,5 @@ python -m pytest tests/ -v
 | 4.1 | `cli.py` | ✅ | — | — |
 | 4.2 | `docs/`, `SKILL.md`, `README.md` | ⏳ | ✅ | Small |
 
-**Remaining work:** 10 tasks (1.5, 2.1, 2.2, 3.1–3.5, 4.2)
-**Blocking merge:** Task 1.5 (Phase 1 test coverage)
-**Max parallel agents now:** 8 (tasks 1.5 sequentially, then 2.1, 2.2, 3.1–3.5, 4.2 all in parallel)
+**Remaining work:** 4 tasks (3.2, 3.3, 3.4, 3.5, 4.2)
+**Test suite:** 66 tests passing (37 existing + 29 new)
