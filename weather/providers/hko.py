@@ -21,6 +21,7 @@ HKO_API_URL = "https://www.hko.gov.hk/wxinfo/json/one_json.xml"
 
 # HKO icon to condition mapping
 HKO_ICON_MAP = {
+    # Daytime (50-65 series)
     # Sunny/Clear
     "pic50.png": WeatherCondition.SUNNY,
     "pic51.png": WeatherCondition.SUNNY,
@@ -42,6 +43,29 @@ HKO_ICON_MAP = {
     # Wind/Fog
     "pic56.png": WeatherCondition.WINDY,
     "pic57.png": WeatherCondition.FOG,
+
+    # Nighttime (70-85 series)
+    # Sunny/Clear night
+    "pic70.png": WeatherCondition.SUNNY,
+    "pic71.png": WeatherCondition.SUNNY,
+    "pic72.png": WeatherCondition.PARTLY_CLOUDY,
+
+    # Cloudy/Overcast night
+    "pic80.png": WeatherCondition.CLOUDY,
+    "pic81.png": WeatherCondition.OVERCAST,
+    "pic82.png": WeatherCondition.RAIN,  # Light rain
+    "pic83.png": WeatherCondition.RAIN,
+    "pic84.png": WeatherCondition.HEAVY_RAIN,
+    "pic85.png": WeatherCondition.THUNDERSTORM,
+
+    # Showers night
+    "pic73.png": WeatherCondition.PARTLY_CLOUDY,  # Sunny periods
+    "pic74.png": WeatherCondition.DRIZZLE,  # Sunny intervals with showers
+    "pic75.png": WeatherCondition.RAIN,  # Showers
+
+    # Wind/Fog night
+    "pic76.png": WeatherCondition.WINDY,
+    "pic77.png": WeatherCondition.FOG,
 }
 
 # Supported locations
@@ -139,7 +163,7 @@ class HKOProvider(WeatherProvider):
         uv_data = data.get("RHRREAD", {})
         if uv_data.get("UVIndex"):
             try:
-                uv_index = int(float(uv_data["UVIndex"]))
+                uv_index = float(uv_data["UVIndex"])
             except (ValueError, TypeError):
                 pass
 
