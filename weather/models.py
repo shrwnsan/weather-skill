@@ -152,9 +152,9 @@ class WeatherData:
         elif self.aqhi <= 6:
             return f"{self.aqhi} (Moderate)"
         elif self.aqhi <= 7:
-            return f"{self.aqhi} (High)"
+            return f"{self.aqhi} (High Risk)"
         elif self.aqhi <= 10:
-            return f"{self.aqhi} (Very High)"
+            return f"{self.aqhi} (Very High Risk)"
         else:
             return f"{self.aqhi}+ (Serious)"
 
