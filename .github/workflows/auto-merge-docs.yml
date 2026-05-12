@@ -30,7 +30,7 @@ jobs:
       - name: Validate docs-only changes
         id: validate
         run: |
-          ALLOWED='^(README\.md|docs/.*|.*README\.md)$'
+          ALLOWED='^([^/]+\.md|docs/.*)$'
           INVALID=""
 
           while IFS= read -r file; do
