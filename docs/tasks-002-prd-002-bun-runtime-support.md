@@ -438,7 +438,7 @@ python -m weather.cli --location "Hong Kong" --format json | python -c "import s
        "strict": true,
        "esModuleInterop": true,
        "resolveJsonModule": true,
-       "types": ["bun-types"]
+       "types": ["bun"]
      },
      "include": ["src/", "test/"]
    }
