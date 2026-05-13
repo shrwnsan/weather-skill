@@ -18,6 +18,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # KMA API endpoint
 KMA_BASE_URL = "https://apis.data.go.kr/1360000/VilageFcstInfoService2.0"
@@ -57,22 +58,16 @@ KR_CITIES = {
 
 # KMA category codes to WeatherCondition mapping
 # SKY: 1=Clear, 3=PartlyCloudy, 4=Cloudy
-# PTY: 0=None, 1=Rain, 2=Rain/Snow, 3=Snow, 4=Shower, 5=Drizzle, 6=DrizzleSnow, 7=SnowFlurry
+# KMA_PTY_MAP (loaded from weather/data/condition_maps/kma-pty.json)
 KMA_PTY_MAP = {
-    "0": None,  # No precipitation — use SKY instead
-    "1": WeatherCondition.RAIN,
-    "2": WeatherCondition.SLEET,
-    "3": WeatherCondition.SNOW,
-    "4": WeatherCondition.SHOWERS,
-    "5": WeatherCondition.DRIZZLE,
-    "6": WeatherCondition.SLEET,
-    "7": WeatherCondition.SNOW,
+    k: (WeatherCondition(v) if v is not None else None)
+    for k, v in load_json("condition_maps", "kma-pty.json").items()
 }
 
+# KMA_SKY_MAP (loaded from weather/data/condition_maps/kma-sky.json)
 KMA_SKY_MAP = {
-    "1": WeatherCondition.SUNNY,
-    "3": WeatherCondition.PARTLY_CLOUDY,
-    "4": WeatherCondition.CLOUDY,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "kma-sky.json").items()
 }
 
 # Supported locations

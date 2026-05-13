@@ -1,0 +1,56 @@
+name: Python CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio build
+
+      - name: Install package (editable)
+        run: pip install -e .
+
+      - name: Run pytest
+        run: pytest tests/ -v
+
+      - name: Build wheel
+        run: python -m build --wheel
+
+      - name: Verify wheel ships data files
+        # PRD-002 Phase 1 smoke test: catches regressions where setuptools stops
+        # bundling weather/data/*.json into the wheel.
+        run: |
+          count=$(unzip -l dist/*.whl | grep -c 'weather/data/.*\.json')
+          echo "JSON files in wheel: $count"
+          test "$count" -ge 18
+
+      - name: Smoke test wheel install
+        run: |
+          python -m venv /tmp/wheel-test
+          /tmp/wheel-test/bin/pip install dist/*.whl
+          /tmp/wheel-test/bin/python -c "
+          from weather.providers.hko import HKO_ICON_MAP
+          from weather.models import LOCATION_ALIASES, WeatherCondition
+          assert HKO_ICON_MAP['pic50.png'] == WeatherCondition.SUNNY
+          assert len(LOCATION_ALIASES) > 250
+          print('wheel smoke test passed')
+          "

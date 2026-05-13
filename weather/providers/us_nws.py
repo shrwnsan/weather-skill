@@ -16,110 +16,23 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # NWS API endpoints
 NWS_BASE_URL = "https://api.weather.gov"
 NWS_POINTS_URL = f"{NWS_BASE_URL}/points/{{lat}},{{lon}}"
 NWS_STATIONS_URL = f"{NWS_BASE_URL}/stations"
 
-# US city coordinates (latitude, longitude)
+# US_CITIES (loaded from weather/data/cities/us-nws.json)
 US_CITIES = {
-    # Major metros
-    "new york": (40.7128, -74.0060),
-    "nyc": (40.7128, -74.0060),
-    "los angeles": (34.0522, -118.2437),
-    "la": (34.0522, -118.2437),
-    "chicago": (41.8781, -87.6298),
-    "houston": (29.7604, -95.3698),
-    "phoenix": (33.4484, -112.0740),
-    "philadelphia": (39.9526, -75.1652),
-    "philly": (39.9526, -75.1652),
-    "san antonio": (29.4241, -98.4936),
-    "san diego": (32.7157, -117.1611),
-    "dallas": (32.7767, -96.7970),
-    "san jose": (37.3382, -121.8863),
-    "austin": (30.2672, -97.7431),
-    "jacksonville": (30.3322, -81.6557),
-    "fort worth": (32.7555, -97.3308),
-    "columbus": (39.9612, -82.9988),
-    "charlotte": (35.2271, -80.8431),
-    "san francisco": (37.7749, -122.4194),
-    "sf": (37.7749, -122.4194),
-    "indianapolis": (39.7684, -86.1581),
-    "seattle": (47.6062, -122.3321),
-    "denver": (39.7392, -104.9903),
-    "washington dc": (38.9072, -77.0369),
-    "dc": (38.9072, -77.0369),
-    "boston": (42.3601, -71.0589),
-    "nashville": (36.1627, -86.7816),
-    "detroit": (42.3314, -83.0458),
-    "portland": (45.5152, -122.6784),
-    "las vegas": (36.1699, -115.1398),
-    "memphis": (35.1495, -90.0490),
-    "louisville": (38.2527, -85.7585),
-    "baltimore": (39.2904, -76.6122),
-    "milwaukee": (43.0389, -87.9065),
-    "albuquerque": (35.0844, -106.6504),
-    "tucson": (32.2226, -110.9747),
-    "fresno": (36.7378, -119.7871),
-    "sacramento": (38.5816, -121.4944),
-    "kansas city": (39.0997, -94.5783),
-    "atlanta": (33.7490, -84.3880),
-    "miami": (25.7617, -80.1918),
-    "orlando": (28.5383, -81.3792),
-    "minneapolis": (44.9778, -93.2650),
-    "pittsburgh": (40.4406, -79.9959),
-    "st louis": (38.6270, -90.1994),
-    "cleveland": (41.4993, -81.6944),
-    "new orleans": (29.9511, -90.0715),
-    "tampa": (27.9506, -82.4572),
-    "honolulu": (21.3069, -157.8583),
-    "anchorage": (61.2181, -149.9003),
+    k: tuple(v)
+    for k, v in load_json("cities", "us-nws.json").items()
 }
 
-# NWS weather condition mapping
+# NWS_CONDITION_MAP (loaded from weather/data/condition_maps/nws-conditions.json)
 NWS_CONDITION_MAP = {
-    # Clear/Sunny
-    "skc": WeatherCondition.CLEAR,       # Sky Clear
-    "few": WeatherCondition.SUNNY,       # Few Clouds
-    "sct": WeatherCondition.PARTLY_CLOUDY,  # Scattered Clouds
-    "bkn": WeatherCondition.CLOUDY,      # Broken Clouds
-    "ovc": WeatherCondition.OVERCAST,    # Overcast
-
-    # Rain
-    "ra": WeatherCondition.RAIN,         # Rain
-    "-ra": WeatherCondition.DRIZZLE,     # Light Rain
-    "+ra": WeatherCondition.HEAVY_RAIN,  # Heavy Rain
-    "rw": WeatherCondition.SHOWERS,      # Rain Showers
-    "-rw": WeatherCondition.SHOWERS,     # Light Rain Showers
-    "+rw": WeatherCondition.HEAVY_RAIN,  # Heavy Rain Showers
-    "ts": WeatherCondition.THUNDERSTORM,  # Thunderstorm
-    "-ts": WeatherCondition.THUNDERSTORM, # Light Thunderstorm
-    "+ts": WeatherCondition.THUNDERSTORM, # Heavy Thunderstorm
-
-    # Snow
-    "sn": WeatherCondition.SNOW,         # Snow
-    "-sn": WeatherCondition.SNOW,        # Light Snow
-    "+sn": WeatherCondition.HEAVY_SNOW,  # Heavy Snow
-    "sw": WeatherCondition.SNOW,         # Snow Showers
-    "-sw": WeatherCondition.SNOW,        # Light Snow Showers
-    "+sw": WeatherCondition.HEAVY_SNOW,  # Heavy Snow Showers
-
-    # Mixed
-    "ip": WeatherCondition.SLEET,        # Ice Pellets
-    "fzra": WeatherCondition.SLEET,      # Freezing Rain
-    "zyr": WeatherCondition.SLEET,       # Freezing Drizzle
-
-    # Fog/Mist/Haze
-    "fg": WeatherCondition.FOG,          # Fog
-    "br": WeatherCondition.MIST,         # Mist
-    "hz": WeatherCondition.MIST,         # Haze
-    "fu": WeatherCondition.FOG,          # Smoke
-
-    # Wind
-    "du": WeatherCondition.WINDY,        # Dust
-    "sa": WeatherCondition.WINDY,        # Sand
-    "po": WeatherCondition.WINDY,        # Volcanic Ash
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "nws-conditions.json").items()
 }
 
 # Supported locations

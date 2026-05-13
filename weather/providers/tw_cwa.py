@@ -17,6 +17,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # CWA Open Data API endpoints
 CWA_BASE_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore"
@@ -75,28 +76,10 @@ TW_LOCATIONS = {
     "臺灣": "臺北市",
 }
 
-# CWA weather phenomenon text to condition mapping
+# CWA_CONDITION_MAP (loaded from weather/data/condition_maps/cwa-conditions.json)
 CWA_CONDITION_MAP = {
-    "晴": WeatherCondition.SUNNY,
-    "晴時多雲": WeatherCondition.PARTLY_CLOUDY,
-    "多雲": WeatherCondition.CLOUDY,
-    "多雲時晴": WeatherCondition.PARTLY_CLOUDY,
-    "多雲時陰": WeatherCondition.CLOUDY,
-    "多雲短暫雨": WeatherCondition.RAIN,
-    "陰": WeatherCondition.OVERCAST,
-    "陰時多雲": WeatherCondition.CLOUDY,
-    "陰天": WeatherCondition.OVERCAST,
-    "陰有雨": WeatherCondition.RAIN,
-    "陰短暫雨": WeatherCondition.RAIN,
-    "短暫雨": WeatherCondition.SHOWERS,
-    "短暫陣雨": WeatherCondition.SHOWERS,
-    "有雨": WeatherCondition.RAIN,
-    "陣雨": WeatherCondition.SHOWERS,
-    "雷陣雨": WeatherCondition.THUNDERSTORM,
-    "大雨": WeatherCondition.HEAVY_RAIN,
-    "豪雨": WeatherCondition.HEAVY_RAIN,
-    "大豪雨": WeatherCondition.HEAVY_RAIN,
-    "霧": WeatherCondition.FOG,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "cwa-conditions.json").items()
 }
 
 # Observation station names for major cities

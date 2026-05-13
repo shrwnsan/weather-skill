@@ -18,6 +18,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # MetService API endpoint
 METSERVICE_LOCAL_OBS = "https://www.metservice.com/publicData/localObs"
@@ -43,57 +44,10 @@ NZ_LOCATIONS = {
     "hawke's bay": {"id": "hawkesBay", "lat": -39.6, "lon": 176.85},
 }
 
-# MetService condition mapping
+# NZ_CONDITION_MAP (loaded from weather/data/condition_maps/metservice-conditions.json)
 NZ_CONDITION_MAP = {
-    # Clear/Sunny
-    "sunny": WeatherCondition.SUNNY,
-    "clear": WeatherCondition.CLEAR,
-    "fine": WeatherCondition.SUNNY,
-
-    # Partly Cloudy
-    "partly cloudy": WeatherCondition.PARTLY_CLOUDY,
-    "a few clouds": WeatherCondition.PARTLY_CLOUDY,
-    "cloud increasing": WeatherCondition.PARTLY_CLOUDY,
-
-    # Cloudy
-    "cloudy": WeatherCondition.CLOUDY,
-    "overcast": WeatherCondition.OVERCAST,
-    "dull": WeatherCondition.OVERCAST,
-
-    # Rain
-    "rain": WeatherCondition.RAIN,
-    "light rain": WeatherCondition.DRIZZLE,
-    "heavy rain": WeatherCondition.HEAVY_RAIN,
-    "drizzle": WeatherCondition.DRIZZLE,
-    "showers": WeatherCondition.SHOWERS,
-    "scattered showers": WeatherCondition.SHOWERS,
-    "isolated showers": WeatherCondition.SHOWERS,
-    "few showers": WeatherCondition.SHOWERS,
-    "periods of rain": WeatherCondition.RAIN,
-    "rain developing": WeatherCondition.RAIN,
-
-    # Thunderstorm
-    "thunderstorm": WeatherCondition.THUNDERSTORM,
-    "thunderstorms": WeatherCondition.THUNDERSTORM,
-    "thundery": WeatherCondition.THUNDERSTORM,
-
-    # Snow
-    "snow": WeatherCondition.SNOW,
-    "light snow": WeatherCondition.SNOW,
-    "heavy snow": WeatherCondition.HEAVY_SNOW,
-    "sleet": WeatherCondition.SLEET,
-    "hail": WeatherCondition.HAIL,
-
-    # Fog/Mist
-    "fog": WeatherCondition.FOG,
-    "foggy": WeatherCondition.FOG,
-    "mist": WeatherCondition.MIST,
-    "misty": WeatherCondition.MIST,
-    "hazy": WeatherCondition.MIST,
-
-    # Wind
-    "windy": WeatherCondition.WINDY,
-    "gale": WeatherCondition.WINDY,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "metservice-conditions.json").items()
 }
 
 # Supported locations

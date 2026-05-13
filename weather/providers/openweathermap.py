@@ -13,7 +13,17 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 from .base import WeatherProvider, ProviderError
+
+
+# OpenWeatherMap condition codes: https://openweathermap.org/weather-conditions
+# Loaded from weather/data/condition_maps/owm-codes.json (string-keyed JSON;
+# original API returns int codes, so we convert keys back to int).
+_OWM_CONDITION_MAP = {
+    int(k): WeatherCondition(v)
+    for k, v in load_json("condition_maps", "owm-codes.json").items()
+}
 
 
 class OpenWeatherMapProvider(WeatherProvider):
@@ -26,72 +36,7 @@ class OpenWeatherMapProvider(WeatherProvider):
     """
 
     BASE_URL = "https://api.openweathermap.org/data/2.5"
-
-    # OpenWeatherMap condition codes: https://openweathermap.org/weather-conditions
-    CONDITION_MAP = {
-        # Thunderstorm (2xx)
-        200: WeatherCondition.THUNDERSTORM,
-        201: WeatherCondition.THUNDERSTORM,
-        202: WeatherCondition.THUNDERSTORM,
-        210: WeatherCondition.THUNDERSTORM,
-        211: WeatherCondition.THUNDERSTORM,
-        212: WeatherCondition.THUNDERSTORM,
-        221: WeatherCondition.THUNDERSTORM,
-        230: WeatherCondition.THUNDERSTORM,
-        231: WeatherCondition.THUNDERSTORM,
-        232: WeatherCondition.THUNDERSTORM,
-        # Drizzle (3xx)
-        300: WeatherCondition.DRIZZLE,
-        301: WeatherCondition.DRIZZLE,
-        302: WeatherCondition.DRIZZLE,
-        310: WeatherCondition.DRIZZLE,
-        311: WeatherCondition.DRIZZLE,
-        312: WeatherCondition.DRIZZLE,
-        313: WeatherCondition.DRIZZLE,
-        314: WeatherCondition.DRIZZLE,
-        321: WeatherCondition.DRIZZLE,
-        # Rain (5xx)
-        500: WeatherCondition.DRIZZLE,  # Light rain
-        501: WeatherCondition.RAIN,
-        502: WeatherCondition.HEAVY_RAIN,
-        503: WeatherCondition.HEAVY_RAIN,
-        504: WeatherCondition.HEAVY_RAIN,
-        511: WeatherCondition.RAIN,
-        520: WeatherCondition.SHOWERS,
-        521: WeatherCondition.SHOWERS,
-        522: WeatherCondition.HEAVY_RAIN,
-        531: WeatherCondition.SHOWERS,
-        # Snow (6xx)
-        600: WeatherCondition.SNOW,  # Light snow
-        601: WeatherCondition.SNOW,
-        602: WeatherCondition.HEAVY_SNOW,
-        611: WeatherCondition.SLEET,
-        612: WeatherCondition.SLEET,
-        613: WeatherCondition.SLEET,
-        615: WeatherCondition.SLEET,
-        616: WeatherCondition.SLEET,
-        620: WeatherCondition.SNOW,
-        621: WeatherCondition.SNOW,
-        622: WeatherCondition.HEAVY_SNOW,
-        # Atmosphere (7xx)
-        701: WeatherCondition.MIST,
-        711: WeatherCondition.MIST,  # Smoke -> mist
-        721: WeatherCondition.MIST,  # Haze -> mist
-        731: WeatherCondition.MIST,  # Dust whirls -> mist
-        741: WeatherCondition.FOG,
-        751: WeatherCondition.MIST,  # Sand -> mist
-        761: WeatherCondition.MIST,  # Dust -> mist
-        762: WeatherCondition.MIST,  # Volcanic ash -> mist
-        771: WeatherCondition.WINDY,
-        781: WeatherCondition.THUNDERSTORM,  # Tornado
-        # Clear (800)
-        800: WeatherCondition.SUNNY,
-        # Clouds (80x)
-        801: WeatherCondition.PARTLY_CLOUDY,
-        802: WeatherCondition.PARTLY_CLOUDY,
-        803: WeatherCondition.CLOUDY,
-        804: WeatherCondition.CLOUDY,
-    }
+    CONDITION_MAP = _OWM_CONDITION_MAP
 
     def __init__(self, api_key: str):
         """

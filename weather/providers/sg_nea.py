@@ -15,6 +15,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # data.gov.sg v2 real-time API endpoints
 SG_AIR_TEMP_URL = "https://api-open.data.gov.sg/v2/real-time/api/air-temperature"
@@ -25,31 +26,10 @@ SG_24HR_FORECAST_URL = "https://api-open.data.gov.sg/v2/real-time/api/twenty-fou
 SG_4DAY_FORECAST_URL = "https://api-open.data.gov.sg/v2/real-time/api/four-day-outlook"
 SG_PSI_URL = "https://api-open.data.gov.sg/v2/real-time/api/psi"
 
-# NEA forecast text to condition mapping
+# SG_CONDITION_MAP (loaded from weather/data/condition_maps/sg-nea-forecast.json)
 SG_CONDITION_MAP = {
-    "fair": WeatherCondition.SUNNY,
-    "fair (day)": WeatherCondition.SUNNY,
-    "fair (night)": WeatherCondition.CLEAR,
-    "fair and warm": WeatherCondition.HOT,
-    "partly cloudy": WeatherCondition.PARTLY_CLOUDY,
-    "partly cloudy (day)": WeatherCondition.PARTLY_CLOUDY,
-    "partly cloudy (night)": WeatherCondition.PARTLY_CLOUDY,
-    "cloudy": WeatherCondition.CLOUDY,
-    "hazy": WeatherCondition.MIST,
-    "slightly hazy": WeatherCondition.MIST,
-    "windy": WeatherCondition.WINDY,
-    "mist": WeatherCondition.MIST,
-    "fog": WeatherCondition.FOG,
-    "light rain": WeatherCondition.DRIZZLE,
-    "moderate rain": WeatherCondition.RAIN,
-    "heavy rain": WeatherCondition.HEAVY_RAIN,
-    "passing showers": WeatherCondition.SHOWERS,
-    "light showers": WeatherCondition.SHOWERS,
-    "showers": WeatherCondition.SHOWERS,
-    "heavy showers": WeatherCondition.HEAVY_RAIN,
-    "thundery showers": WeatherCondition.THUNDERSTORM,
-    "heavy thundery showers": WeatherCondition.THUNDERSTORM,
-    "heavy thundery showers with gusty winds": WeatherCondition.THUNDERSTORM,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "sg-nea-forecast.json").items()
 }
 
 # Supported locations

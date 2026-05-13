@@ -22,162 +22,17 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
-# JMA area codes for major cities
-# Full list: https://www.jma.go.jp/bosai/common/const/area.json
-JMA_AREA_CODES = {
-    # Hokkaido
-    "sapporo": "016000",
-    "hokkaido": "016000",
-    # Tohoku
-    "sendai": "040000",
-    "miyagi": "040000",
-    # Kanto
-    "tokyo": "130000",
-    "yokohama": "140000",
-    "kanagawa": "140000",
-    "chiba": "120000",
-    "saitama": "110000",
-    # Chubu
-    "nagoya": "230000",
-    "aichi": "230000",
-    "niigata": "150000",
-    # Kansai
-    "osaka": "270000",
-    "kyoto": "260000",
-    "kobe": "280000",
-    "hyogo": "280000",
-    "nara": "290000",
-    # Chugoku
-    "hiroshima": "340000",
-    "okayama": "330000",
-    # Shikoku
-    "matsuyama": "380000",
-    "ehime": "380000",
-    # Kyushu
-    "fukuoka": "400000",
-    "kumamoto": "430000",
-    "kagoshima": "460100",
-    # Okinawa
-    "naha": "471000",
-    "okinawa": "471000",
-    # Country-level defaults
-    "japan": "130000",
-    "jp": "130000",
-    "日本": "130000",
-}
+# JMA area codes for major cities (loaded from weather/data/cities/jma-area-codes.json)
+JMA_AREA_CODES = load_json("cities", "jma-area-codes.json")
 
 # JMA weather codes (3-digit) to condition mapping
 # Reference: https://www.jma.go.jp/bosai/forecast/ (browser console: Forecast.Const.TELOPS)
+# (loaded from weather/data/condition_maps/jma-codes.json)
 JMA_WEATHER_CODE_MAP = {
-    # Clear/Sunny (100-series)
-    "100": WeatherCondition.SUNNY,
-    "101": WeatherCondition.PARTLY_CLOUDY,  # sunny then cloudy
-    "102": WeatherCondition.RAIN,           # sunny then rain
-    "103": WeatherCondition.RAIN,           # sunny then rain
-    "104": WeatherCondition.SNOW,           # sunny then snow
-    "110": WeatherCondition.PARTLY_CLOUDY,
-    "111": WeatherCondition.PARTLY_CLOUDY,  # sunny, cloudy later
-    "112": WeatherCondition.RAIN,
-    "113": WeatherCondition.RAIN,
-    "114": WeatherCondition.RAIN,
-    "115": WeatherCondition.SNOW,
-    "116": WeatherCondition.RAIN,
-    "117": WeatherCondition.THUNDERSTORM,
-    "118": WeatherCondition.SNOW,
-    "119": WeatherCondition.RAIN,
-    "120": WeatherCondition.RAIN,
-    "121": WeatherCondition.RAIN,
-    "122": WeatherCondition.RAIN,
-    "123": WeatherCondition.PARTLY_CLOUDY,
-    "124": WeatherCondition.PARTLY_CLOUDY,
-    "125": WeatherCondition.RAIN,
-    "126": WeatherCondition.RAIN,
-    "127": WeatherCondition.RAIN,
-    "128": WeatherCondition.RAIN,
-    "130": WeatherCondition.FOG,
-    "131": WeatherCondition.FOG,
-    "132": WeatherCondition.FOG,
-    # Cloudy (200-series)
-    "200": WeatherCondition.CLOUDY,
-    "201": WeatherCondition.CLOUDY,
-    "202": WeatherCondition.RAIN,           # cloudy then rain
-    "203": WeatherCondition.RAIN,
-    "204": WeatherCondition.SNOW,
-    "205": WeatherCondition.SNOW,
-    "206": WeatherCondition.RAIN,
-    "207": WeatherCondition.RAIN,
-    "208": WeatherCondition.RAIN,
-    "209": WeatherCondition.THUNDERSTORM,
-    "210": WeatherCondition.CLOUDY,
-    "211": WeatherCondition.CLOUDY,
-    "212": WeatherCondition.RAIN,           # cloudy, rain later
-    "213": WeatherCondition.RAIN,
-    "214": WeatherCondition.RAIN,
-    "215": WeatherCondition.SNOW,
-    "216": WeatherCondition.RAIN,
-    "217": WeatherCondition.THUNDERSTORM,
-    "218": WeatherCondition.RAIN,
-    "219": WeatherCondition.RAIN,
-    "220": WeatherCondition.RAIN,
-    "221": WeatherCondition.RAIN,
-    "222": WeatherCondition.SNOW,
-    "223": WeatherCondition.PARTLY_CLOUDY,  # cloudy then sunny
-    "224": WeatherCondition.RAIN,
-    "225": WeatherCondition.RAIN,
-    "226": WeatherCondition.SNOW,
-    "228": WeatherCondition.RAIN,
-    "229": WeatherCondition.RAIN,
-    "230": WeatherCondition.SNOW,
-    "231": WeatherCondition.CLOUDY,
-    "240": WeatherCondition.FOG,
-    # Rain (300-series)
-    "300": WeatherCondition.RAIN,
-    "301": WeatherCondition.RAIN,
-    "302": WeatherCondition.HEAVY_RAIN,
-    "303": WeatherCondition.RAIN,
-    "304": WeatherCondition.HEAVY_RAIN,
-    "306": WeatherCondition.HEAVY_RAIN,
-    "308": WeatherCondition.HEAVY_RAIN,
-    "309": WeatherCondition.RAIN,
-    "311": WeatherCondition.RAIN,
-    "313": WeatherCondition.RAIN,
-    "314": WeatherCondition.RAIN,
-    "315": WeatherCondition.RAIN,
-    "316": WeatherCondition.RAIN,
-    "317": WeatherCondition.THUNDERSTORM,
-    "320": WeatherCondition.RAIN,
-    "321": WeatherCondition.RAIN,
-    "322": WeatherCondition.RAIN,
-    "323": WeatherCondition.RAIN,
-    "324": WeatherCondition.RAIN,
-    "325": WeatherCondition.RAIN,
-    "326": WeatherCondition.RAIN,
-    "327": WeatherCondition.RAIN,
-    "328": WeatherCondition.RAIN,
-    "329": WeatherCondition.RAIN,
-    "340": WeatherCondition.SNOW,
-    "350": WeatherCondition.RAIN,
-    # Snow (400-series)
-    "400": WeatherCondition.SNOW,
-    "401": WeatherCondition.SNOW,
-    "402": WeatherCondition.HEAVY_SNOW,
-    "403": WeatherCondition.SNOW,
-    "405": WeatherCondition.HEAVY_SNOW,
-    "406": WeatherCondition.SNOW,
-    "407": WeatherCondition.HEAVY_SNOW,
-    "409": WeatherCondition.SNOW,
-    "411": WeatherCondition.SNOW,
-    "413": WeatherCondition.SNOW,
-    "414": WeatherCondition.SNOW,
-    "420": WeatherCondition.SNOW,
-    "421": WeatherCondition.SNOW,
-    "422": WeatherCondition.SNOW,
-    "423": WeatherCondition.SNOW,
-    "425": WeatherCondition.SNOW,
-    "426": WeatherCondition.SNOW,
-    "427": WeatherCondition.SNOW,
-    "450": WeatherCondition.SNOW,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "jma-codes.json").items()
 }
 
 # Supported locations

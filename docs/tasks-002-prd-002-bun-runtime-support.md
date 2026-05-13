@@ -61,7 +61,7 @@ Phase 8 (docs + release) — depends on Phase 7
 
 **All extraction tasks (1.1–1.9) are independent and can be done in parallel by 9 different agents.** They only touch a single file each. Tasks 1.10–1.12 are gates run after all extractions complete.
 
-### Task 1.1 — Extract `LOCATION_ALIASES` and `WeatherCondition` enum
+### Task 1.1 ✅ — Extract `LOCATION_ALIASES` and `WeatherCondition` enum
 
 **Files:**
 - Read: `weather/models.py` (lines 12-58, 254-545)
@@ -95,7 +95,7 @@ python -c "import json; assert json.load(open('weather/data/condition-emoji.json
 
 ---
 
-### Task 1.2 — Extract HKO data
+### Task 1.2 ✅ — Extract HKO data
 
 **Files:**
 - Read: `weather/providers/hko.py` (lines 23-45)
@@ -120,7 +120,7 @@ python -c "import json; d=json.load(open('weather/data/condition-maps/hko-icons.
 
 ---
 
-### Task 1.3 — Extract JMA data
+### Task 1.3 ✅ — Extract JMA data
 
 **Files:**
 - Read: `weather/providers/jma.py` (lines 28-181)
@@ -145,7 +145,7 @@ python -c "import json; d=json.load(open('weather/data/condition-maps/jma-codes.
 
 ---
 
-### Task 1.4 — Extract US NWS data
+### Task 1.4 ✅ — Extract US NWS data
 
 **Files:**
 - Read: `weather/providers/us_nws.py`
@@ -170,7 +170,7 @@ python -c "import json; d=json.load(open('weather/data/condition-maps/nws-condit
 
 ---
 
-### Task 1.5 — Extract SG NEA data
+### Task 1.5 ✅ — Extract SG NEA data
 
 **Files:**
 - Read: `weather/providers/sg_nea.py`
@@ -191,7 +191,7 @@ python -c "import json; d=json.load(open('weather/data/condition-maps/sg-nea-for
 
 ---
 
-### Task 1.6 — Extract DWD data
+### Task 1.6 ✅ — Extract DWD data
 
 **Files:**
 - Read: `weather/providers/de_dwd.py`
@@ -213,7 +213,7 @@ python -c "import json; d=json.load(open('weather/data/cities/de-dwd.json')); as
 
 ---
 
-### Task 1.7 — Extract OpenWeatherMap data
+### Task 1.7 ✅ — Extract OpenWeatherMap data
 
 **Files:**
 - Read: `weather/providers/openweathermap.py`
@@ -234,7 +234,7 @@ python -c "import json; d=json.load(open('weather/data/condition-maps/owm-codes.
 
 ---
 
-### Task 1.8 — Extract batch-2 condition maps (CWA, Met Office, BOM, MetService)
+### Task 1.8 ✅ — Extract batch-2 condition maps (CWA, Met Office, BOM, MetService)
 
 **Files:**
 - Read: `weather/providers/{tw_cwa,uk_metoffice,au_bom,nz_metservice}.py`
@@ -254,7 +254,7 @@ ls weather/data/condition-maps/cwa-conditions.json weather/data/condition-maps/m
 
 ---
 
-### Task 1.9 — Extract batch-2 condition maps (BMKG, KMA, TMD)
+### Task 1.9 ✅ — Extract batch-2 condition maps (BMKG, KMA, TMD)
 
 **Files:**
 - Read: `weather/providers/{id_bmkg,kr_kma,th_tmd}.py`
@@ -274,7 +274,7 @@ ls weather/data/condition-maps/bmkg-conditions.json weather/data/condition-maps/
 
 ---
 
-### Task 1.10 — Switch Python providers + models to load from JSON
+### Task 1.10 ✅ — Switch Python providers + models to load from JSON
 
 **Files (modify in place):**
 - `weather/models.py`
@@ -326,7 +326,7 @@ python -c "from weather.models import LOCATION_ALIASES, CONDITION_EMOJI, Weather
 
 ---
 
-### Task 1.11 — Update `pyproject.toml` for package data + fix CLI JSON output
+### Task 1.11 ✅ — Update `pyproject.toml` for package data + fix CLI JSON output
 
 **Files:**
 - `pyproject.toml`
@@ -362,7 +362,7 @@ python -m weather.cli --location "Hong Kong" --format json | python -c "import s
 
 ---
 
-### Task 1.12 — Run existing Python test suite + add wheel CI smoke test
+### Task 1.12 ✅ — Run existing Python test suite + add wheel CI smoke test
 
 **Files:**
 - `tests/` (existing)

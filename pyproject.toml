@@ -24,3 +24,19 @@ Changelog = "https://github.com/shrwnsan/weather-skill/blob/main/CHANGELOG.md"
 
 [project.scripts]
 weather = "weather.cli:cli"
+
+[tool.setuptools]
+packages = [
+    "weather",
+    "weather.data",
+    "weather.data.cities",
+    "weather.data.condition_maps",
+    "weather.providers",
+    "weather.formatters",
+    "weather.senders",
+]
+
+[tool.setuptools.package-data]
+"weather.data" = ["*.json"]
+"weather.data.cities" = ["*.json"]
+"weather.data.condition_maps" = ["*.json"]
