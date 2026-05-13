@@ -1,0 +1,18 @@
+# CODEOWNERS — maps paths to reviewers who must approve changes.
+#
+# Files not matched by any pattern below require the default branch
+# protection review (currently: any collaborator).
+#
+# https://docs.github.com/repositories/managing-your-repositories-settings/about-code-owners
+
+# Root-level project metadata — low-risk, single-author files
+/README.md                    @shrwnsan
+/LICENSE                      @shrwnsan
+/CHANGELOG.md                 @shrwnsan
+/CONTRIBUTING.md              @shrwnsan
+
+# Documentation — design docs, PRDs, evals, guides
+/docs/*.md                    @shrwnsan
+
+# SKILL.md — agent-facing integration doc
+/SKILL.md                     @shrwnsan
