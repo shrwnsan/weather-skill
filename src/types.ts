@@ -71,7 +71,7 @@ export interface WeatherData {
 
   // Conditions
   condition: WeatherCondition;
-  condition_raw?: string; // Original provider string
+  condition_raw: string; // Original provider string (default: "")
   description?: string;
 
   // Timestamps

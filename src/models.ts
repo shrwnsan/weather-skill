@@ -154,6 +154,7 @@ export function makeWeatherData(
   return {
     temperature: 0.0,
     condition: WeatherCondition.Unknown,
+    condition_raw: "",
     fetched_at: new Date(),
     ...partial,
   };
