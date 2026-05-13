@@ -1,0 +1,7 @@
+# Bun configuration for weather-skill.
+#
+# The test preload is referenced by name only — Phase 7 creates
+# test/setup.ts. Bun will warn (not error) if the file is missing.
+
+[test]
+preload = ["./test/setup.ts"]

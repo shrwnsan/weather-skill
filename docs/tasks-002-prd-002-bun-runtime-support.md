@@ -399,7 +399,7 @@ python -m weather.cli --location "Hong Kong" --format json | python -c "import s
 
 ## Phase 2: Bun Scaffold + Core Types
 
-### Task 2.1 — Create `package.json`, `tsconfig.json`, `bunfig.toml`
+### Task 2.1 ✅ — Create `package.json`, `tsconfig.json`, `bunfig.toml`
 
 **Files:**
 - Create: `package.json`
@@ -438,7 +438,7 @@ python -m weather.cli --location "Hong Kong" --format json | python -c "import s
        "strict": true,
        "esModuleInterop": true,
        "resolveJsonModule": true,
-       "types": ["bun-types"]
+       "types": ["bun"]
      },
      "include": ["src/", "test/"]
    }
@@ -457,7 +457,7 @@ bun --version  # ensure >= 1.1.30
 
 ---
 
-### Task 2.2 — Create core types in `src/types.ts`
+### Task 2.2 ✅ — Create core types in `src/types.ts`
 
 **File:** `src/types.ts`
 **Depends on:** Phase 1
@@ -479,7 +479,7 @@ bunx tsc --noEmit
 
 ---
 
-### Task 2.3 — Create `src/data-loader.ts` and `src/models.ts`
+### Task 2.3 ✅ — Create `src/data-loader.ts` and `src/models.ts`
 
 **Files:**
 - Create: `src/data-loader.ts`

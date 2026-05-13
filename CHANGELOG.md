@@ -15,6 +15,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `weather/data/loader.py` — small helper to load JSON resources via `importlib.resources`.
 - `.github/workflows/python-ci.yml` — CI workflow that runs pytest across Python 3.10–3.13 and verifies the built wheel ships all required JSON data files.
+- **Bun/TypeScript scaffold** (PRD-002 Phase 2) — `package.json` (`@shrwnsan/weather-skill`, ESM, Bun ≥1.1.30), `tsconfig.json` (strict ESNext, `resolveJsonModule`), `bunfig.toml` (test preload).
+- `src/types.ts` — `WeatherCondition` enum (20 values) and snake_case `WeatherData` / `Location` / `IWeatherProvider` / `IWeatherFormatter` / `IWeatherSender` interfaces matching Python's `dataclasses.asdict()` output exactly. Includes `ProviderError`, `LocationNotSupportedError`, `NoProviderError` parity with Python.
+- `src/data-loader.ts` — typed accessors for every JSON file under `weather/data/` (3 top-level + 4 city + 14 condition maps). Uses bundled JSON imports so files are embedded into `bun build --compile` output instead of read from disk at runtime.
+- `src/models.ts` — helper functions mirroring `WeatherData` properties (`humidityStr`, `windStr`, `tempRangeStr`, `aqhiStr`, `aqiStr`, `effectiveFeelsLike`, `calculateFeelsLike`) and module-level `normalizeLocation`, `parseLocation`, `getEmoji`, `makeWeatherData`.
 
 ## [0.2.1] - 2026-04-17
 
