@@ -63,3 +63,19 @@ Thumbs.db
 .tools/
 .scripts/
 .herenow/
+
+# Bun / TypeScript
+node_modules/
+*.tsbuildinfo
+# Note: bun.lock is intentionally tracked for reproducible builds.
+
+# Compiled binary output (built via `bun run build`)
+# Note: `!/weather/` re-includes the Python package directory, since
+# `/weather` would otherwise match both the file and the directory.
+/weather
+!/weather/
+/weather-linux-x64
+/weather-linux-x64-musl
+/weather-darwin-arm64
+/weather-darwin-x64
+/weather-windows-x64.exe

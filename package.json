@@ -1,0 +1,35 @@
+{
+  "name": "@shrwnsan/weather-skill",
+  "version": "0.1.0-pre.1",
+  "description": "A platform-agnostic weather skill for AI agents (Bun/TypeScript runtime).",
+  "type": "module",
+  "engines": {
+    "bun": ">=1.1.30"
+  },
+  "main": "src/index.ts",
+  "bin": {
+    "weather": "src/cli.ts"
+  },
+  "files": [
+    "src/",
+    "weather/data/"
+  ],
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "build": "bun build src/cli.ts --compile --target=bun-linux-x64 --outfile weather"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shrwnsan/weather-skill.git"
+  },
+  "homepage": "https://github.com/shrwnsan/weather-skill",
+  "bugs": {
+    "url": "https://github.com/shrwnsan/weather-skill/issues"
+  },
+  "license": "MIT"
+}
