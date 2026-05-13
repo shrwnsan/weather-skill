@@ -17,6 +17,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # Met Office DataHub Global Spot API endpoints
 METOFFICE_BASE_URL = "https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point"
@@ -53,40 +54,10 @@ UK_CITIES = {
 }
 
 # Met Office significantWeatherCode to condition mapping
-# Reference: Met Office DataHub documentation
+# METOFFICE_WEATHER_CODES (loaded from weather/data/condition_maps/metoffice-conditions.json)
 METOFFICE_WEATHER_CODES = {
-    -1: WeatherCondition.UNKNOWN,  # Not available
-    0: WeatherCondition.CLEAR,     # Clear night
-    1: WeatherCondition.SUNNY,     # Sunny day
-    2: WeatherCondition.PARTLY_CLOUDY,  # Partly cloudy (night)
-    3: WeatherCondition.PARTLY_CLOUDY,  # Partly cloudy (day)
-    4: WeatherCondition.UNKNOWN,   # Not used
-    5: WeatherCondition.MIST,      # Mist
-    6: WeatherCondition.FOG,       # Fog
-    7: WeatherCondition.CLOUDY,    # Cloudy
-    8: WeatherCondition.OVERCAST,  # Overcast
-    9: WeatherCondition.SHOWERS,   # Light rain shower (night)
-    10: WeatherCondition.SHOWERS,  # Light rain shower (day)
-    11: WeatherCondition.RAIN,     # Drizzle
-    12: WeatherCondition.DRIZZLE,  # Light rain
-    13: WeatherCondition.SHOWERS,  # Heavy rain shower (night)
-    14: WeatherCondition.SHOWERS,  # Heavy rain shower (day)
-    15: WeatherCondition.HEAVY_RAIN,  # Heavy rain
-    16: WeatherCondition.SLEET,    # Sleet shower (night)
-    17: WeatherCondition.SLEET,    # Sleet shower (day)
-    18: WeatherCondition.SLEET,    # Sleet
-    19: WeatherCondition.HAIL,     # Hail shower (night)
-    20: WeatherCondition.HAIL,     # Hail shower (day)
-    21: WeatherCondition.HAIL,     # Hail
-    22: WeatherCondition.SNOW,     # Light snow shower (night)
-    23: WeatherCondition.SNOW,     # Light snow shower (day)
-    24: WeatherCondition.SNOW,     # Light snow
-    25: WeatherCondition.HEAVY_SNOW,  # Heavy snow shower (night)
-    26: WeatherCondition.HEAVY_SNOW,  # Heavy snow shower (day)
-    27: WeatherCondition.HEAVY_SNOW,  # Heavy snow
-    28: WeatherCondition.THUNDERSTORM,  # Thunder shower (night)
-    29: WeatherCondition.THUNDERSTORM,  # Thunder shower (day)
-    30: WeatherCondition.THUNDERSTORM,  # Thunder
+    int(k): WeatherCondition(v)
+    for k, v in load_json("condition_maps", "metoffice-conditions.json").items()
 }
 
 # Supported locations

@@ -18,6 +18,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # TMD API endpoints
 TMD_OBSERVATION_URL = "https://data.tmd.go.th/api/WeatherToday/v2/"
@@ -54,18 +55,10 @@ TH_LOCATIONS = {
     "ประเทศไทย": {"province": "กรุงเทพมหานคร", "station": "48455", "lat": 13.7563, "lon": 100.5018},
 }
 
-# TMD weather condition mapping
+# TMD_CONDITION_MAP (loaded from weather/data/condition_maps/tmd-conditions.json)
 TMD_CONDITION_MAP = {
-    "ท้องฟ้าแจ่มใส": WeatherCondition.SUNNY,
-    "มีเมฆบางส่วน": WeatherCondition.PARTLY_CLOUDY,
-    "เมฆเป็นส่วนมาก": WeatherCondition.CLOUDY,
-    "มีเมฆมาก": WeatherCondition.OVERCAST,
-    "ฝนตกเล็กน้อย": WeatherCondition.DRIZZLE,
-    "ฝนตกปานกลาง": WeatherCondition.RAIN,
-    "ฝนตกหนัก": WeatherCondition.HEAVY_RAIN,
-    "ฝนฟ้าคะนอง": WeatherCondition.THUNDERSTORM,
-    "อากาศหนาวจัด": WeatherCondition.COLD,
-    "อากาศร้อนจัด": WeatherCondition.HOT,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "tmd-conditions.json").items()
 }
 
 # Supported locations

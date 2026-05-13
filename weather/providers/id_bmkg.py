@@ -16,6 +16,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # BMKG public API endpoint
 BMKG_API_URL = "https://api.bmkg.go.id/publik/prakiraan-cuaca"
@@ -59,22 +60,10 @@ BMKG_AREA_CODES = {
     "id": "31.71.01.1001",
 }
 
-# BMKG weather description (English) to condition mapping
+# BMKG_CONDITION_MAP (loaded from weather/data/condition_maps/bmkg-conditions.json)
 BMKG_CONDITION_MAP = {
-    "clear skies": WeatherCondition.SUNNY,
-    "partly cloudy": WeatherCondition.PARTLY_CLOUDY,
-    "mostly cloudy": WeatherCondition.CLOUDY,
-    "overcast": WeatherCondition.OVERCAST,
-    "haze": WeatherCondition.MIST,
-    "smoke": WeatherCondition.MIST,
-    "fog": WeatherCondition.FOG,
-    "light rain": WeatherCondition.DRIZZLE,
-    "rain": WeatherCondition.RAIN,
-    "moderate rain": WeatherCondition.RAIN,
-    "heavy rain": WeatherCondition.HEAVY_RAIN,
-    "isolated shower": WeatherCondition.SHOWERS,
-    "severe thunderstorm": WeatherCondition.THUNDERSTORM,
-    "thunderstorm": WeatherCondition.THUNDERSTORM,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "bmkg-conditions.json").items()
 }
 
 # Supported locations

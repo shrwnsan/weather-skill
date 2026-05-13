@@ -16,6 +16,7 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # BOM observation URLs by state and station
 # Format: https://www.bom.gov.au/fwo/{STATE_PRODUCT}/{STATE_PRODUCT}.{STATION_ID}.json
@@ -59,55 +60,10 @@ BOM_STATIONS = {
     "alice springs": {"station_id": "94362", "state_code": "IDD60801", "product": "IDD60801"},
 }
 
-# BOM condition text mapping
+# BOM_CONDITION_MAP (loaded from weather/data/condition_maps/bom-conditions.json)
 BOM_CONDITION_MAP = {
-    # Clear/Sunny
-    "sunny": WeatherCondition.SUNNY,
-    "clear": WeatherCondition.CLEAR,
-    "fine": WeatherCondition.SUNNY,
-    "mostly sunny": WeatherCondition.SUNNY,
-    "mostly clear": WeatherCondition.CLEAR,
-
-    # Partly Cloudy
-    "partly cloudy": WeatherCondition.PARTLY_CLOUDY,
-    "mostly cloudy": WeatherCondition.CLOUDY,
-    "cloudy": WeatherCondition.CLOUDY,
-    "overcast": WeatherCondition.OVERCAST,
-    "mostly fine": WeatherCondition.PARTLY_CLOUDY,
-
-    # Rain
-    "shower": WeatherCondition.SHOWERS,
-    "showers": WeatherCondition.SHOWERS,
-    "rain": WeatherCondition.RAIN,
-    "light rain": WeatherCondition.DRIZZLE,
-    "drizzle": WeatherCondition.DRIZZLE,
-    "heavy rain": WeatherCondition.HEAVY_RAIN,
-    "rain at times": WeatherCondition.RAIN,
-    "shower or two": WeatherCondition.SHOWERS,
-
-    # Thunderstorm
-    "thunderstorm": WeatherCondition.THUNDERSTORM,
-    "thunderstorms": WeatherCondition.THUNDERSTORM,
-    "storm": WeatherCondition.THUNDERSTORM,
-    "stormy": WeatherCondition.THUNDERSTORM,
-
-    # Snow
-    "snow": WeatherCondition.SNOW,
-    "light snow": WeatherCondition.SNOW,
-    "heavy snow": WeatherCondition.HEAVY_SNOW,
-    "snowing": WeatherCondition.SNOW,
-
-    # Fog/Mist
-    "fog": WeatherCondition.FOG,
-    "foggy": WeatherCondition.FOG,
-    "mist": WeatherCondition.MIST,
-    "misty": WeatherCondition.MIST,
-    "haze": WeatherCondition.MIST,
-    "hazy": WeatherCondition.MIST,
-
-    # Wind
-    "windy": WeatherCondition.WINDY,
-    "gusty": WeatherCondition.WINDY,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "bom-conditions.json").items()
 }
 
 # Supported locations

@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- **Shared data layer** (PRD-002 Phase 1) — moved all hardcoded condition maps, location aliases, and city tables out of Python source into `weather/data/*.json`. Providers now load via `importlib.resources` so the data ships in the wheel and can be consumed by future runtimes (Bun port). Zero behavioral changes; all 69 tests pass.
+- **CLI JSON output** — switched `--format json` to use `sort_keys=True` and ISO-8601 datetime format (T-separated) for deterministic, cross-runtime-friendly output. `WeatherCondition` enum values now serialize as their `.value` (e.g., `"sunny"`) instead of `"WeatherCondition.SUNNY"`.
+
+### Added
+
+- `weather/data/loader.py` — small helper to load JSON resources via `importlib.resources`.
+- `.github/workflows/python-ci.yml` — CI workflow that runs pytest across Python 3.10–3.13 and verifies the built wheel ships all required JSON data files.
+
 ## [0.2.1] - 2026-04-17
 
 ### Fixed

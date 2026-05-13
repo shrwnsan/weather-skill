@@ -15,33 +15,15 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # HKO JSON API endpoint
 HKO_API_URL = "https://www.hko.gov.hk/wxinfo/json/one_json.xml"
 
-# HKO icon to condition mapping
+# HKO icon to condition mapping (loaded from weather/data/condition_maps/hko-icons.json)
 HKO_ICON_MAP = {
-    # Sunny/Clear
-    "pic50.png": WeatherCondition.SUNNY,
-    "pic51.png": WeatherCondition.SUNNY,
-    "pic52.png": WeatherCondition.PARTLY_CLOUDY,
-
-    # Cloudy/Overcast
-    "pic60.png": WeatherCondition.CLOUDY,
-    "pic61.png": WeatherCondition.OVERCAST,
-    "pic62.png": WeatherCondition.RAIN,  # Light rain
-    "pic63.png": WeatherCondition.RAIN,
-    "pic64.png": WeatherCondition.HEAVY_RAIN,
-    "pic65.png": WeatherCondition.THUNDERSTORM,
-
-    # Showers
-    "pic53.png": WeatherCondition.PARTLY_CLOUDY,  # Sunny periods
-    "pic54.png": WeatherCondition.DRIZZLE,  # Sunny intervals with showers
-    "pic55.png": WeatherCondition.RAIN,  # Showers
-
-    # Wind/Fog
-    "pic56.png": WeatherCondition.WINDY,
-    "pic57.png": WeatherCondition.FOG,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "hko-icons.json").items()
 }
 
 # Supported locations

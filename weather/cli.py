@@ -132,7 +132,16 @@ async def main(args: argparse.Namespace) -> int:
                 output = [asdict(d) for d in data]
             else:
                 output = asdict(data)
-            print(json.dumps(output, indent=2, default=str))
+            def _json_default(o):
+                # Enums → their .value (e.g., WeatherCondition.SUNNY → "sunny")
+                if hasattr(o, "value") and hasattr(type(o), "__members__"):
+                    return o.value
+                # datetime/date → ISO-8601
+                if hasattr(o, "isoformat"):
+                    return o.isoformat()
+                return str(o)
+
+            print(json.dumps(output, indent=2, sort_keys=True, default=_json_default))
             return 0
 
         message = skill.format(data, platform=args.format)

@@ -18,61 +18,24 @@ import json
 
 from .base import WeatherProvider, ProviderError, LocationNotSupportedError
 from ..models import WeatherData, WeatherCondition, Location
+from ..data.loader import load_json
 
 # Bright Sky API endpoint
 BRIGHTSKY_BASE_URL = "https://api.brightsky.dev"
 BRIGHTSKY_CURRENT_URL = f"{BRIGHTSKY_BASE_URL}/current_weather"
 BRIGHTSKY_WEATHER_URL = f"{BRIGHTSKY_BASE_URL}/weather"
 
-# German cities with coordinates (latitude, longitude)
+# DE_CITIES (loaded from weather/data/cities/de-dwd.json)
 DE_CITIES = {
-    "berlin": (52.5200, 13.4050),
-    "hamburg": (53.5511, 9.9937),
-    "munich": (48.1351, 11.5820),
-    "münchen": (48.1351, 11.5820),
-    "cologne": (50.9375, 6.9603),
-    "köln": (50.9375, 6.9603),
-    "frankfurt": (50.1109, 8.6821),
-    "stuttgart": (48.7758, 9.1829),
-    "düsseldorf": (51.2277, 6.7735),
-    "dortmund": (51.5136, 7.4653),
-    "essen": (51.4556, 7.0116),
-    "leipzig": (51.3397, 12.3731),
-    "bremen": (53.0793, 8.8017),
-    "dresden": (51.0504, 13.7373),
-    "hannover": (52.3759, 9.7320),
-    "nuremberg": (49.4521, 11.0767),
-    "nürnberg": (49.4521, 11.0767),
-    "duisburg": (51.4344, 6.7624),
-    "bochum": (51.4818, 7.2162),
-    "wuppertal": (51.2562, 7.1508),
-    "bonn": (50.7374, 7.0982),
-    "münster": (51.9607, 7.6261),
-    "augsburg": (48.3705, 10.8978),
-    "freiburg": (47.9990, 7.8421),
-    "heidelberg": (49.3988, 8.6724),
-    # Country-level default
-    "germany": (52.5200, 13.4050),
-    "deutschland": (52.5200, 13.4050),
-    "de": (52.5200, 13.4050),
+    k: tuple(v)
+    for k, v in load_json("cities", "de-dwd.json").items()
 }
 
 # Bright Sky weather condition icon to WeatherCondition mapping
-# Reference: https://brightsky.dev/docs/#/operations/getWeather
+# BRIGHTSKY_CONDITION_MAP (loaded from weather/data/condition_maps/brightsky-conditions.json)
 BRIGHTSKY_CONDITION_MAP = {
-    "clear-day": WeatherCondition.SUNNY,
-    "clear-night": WeatherCondition.CLEAR,
-    "partly-cloudy-day": WeatherCondition.PARTLY_CLOUDY,
-    "partly-cloudy-night": WeatherCondition.PARTLY_CLOUDY,
-    "cloudy": WeatherCondition.CLOUDY,
-    "fog": WeatherCondition.FOG,
-    "wind": WeatherCondition.WINDY,
-    "rain": WeatherCondition.RAIN,
-    "sleet": WeatherCondition.SLEET,
-    "snow": WeatherCondition.SNOW,
-    "hail": WeatherCondition.HAIL,
-    "thunderstorm": WeatherCondition.THUNDERSTORM,
-    "dry": WeatherCondition.SUNNY,
+    k: WeatherCondition(v)
+    for k, v in load_json("condition_maps", "brightsky-conditions.json").items()
 }
 
 # Supported locations
