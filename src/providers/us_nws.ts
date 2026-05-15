@@ -260,12 +260,19 @@ export class NWSProvider implements IWeatherProvider {
       const fcDateTime = startTime ? new Date(startTime) : new Date(NaN);
       if (Number.isNaN(fcDateTime.getTime())) continue;
 
-      // Mirror Python's `datetime.date()` — UTC date string for dedupe.
-      const dateKey = fcDateTime.toISOString().slice(0, 10);
+      // Mirror Python's `datetime.fromisoformat(...).date()` — preserve
+      // the LOCAL calendar date from the ISO offset, not UTC. Otherwise
+      // a US-eastern-time period like "2026-05-13T23:00:00-04:00"
+      // (local: 2026-05-13) would dedupe as 2026-05-14 in UTC and
+      // misassign the forecast day.
+      const localDateMatch = startTime.match(/^(\d{4}-\d{2}-\d{2})/);
+      if (!localDateMatch) continue;
+      const dateKey = localDateMatch[1]!;
       if (seenDates.has(dateKey)) continue;
       seenDates.add(dateKey);
 
-      // Forecast date (midnight UTC of the period's date)
+      // Forecast date (midnight UTC of the period's local date —
+      // matches Python's naive `datetime.date()` JSON serialization).
       const fcDate = new Date(`${dateKey}T00:00:00Z`);
 
       // Temperature — NWS forecast uses Fahrenheit by default.

@@ -35,6 +35,27 @@ const OVERVIEW_URL = (areaCode: string): string =>
 const USER_AGENT = "WeatherSkill/1.0";
 
 /**
+ * Japanese-locale names accepted by `supportsLocation` even though
+ * they are not first-class keys in `JMA_AREA_CODES`. The area-code
+ * resolver (`getAreaCode`) falls back to Tokyo (`130000`) for these
+ * inputs, matching Python's `SUPPORTED_LOCATIONS` set in
+ * `weather/providers/jma.py`.
+ */
+const SUPPORTED_LOCALE_NAMES: ReadonlySet<string> = new Set([
+  "日本",
+  "東京",
+  "大阪",
+  "横浜",
+  "京都",
+  "名古屋",
+  "札幌",
+  "福岡",
+  "広島",
+  "仙台",
+  "那覇",
+]);
+
+/**
  * Japan Meteorological Agency weather provider.
  *
  * - Free, no API key required
@@ -50,7 +71,8 @@ export class JMAProvider implements IWeatherProvider {
 
   /** Check if location is in Japan. */
   supportsLocation(location: Location): boolean {
-    return location.normalized.toLowerCase() in JMA_AREA_CODES;
+    const normalized = location.normalized.toLowerCase();
+    return normalized in JMA_AREA_CODES || SUPPORTED_LOCALE_NAMES.has(normalized);
   }
 
   /** Fetch current weather for Japanese location. */
@@ -76,7 +98,7 @@ export class JMAProvider implements IWeatherProvider {
   }
 
   /** Fetch weather forecast for Japanese location. */
-  async getForecast(location: Location, days: number = 3): Promise<WeatherData[]> {
+  async getForecast(location: Location, days: number = 7): Promise<WeatherData[]> {
     if (!this.supportsLocation(location)) {
       throw new LocationNotSupportedError(
         `JMA only supports Japanese locations: ${location.raw}`,

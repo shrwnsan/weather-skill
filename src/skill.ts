@@ -6,7 +6,13 @@
  * formatters, and senders.
  */
 
-import { parseLocation } from "./models.js";
+import {
+  getEmoji,
+  humidityStr,
+  parseLocation,
+  tempRangeStr,
+  windStr,
+} from "./models.js";
 import {
   type IWeatherFormatter,
   type IWeatherProvider,
@@ -180,12 +186,20 @@ function formatSimple(data: WeatherData | WeatherData[]): string {
       const dateStr = d.forecast_date
         ? d.forecast_date.toISOString().slice(0, 10)
         : "?";
-      lines.push(`${dateStr}: ${d.condition} ${Math.round(d.temperature)}°C`);
+      lines.push(`${dateStr}: ${getEmoji(d.condition)} ${tempRangeStr(d)}`);
     }
     return lines.join("\n");
   }
+  // Mirrors Python's `data.condition.value.title()` — title-case each word.
+  const conditionTitle = data.condition
+    .split("_")
+    .map((w) => (w.length > 0 ? w[0]!.toUpperCase() + w.slice(1) : ""))
+    .join(" ");
   return [
     `🌤️ Weather for ${data.location}`,
-    `${data.condition} ${Math.round(data.temperature)}°C`,
+    `${getEmoji(data.condition)} ${conditionTitle}`,
+    `🌡️ ${Math.round(data.temperature)}°C`,
+    `💧 Humidity: ${humidityStr(data)}`,
+    `💨 Wind: ${windStr(data)}`,
   ].join("\n");
 }

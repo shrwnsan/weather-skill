@@ -47,15 +47,15 @@
 
 | # | Severity | Issue | Status |
 |---|----------|-------|--------|
-| P3-1 | **High** | `parseLocation` in `src/models.ts` does not apply `normalizeLocation` / `LOCATION_ALIASES`. Python's `WeatherSkill.parse_location()` resolves aliases (e.g. "hk" -> "hong kong", "nyc" -> "new york") before passing to providers. The TS version just does `raw.toLowerCase().trim()`, so alias-based queries fail in Bun. Affects every provider. | Open |
-| P3-2 | **High** | `hko.ts` declares `supportsAirQuality = true` but never populates the `aqhi` field from the HKO API response. Python has the same declaration gap, so this is parity-preserving — but the flag misleads downstream consumers. | Open |
-| P3-3 | Medium | `us_nws.ts:263-266` — forecast date deduplication uses `toISOString().slice(0,10)` which converts to UTC. For US western time zones near midnight, a period like `2026-05-13T23:00:00-04:00` becomes `2026-05-14` in UTC, misassigning the forecast day. Python uses `.date()` which preserves the local date from the ISO offset. | Open |
-| P3-4 | Medium | `openweathermap.ts` stores `wind_speed` as m/s (raw OWM value) to match Python parity, but `WeatherData.wind_speed` is documented as `// km/h` in both `types.ts:66` and `models.py:61`. The `windStr()` helper formats with "km/h" units, producing incorrect output for OWM-sourced data. | Open |
-| P3-5 | Medium | `jma.ts:53` — `supportsLocation` only checks `JMA_AREA_CODES` keys. Python includes Japanese locale names ("日本", "東京", etc.) via an explicit set union. If `jma-area-codes.json` lacks Japanese keys, Japanese-language queries will fail in Bun. | Open |
-| P3-6 | Low | `hko.ts:157-163` — `observedAt` constructed as UTC (`Date.UTC(...)`) while Python parses `BulletinTime` as a naive datetime (implicitly HKT, UTC+8). Results in 8-hour offset. | Open |
-| P3-7 | Low | `jma.ts:79` — `getForecast` defaults to `days=3` while Python defaults to `days=7`. JMA API supports 7-day forecasts. | Open |
-| P3-8 | Low | `sg_nea.ts:239-245` — `forecast_date` parsed via `new Date(dateStr)` (UTC midnight) vs Python's `datetime.strptime(date_str, "%Y-%m-%d").date()` (naive date). Minor timezone ambiguity. | Open |
-| P3-9 | Low | `skill.ts:176-191` — `formatSimple` fallback omits humidity, wind, and emoji compared to Python's `_format_simple`. Simplified but less informative when no formatter is registered. | Open |
+| P3-1 | **High** | `parseLocation` in `src/models.ts` does not apply `normalizeLocation` / `LOCATION_ALIASES`. Python's `WeatherSkill.parse_location()` resolves aliases (e.g. "hk" -> "hong kong", "nyc" -> "new york") before passing to providers. The TS version just does `raw.toLowerCase().trim()`, so alias-based queries fail in Bun. Affects every provider. | ✅ Fixed |
+| P3-2 | **High** | `hko.ts` declares `supportsAirQuality = true` but never populates the `aqhi` field from the HKO API response. Python has the same declaration gap, so this is parity-preserving — but the flag misleads downstream consumers. | Deferred (parity-preserving — needs cross-runtime fix) |
+| P3-3 | Medium | `us_nws.ts:263-266` — forecast date deduplication uses `toISOString().slice(0,10)` which converts to UTC. For US western time zones near midnight, a period like `2026-05-13T23:00:00-04:00` becomes `2026-05-14` in UTC, misassigning the forecast day. Python uses `.date()` which preserves the local date from the ISO offset. | ✅ Fixed |
+| P3-4 | Medium | `openweathermap.ts` stores `wind_speed` as m/s (raw OWM value) to match Python parity, but `WeatherData.wind_speed` is documented as `// km/h` in both `types.ts:66` and `models.py:61`. The `windStr()` helper formats with "km/h" units, producing incorrect output for OWM-sourced data. | Deferred (intentional Python parity quirk — coordinate fix in PRD-002b or follow-up Python PR) |
+| P3-5 | Medium | `jma.ts:53` — `supportsLocation` only checks `JMA_AREA_CODES` keys. Python includes Japanese locale names ("日本", "東京", etc.) via an explicit set union. If `jma-area-codes.json` lacks Japanese keys, Japanese-language queries will fail in Bun. | ✅ Fixed |
+| P3-6 | Low | `hko.ts:157-163` — `observedAt` constructed as UTC (`Date.UTC(...)`) while Python parses `BulletinTime` as a naive datetime (implicitly HKT, UTC+8). Results in 8-hour offset. | Deferred to Phase 7 (cross-runtime TZ normalization) |
+| P3-7 | Low | `jma.ts:79` — `getForecast` defaults to `days=3` while Python defaults to `days=7`. JMA API supports 7-day forecasts. | ✅ Fixed |
+| P3-8 | Low | `sg_nea.ts:239-245` — `forecast_date` parsed via `new Date(dateStr)` (UTC midnight) vs Python's `datetime.strptime(date_str, "%Y-%m-%d").date()` (naive date). Minor timezone ambiguity. | Deferred to Phase 7 (cross-runtime date-vs-datetime normalization) |
+| P3-9 | Low | `skill.ts:176-191` — `formatSimple` fallback omits humidity, wind, and emoji compared to Python's `_format_simple`. Simplified but less informative when no formatter is registered. | ✅ Fixed |
 
 **Verified correct in Phase 3:**
 - All providers set `condition_raw` to a string (defaults to `""` when unavailable) — P2-1/P2-2 fix confirmed in practice
@@ -83,5 +83,5 @@ These are low-effort fixes that improve correctness:
 4. Update PRD scope table ETA from "~15h" to "~25h" (D-1)
 5. Add `condition_raw: ""` to `makeWeatherData` defaults in `src/models.ts` (P2-1) ✅
 6. Update task 2.1 spec to reflect `"types": ["bun"]` instead of `"bun-types"` (P2-3)
-7. **Fix `parseLocation` to apply `normalizeLocation`** — one-line fix in `src/models.ts`, unblocks all alias-based queries in Bun (P3-1)
-8. Fix JMA `getForecast` default from `days=3` to `days=7` (P3-7)
+7. **Fix `parseLocation` to apply `normalizeLocation`** — one-line fix in `src/models.ts`, unblocks all alias-based queries in Bun (P3-1) ✅
+8. Fix JMA `getForecast` default from `days=3` to `days=7` (P3-7) ✅
