@@ -1,12 +1,13 @@
-# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 Review
+# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 Review
 
 **Reviewed commits:**
 - `67a78b6` — docs(prd-002): finalize PRD with Phase-0 decisions and add tasks file
 - `fd1d52c` — feat(prd-002 phase 1): extract shared data layer to weather/data/
 - `807e1fb` — feat(prd-002 phase 2): Bun/TypeScript scaffold + core types
 - `1eba637` — feat(prd-002 phase 3): port batch-1 providers + OWM to Bun
+- `b3c138e` — feat(prd-002 phase 5): port formatters + Telegram sender to Bun
 
-**Date:** 2026-05-13 (updated 2026-05-15)
+**Date:** 2026-05-13 (updated 2026-05-16)
 **Status:** Open
 
 ---
@@ -70,6 +71,47 @@
 - OWM `q=` query, `units=metric`, forecast aggregation via `mostCommon`, AQI 1-5 scale
 - Bootstrap registers HKO/SGNEA/JMA/NWS unconditionally, OWM conditionally on API key
 - Priority sorting handled by `WeatherSkill` constructor
+
+## Commit b3c138e (Phase 5 Implementation)
+
+| # | Severity | Issue | Status |
+|---|----------|-------|--------|
+| P5-1 | Medium | `formatLongDate` in `src/utils.ts:75` uses `Date.getDay()` / `Date.getMonth()` / `Date.getDate()` which return **local-timezone** values. If a `Date` object was constructed from UTC (e.g. `new Date("2026-05-16T00:00:00Z")`), `formatLongDate` will render it in the local timezone (e.g. "Friday, May 16" in UTC-4 but "Saturday, May 16" in UTC+8). Python's `strftime` on a `date` object has no timezone at all — it just formats the date fields. For parity, callers must ensure `Date` objects are either naive-local or that the UTC→local conversion is intentional. No runtime bug today because all callers pass `forecast_date` / `observed_at` which are constructed from local-timezone sources in providers, but this is a latent foot-gun. | Open |
+| P5-2 | Medium | `truncateDescription` in `src/utils.ts:281` checks `firstSentenceEnd > 0` but Python's `desc.find('. ')` returns the index of the period. If the description starts with ". " (index 0), Python includes it (0 < 120 → true, slice to 1) while TS skips it (0 is not > 0). Edge-case only — unlikely in real weather descriptions. | Open |
+| P5-3 | Medium | `TelegramFormatter.formatCurrent` (`src/formatters/telegram.ts:115-125`) checks `if (wind || data.wind_speed != null)` but `wind` is assigned from `data.wind_description ?? null`. If `data.wind_description` is an empty string `""`, JS truthiness makes `wind` falsy, falling through to the `wind_speed` branch — which is correct parity with Python's `data.wind_str and data.wind_str != "N/A"` (empty string is falsy in Python too). However, the TS code also does `data.wind_speed as number` on line 122 without a runtime guard — if `wind_speed` is `undefined` and `wind_description` is `""`, we'd hit `Math.round(undefined)` → `NaN`. This can't happen in practice because the outer `if` ensures at least one of `wind` or `wind_speed` is truthy/non-null, but the `as number` cast bypasses type-safety silently. | Open |
+| P5-4 | Low | `roundTemp` in `src/utils.ts:247` is exported but unused by any current consumer — formatters use `Math.round` directly via `formatTempC` / `formatTempBare`. Dead export. | Open |
+| P5-5 | Low | `SendResult` in `src/types.ts` added `metadata?: Record<string, unknown>` but Python's `SendResult` dataclass also has `__bool__` returning `self.success`. TS `SendResult` has no equivalent — callers must check `.success` explicitly. Not a parity bug (TS convention), but worth noting for anyone comparing structs. | Open |
+| P5-6 | Low | `TelegramSender` in `src/senders/telegram.ts` does not implement `send_with_retry` (Python's `WeatherSender.send_with_retry` in `base.py`). Not required for v0.1 parity (Python's `TelegramSender` doesn't override it either — it inherits the default), but the base-class retry helper is absent on the TS side entirely. | Open |
+| P5-7 | Low | `CliTextFormatter.formatForecast` (`src/formatters/cli_text.ts:89-91`) uses `day.description || day.condition_raw || day.condition` for the condition text. Python uses `day.description or day.condition_raw or str(day.condition.value)`. The TS version falls through to `day.condition` which is the enum **value** (e.g. `"partly_cloudy"`) while Python gets `"Partly Cloudy"` via `.value.title()`. This means the CLI text forecast falls through to a snake_case string when both `description` and `condition_raw` are absent, while Python would show a title-cased version. Minor cosmetic divergence. | Open |
+| P5-8 | Low | `WhatsAppFormatter.formatCurrent` (`src/formatters/whatsapp.ts:80-86`) checks `if (data.wind_description || data.wind_speed != null)` but Python's whatsapp.py checks `if data.wind_str and data.wind_str != "N/A"`. The TS version doesn't filter out "N/A" wind strings — it only checks `wind_description` (which maps to `wind_str` in Python). If `wind_description` is `"N/A"` somehow, TS would render `"💨 Wind: N/A"` while Python would skip the line. Actual risk is near-zero because `wind_description` comes from provider-processed data, not `windStr()`. | Open |
+
+**Verified correct in Phase 5:**
+- `MDV2_ESCAPE_CHARS` character set matches Python's `r'_*[]()~`>#+-=|{}.!'` exactly — verified char-by-char
+- `escapeMdv2()` iterates character-by-character with `Set.has()` lookup — byte-identical behavior to Python's `for char in text: if char in MDV2_ESCAPE_CHARS`
+- All three formatters' `platform` strings ("text", "telegram", "whatsapp") match Python
+- `BaseFormatter` abstract class mirrors `WeatherFormatter` ABC: `format()` dispatches on `Array.isArray(data)`, `truncate()` uses same logic
+- `TelegramFormatter.formatCurrent` matches Python's escaping placement: location, date, description/condition, wind, AQ quality, UV desc, sunrise/sunset, summary — all escaped
+- `TelegramFormatter.formatCurrent` AQ fallback `🌬️ Air Quality: Data unavailable` matches Python when both `aqhi` and `aqi` are null — WhatsApp correctly omits this fallback (parity-preserving asymmetry)
+- `WhatsAppFormatter` uses `*bold*` and `_italic_` syntax with no escaping — matches Python
+- `generateSummary` condition map (`CONDITION_SKY`) matches Python's `condition_desc` dict entry-for-entry
+- `generateSummary` activity suggestion chain (wet → sunny+hot → humid) matches Python's if/elif order
+- `aqhiQuality`, `aqiQuality`, `uvDescription` thresholds all match Python helpers exactly
+- `conditionTitle` splits on `_` and title-cases each word — matches `condition.value.title()`
+- `truncateDescription` first-sentence / 117+3 truncation logic matches Python's inline pattern
+- `truncateMessage` mirrors `WeatherFormatter.truncate()` in `base.py`
+- Date formatting: `formatLongDate`, `formatShortDate`, `formatIsoDate` use lookup tables to avoid `Intl.DateTimeFormat` — correct approach
+- `TelegramSender` uses `fetch` + `AbortSignal.timeout(30s)` — no subprocess/shell-out, matching Python's urllib migration
+- `TelegramSender` constructor token resolution: `init.bot_token ?? process.env.TELEGRAM_BOT_TOKEN` — matches Python's `bot_token or os.environ.get("TELEGRAM_BOT_TOKEN")`
+- `TelegramSender.send` payload construction uses conditional spread (`...(topicId != null ? { message_thread_id: topicId } : {})`) — matches Python's conditional `if topic_id: payload["message_thread_id"] = topic_id`
+- `TelegramSender.send` success path returns `metadata: { chat_id: chatId }` — matches Python's `metadata={"chat_id": target_chat}`
+- `TelegramSender.send` error paths: no chat_id, HTTP error, generic exception — all match Python's error returns
+- `SendResult.metadata` field matches Python's `SendResult.metadata` dataclass field
+- `FormatterError` and `SenderError` classes match Python's counterparts
+- `buildFormatters()` registers all three formatters unconditionally — matches Python's `_build_formatters()`
+- `buildSenders()` registers Telegram only when `TELEGRAM_BOT_TOKEN` is set — matches Python's `_build_senders()`
+- `src/index.ts` re-exports all new public symbols
+- `bun run typecheck` → 0 errors
+- `pytest` → 69/69 pass (zero regressions)
 
 ---
 
