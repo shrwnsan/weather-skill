@@ -127,14 +127,22 @@ export function normalizeLocation(location: string): string {
 }
 
 /**
- * Construct a `Location` object from a free-form input string. Sets
- * `normalized` to the lower-cased, trimmed form (mirrors Python's
- * `Location.__post_init__`).
+ * Construct a `Location` object from a free-form input string.
+ *
+ * Mirrors `WeatherSkill.parse_location()` in `weather/skill.py`:
+ * applies `normalizeLocation()` so `LOCATION_ALIASES` resolves
+ * shortcuts like "hk" → "Hong Kong" and "nyc" → "New York" before
+ * the value reaches any provider's `supportsLocation()` check.
+ *
+ * The lower-case form is then used as the `normalized` field so
+ * provider lookups (which all compare against lower-case keys) work
+ * uniformly regardless of input casing.
  */
 export function parseLocation(raw: string): Location {
+  const resolved = normalizeLocation(raw);
   return {
     raw,
-    normalized: raw.toLowerCase().trim(),
+    normalized: resolved.toLowerCase().trim(),
   };
 }
 

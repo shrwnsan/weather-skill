@@ -19,6 +19,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `src/types.ts` — `WeatherCondition` enum (20 values) and snake_case `WeatherData` / `Location` / `IWeatherProvider` / `IWeatherFormatter` / `IWeatherSender` interfaces matching Python's `dataclasses.asdict()` output exactly. Includes `ProviderError`, `LocationNotSupportedError`, `NoProviderError` parity with Python.
 - `src/data-loader.ts` — typed accessors for every JSON file under `weather/data/` (3 top-level + 4 city + 14 condition maps). Uses bundled JSON imports so files are embedded into `bun build --compile` output instead of read from disk at runtime.
 - `src/models.ts` — helper functions mirroring `WeatherData` properties (`humidityStr`, `windStr`, `tempRangeStr`, `aqhiStr`, `aqiStr`, `effectiveFeelsLike`, `calculateFeelsLike`) and module-level `normalizeLocation`, `parseLocation`, `getEmoji`, `makeWeatherData`.
+- **Bun providers — batch 1 + OpenWeatherMap** (PRD-002 Phase 3) — TypeScript ports of the 4 v0.1 regional providers and the global fallback:
+  - `src/providers/hko.ts` — Hong Kong Observatory (priority 1, AQHI support, `pic{N}.png` icon → `WeatherCondition` mapping, PSR rain probability map).
+  - `src/providers/jma.ts` — Japan Meteorological Agency (priority 3, dual forecast + overview endpoints, parallel `Promise.all`, 3-level nested `timeSeries` traversal, `User-Agent: WeatherSkill/1.0`).
+  - `src/providers/sg_nea.ts` — Singapore NEA (priority 2, partial-failure-tolerant parallel fetch via `fetchJsonSafe`, PSI air-quality, 4-day default forecast, `User-Agent: WeatherSkill/1.0`).
+  - `src/providers/us_nws.ts` — US National Weather Service (`name = "nws"`, priority 7, multi-step `/points` → forecast/observation flow, F→C and m/s→km/h unit conversions, `User-Agent: WeatherSkill/1.0 (support@weather-skill.io)` required to avoid HTTP 403).
+  - `src/providers/openweathermap.ts` — OpenWeatherMap global fallback (priority 10, `q={city}` query path, today's high/low aggregated from 3-hourly forecast, daily forecast aggregation by UTC date with mode-aggregated condition codes, optional air-quality endpoint with US-EPA scale mapping).
+- `src/skill.ts` — `WeatherSkill` orchestrator class with `getCurrent` / `getForecast` / `format` / `send`, provider-chain priority routing, `ProviderError` accumulation across retries, plain-text fallback formatter (mirrors `weather/skill.py`).
+- `src/bootstrap.ts` — `buildDefaultSkill()` factory that registers the 4 batch-1 providers unconditionally and OpenWeatherMap iff `OPENWEATHERMAP_API_KEY` is set (mirrors `weather/bootstrap.py`). Formatter/sender maps return empty until Phase 5.
+- `src/index.ts` — public package entry point; re-exports orchestrator, factory, types, providers, and model helpers from a single module.
 
 ## [0.2.1] - 2026-04-17
 

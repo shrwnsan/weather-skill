@@ -511,7 +511,7 @@ bun -e 'import { calculateFeelsLike } from "./src/models"; console.log(calculate
 
 All 5 provider tasks are independent and can be assigned to 5 different agents.
 
-### Task 3.1 — Port HKOProvider
+### Task 3.1 ✅ — Port HKOProvider
 
 **File:** `src/providers/hko.ts`
 **Reference:** [`weather/providers/hko.py`](file:///Users/karma/Developer/personal/weather-skill/weather/providers/hko.py)
@@ -533,7 +533,7 @@ bun -e 'import { HKOProvider } from "./src/providers/hko"; const p = new HKOProv
 
 ---
 
-### Task 3.2 — Port JMAProvider
+### Task 3.2 ✅ — Port JMAProvider
 
 **File:** `src/providers/jma.ts`
 **Reference:** [`weather/providers/jma.py`](file:///Users/karma/Developer/personal/weather-skill/weather/providers/jma.py)
@@ -554,7 +554,7 @@ bun -e 'import { JMAProvider } from "./src/providers/jma"; const p = new JMAProv
 
 ---
 
-### Task 3.3 — Port SGNEAProvider
+### Task 3.3 ✅ — Port SGNEAProvider
 
 **File:** `src/providers/sg_nea.ts`
 **Reference:** [`weather/providers/sg_nea.py`](file:///Users/karma/Developer/personal/weather-skill/weather/providers/sg_nea.py)
@@ -574,7 +574,7 @@ bun -e 'import { SGNEAProvider } from "./src/providers/sg_nea"; const p = new SG
 
 ---
 
-### Task 3.4 — Port NWSProvider
+### Task 3.4 ✅ — Port NWSProvider
 
 **File:** `src/providers/us_nws.ts`
 **Reference:** [`weather/providers/us_nws.py`](file:///Users/karma/Developer/personal/weather-skill/weather/providers/us_nws.py)
@@ -595,7 +595,7 @@ bun -e 'import { NWSProvider } from "./src/providers/us_nws"; const p = new NWSP
 
 ---
 
-### Task 3.5 — Port OpenWeatherMapProvider
+### Task 3.5 ✅ — Port OpenWeatherMapProvider
 
 **File:** `src/providers/openweathermap.ts`
 **Reference:** [`weather/providers/openweathermap.py`](file:///Users/karma/Developer/personal/weather-skill/weather/providers/openweathermap.py)
@@ -615,9 +615,9 @@ OPENWEATHERMAP_API_KEY=xxx bun -e 'import { OpenWeatherMapProvider } from "./src
 
 ---
 
-### Task 3.6 — Wire providers into `src/bootstrap.ts`
+### Task 3.6 ✅ — Wire providers into `src/bootstrap.ts`
 
-**File:** `src/bootstrap.ts`
+**Files:** `src/bootstrap.ts`, `src/skill.ts`, `src/index.ts`
 **Depends on:** 3.1, 3.2, 3.3, 3.4, 3.5
 **Parallel:** no
 
@@ -627,10 +627,18 @@ OPENWEATHERMAP_API_KEY=xxx bun -e 'import { OpenWeatherMapProvider } from "./src
 2. Sort by `priority`.
 3. Export `WeatherSkill` class with same interface as Python.
 
+**Implementation notes:**
+
+- `src/skill.ts` contains the `WeatherSkill` orchestrator (mirrors `weather/skill.py`): `getCurrent`, `getForecast`, `format`, `send`, `addProvider`, `addFormatter`, `addSender`, plus read-only `providers` / `platforms` / `channels` views. Includes a built-in plain-text fallback formatter for the case where no formatter is registered for the requested platform (matches Python's `_format_simple`).
+- `src/index.ts` is the public package entry point (`main` in `package.json`); re-exports the orchestrator, factory, types, providers, and model helpers.
+- `buildFormatters()` and `buildSenders()` return empty maps for now. Phase 5 will populate them with `CliTextFormatter`, `TelegramFormatter`, `WhatsAppFormatter`, and `TelegramSender`.
+
 **Verify:**
 ```bash
 bun -e 'import { buildDefaultSkill } from "./src/bootstrap"; const s = buildDefaultSkill(); console.log(s.providers.map(p => p.name))'
-# Expected: ["hko","sg_nea","jma","us_nws"]  (+ "openweathermap" if API key set)
+# Expected: ["hko","sg_nea","jma","nws"]  (+ "openweathermap" if API key set)
+# Note: the US provider's `name` is "nws" (matches Python — see weather/providers/us_nws.py:71),
+# even though the file is `src/providers/us_nws.ts`.
 ```
 
 ---
