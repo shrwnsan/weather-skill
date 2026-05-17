@@ -645,7 +645,7 @@ bun -e 'import { buildDefaultSkill } from "./src/bootstrap"; const s = buildDefa
 
 ## Phase 5: Bun Formatters + Sender
 
-### Task 5.1 — Create `src/utils.ts` (shared formatter helpers)
+### Task 5.1 ✅ — Create `src/utils.ts` (shared formatter helpers)
 
 **File:** `src/utils.ts`
 **Depends on:** Phase 2
@@ -665,7 +665,7 @@ bun -e 'import { aqhiQuality } from "./src/utils"; console.log(aqhiQuality(5))' 
 
 ---
 
-### Task 5.2 — Port CliTextFormatter
+### Task 5.2 ✅ — Port CliTextFormatter
 
 **File:** `src/formatters/cli_text.ts`
 **Reference:** [`weather/formatters/cli_text.py`](file:///Users/karma/Developer/personal/weather-skill/weather/formatters/cli_text.py)
@@ -678,7 +678,7 @@ Implement `CliTextFormatter implements IWeatherFormatter` with `platform = "text
 
 ---
 
-### Task 5.3 — Port TelegramFormatter
+### Task 5.3 ✅ — Port TelegramFormatter
 
 **File:** `src/formatters/telegram.ts`
 **Reference:** [`weather/formatters/telegram.py`](file:///Users/karma/Developer/personal/weather-skill/weather/formatters/telegram.py)
@@ -693,7 +693,7 @@ Implement `CliTextFormatter implements IWeatherFormatter` with `platform = "text
 
 ---
 
-### Task 5.4 — Port WhatsAppFormatter
+### Task 5.4 ✅ — Port WhatsAppFormatter
 
 **File:** `src/formatters/whatsapp.ts`
 **Reference:** [`weather/formatters/whatsapp.py`](file:///Users/karma/Developer/personal/weather-skill/weather/formatters/whatsapp.py)
@@ -706,7 +706,7 @@ Implement `WhatsAppFormatter`.
 
 ---
 
-### Task 5.5 — Port TelegramSender
+### Task 5.5 ✅ — Port TelegramSender
 
 **File:** `src/senders/telegram.ts`
 **Reference:** [`weather/senders/telegram.py`](file:///Users/karma/Developer/personal/weather-skill/weather/senders/telegram.py)

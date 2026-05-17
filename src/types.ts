@@ -154,12 +154,18 @@ export interface SendOptions {
 
 /**
  * Result of a sender call.
+ *
+ * Mirrors `SendResult` in `weather/senders/base.py`. The Python
+ * dataclass does not include a `channel` field — that field is a
+ * TypeScript convenience used by the WeatherSkill fallback path
+ * when no sender is registered.
  */
 export interface SendResult {
   success: boolean;
   channel: string;
   message_id?: string | number;
   error?: string;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -191,5 +197,27 @@ export class NoProviderError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "NoProviderError";
+  }
+}
+
+/**
+ * Errors raised by formatters. Mirrors `FormatterError` in
+ * `weather/formatters/base.py`.
+ */
+export class FormatterError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "FormatterError";
+  }
+}
+
+/**
+ * Errors raised by senders. Mirrors `SenderError` in
+ * `weather/senders/base.py`.
+ */
+export class SenderError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SenderError";
   }
 }

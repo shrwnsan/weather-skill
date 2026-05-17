@@ -10,16 +10,21 @@
  * KMA, TMD) are deferred to PRD-002b and will be wired here when their
  * Bun ports land.
  *
- * Formatters and senders are not yet ported (Phase 5). The
- * `WeatherSkill` falls back to a built-in plain-text formatter when
- * none is registered.
+ * Formatters: CLI text, Telegram (MarkdownV2), and WhatsApp are
+ * registered unconditionally. The Telegram sender is registered only
+ * when `TELEGRAM_BOT_TOKEN` is present in the environment, matching
+ * the gating in `weather/bootstrap.py`.
  */
 
+import { CliTextFormatter } from "./formatters/cli_text.js";
+import { TelegramFormatter } from "./formatters/telegram.js";
+import { WhatsAppFormatter } from "./formatters/whatsapp.js";
 import { HKOProvider } from "./providers/hko.js";
 import { JMAProvider } from "./providers/jma.js";
 import { OpenWeatherMapProvider } from "./providers/openweathermap.js";
 import { SGNEAProvider } from "./providers/sg_nea.js";
 import { NWSProvider } from "./providers/us_nws.js";
+import { TelegramSender } from "./senders/telegram.js";
 import { WeatherSkill, type WeatherSkillInit } from "./skill.js";
 import type {
   IWeatherFormatter,
@@ -61,17 +66,28 @@ function buildProviders(): IWeatherProvider[] {
 }
 
 /**
- * Construct the default formatter map. Empty until Phase 5 ports
- * `CliTextFormatter`, `TelegramFormatter`, and `WhatsAppFormatter`.
+ * Construct the default formatter map. Mirrors
+ * `weather/bootstrap.py:_build_formatters`. All three formatters are
+ * registered unconditionally — they have no configuration.
  */
 function buildFormatters(): Record<string, IWeatherFormatter> {
-  return {};
+  return {
+    text: new CliTextFormatter(),
+    telegram: new TelegramFormatter(),
+    whatsapp: new WhatsAppFormatter(),
+  };
 }
 
 /**
- * Construct the default sender map from environment. Empty until
- * Phase 5 ports `TelegramSender`.
+ * Construct the default sender map from environment. Mirrors
+ * `weather/bootstrap.py:_build_senders` — Telegram registers only when
+ * `TELEGRAM_BOT_TOKEN` is set so `TelegramSender`'s constructor cannot
+ * throw during default bootstrap.
  */
 function buildSenders(): Record<string, IWeatherSender> {
-  return {};
+  const senders: Record<string, IWeatherSender> = {};
+  if (process.env.TELEGRAM_BOT_TOKEN) {
+    senders["telegram"] = new TelegramSender();
+  }
+  return senders;
 }
