@@ -2,7 +2,7 @@
 
 **PRD:** `docs/prd-002-bun-runtime-support.md`
 **Created:** 2026-05-12
-**Last reviewed:** 2026-05-12
+**Last reviewed:** 2026-05-17
 **Scope:** v0.1 (Bun port for HKO, JMA, SG NEA, US NWS, OpenWeatherMap)
 
 ## Conventions
@@ -724,7 +724,7 @@ Implement `WhatsAppFormatter`.
 
 ## Phase 6: Bun CLI + Compiled Binary
 
-### Task 6.1 — Implement `src/cli.ts` with arg parsing
+### Task 6.1 ✅ — Implement `src/cli.ts` with arg parsing
 
 **File:** `src/cli.ts`
 **Depends on:** Phase 3, Phase 5
@@ -746,7 +746,7 @@ bun run src/cli.ts --location "Hong Kong" --format json | jq .temperature
 
 ---
 
-### Task 6.2 — Build compiled binary + verify size
+### Task 6.2 ✅ — Build compiled binary + verify size
 
 **Depends on:** 6.1
 **Parallel:** no
