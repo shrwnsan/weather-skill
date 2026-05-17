@@ -76,13 +76,17 @@ export class WhatsAppFormatter extends BaseFormatter {
       lines.push(`💧 Humidity: ${data.humidity}%`);
     }
 
-    // Wind
+    // Wind — mirror Python's `if data.wind_str and data.wind_str != "N/A"`.
+    // The literal `"N/A"` filter is defensive: real providers never feed
+    // it in, but a hand-built `wind_description` could.
     if (data.wind_description || data.wind_speed != null) {
       const w = data.wind_description
         ? data.wind_description
         : `${Math.round(data.wind_speed as number)} km/h${data.wind_direction ? " " + data.wind_direction : ""}`;
-      const trimmed = w.replace(/\.+$/, "");
-      lines.push(`💨 Wind: ${trimmed}`);
+      if (w !== "N/A") {
+        const trimmed = w.replace(/\.+$/, "");
+        lines.push(`💨 Wind: ${trimmed}`);
+      }
     }
 
     if (data.precipitation_chance != null) {

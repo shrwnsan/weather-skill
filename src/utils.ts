@@ -238,17 +238,6 @@ export function conditionTitle(condition: WeatherCondition): string {
 }
 
 /**
- * Round a number toward zero with Python's `format(x, ".0f")` rules
- * (which uses banker's-rounding-free half-away-from-zero). JS
- * `Math.round` rounds half toward +infinity; for non-negative weather
- * values the two agree, so `Math.round` is sufficient. Exported for
- * formatter call-sites that want a single canonical helper.
- */
-export function roundTemp(n: number): number {
-  return Math.round(n);
-}
-
-/**
  * Format temperature as `"NN°C"` matching Python's `f"{x:.0f}°C"`.
  */
 export function formatTempC(n: number): string {

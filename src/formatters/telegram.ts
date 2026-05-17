@@ -111,17 +111,15 @@ export class TelegramFormatter extends BaseFormatter {
       lines.push(`💧 Humidity: ${data.humidity}%`);
     }
 
-    // Wind
-    const wind = data.wind_description ?? null;
-    if (wind || data.wind_speed != null) {
-      // Reuse models.windStr equivalent inline so we don't depend on
-      // the "N/A" sentinel — mirror the Python check
-      // `data.wind_str and data.wind_str != "N/A"`.
-      const w = wind
-        ? wind
+    // Wind — mirror Python's `if data.wind_str and data.wind_str != "N/A"`.
+    if (data.wind_description || data.wind_speed != null) {
+      const w = data.wind_description
+        ? data.wind_description
         : `${Math.round(data.wind_speed as number)} km/h${data.wind_direction ? " " + data.wind_direction : ""}`;
-      const trimmed = w.replace(/\.+$/, "");
-      lines.push(`💨 Wind: ${escapeMdv2(trimmed)}`);
+      if (w !== "N/A") {
+        const trimmed = w.replace(/\.+$/, "");
+        lines.push(`💨 Wind: ${escapeMdv2(trimmed)}`);
+      }
     }
 
     if (data.precipitation_chance != null) {
