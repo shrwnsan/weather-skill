@@ -64,9 +64,11 @@ if want sg_nea "$@"; then
 fi
 
 if want us_nws "$@"; then
-    echo "== US NWS (New York: 40.7128,-74.0060) =="
+    echo "== US NWS (New York: 40.7128,-74.006) =="
     # Chain: points -> observationStations -> observations/latest, +forecast.
-    fetch "https://api.weather.gov/points/40.7128,-74.0060" \
+    # NOTE: The manifest URL must match what the code generates
+    # (40.7128,-74.006 without trailing zero), not the API's raw format.
+    fetch "https://api.weather.gov/points/40.7128,-74.006" \
           "$FIX/us_nws/points.json"
     stations_url=$(python3 -c "import json;print(json.load(open('$FIX/us_nws/points.json'))['properties']['observationStations'])")
     forecast_url=$(python3 -c "import json;print(json.load(open('$FIX/us_nws/points.json'))['properties']['forecast'])")

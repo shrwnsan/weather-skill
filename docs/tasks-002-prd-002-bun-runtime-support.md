@@ -785,7 +785,7 @@ file weather-linux-x64
 
 ---
 
-### Task 7.2 — Python mock infrastructure (`tests/conftest.py`)
+### Task 7.2 ✅ — Python mock infrastructure (`tests/conftest.py`)
 
 **File:** `tests/conftest.py`
 **Depends on:** 7.1
@@ -800,7 +800,7 @@ file weather-linux-x64
 
 ---
 
-### Task 7.3 — Bun mock infrastructure (`test/setup.ts`)
+### Task 7.3 ✅ — Bun mock infrastructure (`test/setup.ts`)
 
 **File:** `test/setup.ts`
 **Depends on:** 7.1
