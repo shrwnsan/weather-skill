@@ -1,0 +1,119 @@
+{
+    "code": 0,
+    "data": {
+        "records": [
+            {
+                "date": "2026-05-18",
+                "updatedTimestamp": "2026-05-18T05:31:06+08:00",
+                "forecasts": [
+                    {
+                        "temperature": {
+                            "high": 34,
+                            "low": 25,
+                            "unit": "Degrees Celsius"
+                        },
+                        "relativeHumidity": {
+                            "high": 95,
+                            "unit": "Percentage",
+                            "low": 60
+                        },
+                        "wind": {
+                            "direction": "VARIABLE",
+                            "speed": {
+                                "low": 5,
+                                "high": 15
+                            }
+                        },
+                        "forecast": {
+                            "text": "Thundery Showers",
+                            "summary": "Afternoon thundery showers",
+                            "code": "TL"
+                        },
+                        "day": "Tuesday",
+                        "timestamp": "2026-05-19T00:00:00+08:00"
+                    },
+                    {
+                        "wind": {
+                            "direction": "VARIABLE",
+                            "speed": {
+                                "low": 5,
+                                "high": 15
+                            }
+                        },
+                        "day": "Wednesday",
+                        "timestamp": "2026-05-20T00:00:00+08:00",
+                        "forecast": {
+                            "code": "TL",
+                            "summary": "Late morning and early afternoon thundery showers",
+                            "text": "Thundery Showers"
+                        },
+                        "temperature": {
+                            "unit": "Degrees Celsius",
+                            "low": 24,
+                            "high": 33
+                        },
+                        "relativeHumidity": {
+                            "low": 65,
+                            "unit": "Percentage",
+                            "high": 95
+                        }
+                    },
+                    {
+                        "relativeHumidity": {
+                            "low": 60,
+                            "unit": "Percentage",
+                            "high": 95
+                        },
+                        "wind": {
+                            "direction": "SSE",
+                            "speed": {
+                                "low": 5,
+                                "high": 15
+                            }
+                        },
+                        "day": "Thursday",
+                        "forecast": {
+                            "text": "Thundery Showers",
+                            "summary": "Afternoon thundery showers",
+                            "code": "TL"
+                        },
+                        "temperature": {
+                            "low": 25,
+                            "unit": "Degrees Celsius",
+                            "high": 34
+                        },
+                        "timestamp": "2026-05-21T00:00:00+08:00"
+                    },
+                    {
+                        "forecast": {
+                            "summary": "Morning thundery showers",
+                            "text": "Thundery Showers",
+                            "code": "TL"
+                        },
+                        "temperature": {
+                            "low": 24,
+                            "unit": "Degrees Celsius",
+                            "high": 33
+                        },
+                        "day": "Friday",
+                        "timestamp": "2026-05-22T00:00:00+08:00",
+                        "relativeHumidity": {
+                            "unit": "Percentage",
+                            "low": 60,
+                            "high": 95
+                        },
+                        "wind": {
+                            "speed": {
+                                "low": 5,
+                                "high": 15
+                            },
+                            "direction": "SE"
+                        }
+                    }
+                ],
+                "timestamp": "2026-05-18T05:19:00+08:00"
+            }
+        ]
+    },
+    "errorMsg": ""
+}

@@ -1,0 +1,14 @@
+{
+  "provider": "us_nws",
+  "description": "US National Weather Service. New York fixture (lat 40.7128, lon -74.0060). The /points response yields gridpoint URLs for stations and forecast; stations response yields the station identifier (KNYC) for observations. All four URLs must be served by the mock for getCurrent + getForecast to complete.",
+  "captured_at": "2026-05-18",
+  "headers_required": {
+    "User-Agent": "WeatherSkill/1.0 (support@weather-skill.io)"
+  },
+  "urls": {
+    "https://api.weather.gov/points/40.7128,-74.0060": "points.json",
+    "https://api.weather.gov/gridpoints/OKX/33,42/stations": "stations.json",
+    "https://api.weather.gov/stations/KNYC/observations/latest": "observations.json",
+    "https://api.weather.gov/gridpoints/OKX/33,42/forecast": "forecast.json"
+  }
+}

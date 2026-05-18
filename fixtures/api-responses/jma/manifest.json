@@ -1,0 +1,9 @@
+{
+  "provider": "jma",
+  "description": "Japan Meteorological Agency. Tokyo area code 130000. Forecast and overview endpoints are fetched in parallel.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json": "forecast-130000.json",
+    "https://www.jma.go.jp/bosai/forecast/data/overview_forecast/130000.json": "overview-130000.json"
+  }
+}

@@ -1,0 +1,130 @@
+{
+    "code": 0,
+    "data": {
+        "records": [
+            {
+                "date": "2026-05-18",
+                "updatedTimestamp": "2026-05-18T05:41:08+08:00",
+                "general": {
+                    "wind": {
+                        "direction": "VARIABLE",
+                        "speed": {
+                            "high": 15,
+                            "low": 5
+                        }
+                    },
+                    "temperature": {
+                        "low": 25,
+                        "high": 33,
+                        "unit": "Degrees Celsius"
+                    },
+                    "validPeriod": {
+                        "end": "2026-05-19T06:00:00+08:00",
+                        "start": "2026-05-18T06:00:00+08:00",
+                        "text": "6 AM 18 May to 6 AM 19 May"
+                    },
+                    "relativeHumidity": {
+                        "high": 95,
+                        "unit": "Percentage",
+                        "low": 60
+                    },
+                    "forecast": {
+                        "text": "Thundery Showers",
+                        "code": "TL"
+                    }
+                },
+                "periods": [
+                    {
+                        "timePeriod": {
+                            "start": "2026-05-18T06:00:00+08:00",
+                            "end": "2026-05-18T12:00:00+08:00",
+                            "text": "6 am to Midday 18 May"
+                        },
+                        "regions": {
+                            "east": {
+                                "code": "CL",
+                                "text": "Cloudy"
+                            },
+                            "south": {
+                                "code": "CL",
+                                "text": "Cloudy"
+                            },
+                            "central": {
+                                "text": "Cloudy",
+                                "code": "CL"
+                            },
+                            "west": {
+                                "code": "CL",
+                                "text": "Cloudy"
+                            },
+                            "north": {
+                                "text": "Cloudy",
+                                "code": "CL"
+                            }
+                        }
+                    },
+                    {
+                        "timePeriod": {
+                            "start": "2026-05-18T12:00:00+08:00",
+                            "text": "Midday to 6 pm 18 May",
+                            "end": "2026-05-18T18:00:00+08:00"
+                        },
+                        "regions": {
+                            "north": {
+                                "code": "TL",
+                                "text": "Thundery Showers"
+                            },
+                            "south": {
+                                "code": "TL",
+                                "text": "Thundery Showers"
+                            },
+                            "east": {
+                                "code": "TL",
+                                "text": "Thundery Showers"
+                            },
+                            "central": {
+                                "text": "Thundery Showers",
+                                "code": "TL"
+                            },
+                            "west": {
+                                "code": "TL",
+                                "text": "Thundery Showers"
+                            }
+                        }
+                    },
+                    {
+                        "regions": {
+                            "west": {
+                                "code": "CL",
+                                "text": "Cloudy"
+                            },
+                            "east": {
+                                "code": "CL",
+                                "text": "Cloudy"
+                            },
+                            "south": {
+                                "code": "CL",
+                                "text": "Cloudy"
+                            },
+                            "north": {
+                                "text": "Cloudy",
+                                "code": "CL"
+                            },
+                            "central": {
+                                "text": "Cloudy",
+                                "code": "CL"
+                            }
+                        },
+                        "timePeriod": {
+                            "end": "2026-05-19T06:00:00+08:00",
+                            "text": "6 pm 18 May to 6 am 19 May",
+                            "start": "2026-05-18T18:00:00+08:00"
+                        }
+                    }
+                ],
+                "timestamp": "2026-05-18T05:30:00+08:00"
+            }
+        ]
+    },
+    "errorMsg": ""
+}

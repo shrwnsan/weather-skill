@@ -1,0 +1,371 @@
+{
+    "FLW": {
+        "BulletinDate": "20260518",
+        "BulletinTime": "0745",
+        "GeneralSituation": "A <a title=\"Show in new window\" href=\"javascript:Wxword('0083')\">strong</a> easterly airstream is affecting the coast of Guangdong. Besides, a <a title=\"Show in new window\" href=\"javascript:Wxword('0057')\">trough</a> of low pressure is bringing <a title=\"Show in new window\" href=\"javascript:Wxword('0031')\">showers</a> to the northern part of the South China Sea.",
+        "TCInfo": null,
+        "FireDangerWarning": null,
+        "ForecastPeriod": "Weather forecast for today",
+        "ForecastDesc": "<a title=\"Show in new window\" href=\"javascript:Wxword('0003')\">Cloudy</a> with <a title=\"Show in new window\" href=\"javascript:Wxword('0015')\">a few showers</a>. The maximum temperature will be around 27 degrees during the day. <a title=\"Show in new window\" href=\"javascript:Wxword('0079')\">Moderate</a> to <a title=\"Show in new window\" href=\"javascript:Wxword('0081')\">fresh</a> east to southeasterly winds, <a title=\"Show in new window\" href=\"javascript:Wxword('0083')\">strong</a> offshore and on high ground <a title=\"Show in new window\" href=\"javascript:Wxword('0483')\">at first</a>.",
+        "OutlookTitle": "Outlook",
+        "OutlookContent": "<a title=\"Show in new window\" href=\"javascript:Wxword('0015')\">A few showers</a> tomorrow. Weather will remain unsettled in the following couple of days.",
+        "Icon1": "62",
+        "Icon2": null
+    },
+    "CMN": {
+        "SolarTerm": null,
+        "PublicHoliday": null,
+        "GregorianDate": "20260518",
+        "sunriseTime": "05:43",
+        "sunsetTime": "18:57",
+        "moonriseTime": "06:36",
+        "moonsetTime": "20:51",
+        "forecastDate": "20260518",
+        "tide": [
+            {
+                "type": "Low",
+                "time": "02:52",
+                "height": "1.1"
+            },
+            {
+                "type": "High",
+                "time": "09:47",
+                "height": "2.5"
+            },
+            {
+                "type": "Low",
+                "time": "16:49",
+                "height": "0.2"
+            },
+            {
+                "type": "High",
+                "time": "23:56",
+                "height": "1.5"
+            }
+        ]
+    },
+    "F9D": {
+        "BulletinDate": "20260518",
+        "BulletinTime": "0750",
+        "NPTemp": "24",
+        "GeneralSituation": "The easterly airstream now affecting the coast of Guangdong will be replaced by a southerly airstream gradually today and tomorrow. There will still be a few showers over the region. Under the influence of upper-air disturbances, the weather is expected to be unsettled over southern China midweek this week. With an anticyclone aloft strengthening gradually, the weather will improve and it will be persistently hot over the coast of southern China in the latter part of this week to early next week.",
+        "WeatherForecast": [
+            {
+                "ForecastDate": "20260518",
+                "ForecastWind": "East to southeast force 4 to 5, force 6 offshore and on high ground at first.",
+                "ForecastWeather": "Cloudy with a few showers.",
+                "ForecastMaxtemp": "27",
+                "ForecastMintemp": "24",
+                "ForecastMaxrh": "95",
+                "ForecastMinrh": "75",
+                "ForecastIcon": "pic62.png",
+                "PSR": "Medium Low",
+                "IconDesc": "Light Rain",
+                "WeekDay": "1"
+            },
+            {
+                "ForecastDate": "20260519",
+                "ForecastWind": "Southeast force 3 to 4.",
+                "ForecastWeather": "Mainly cloudy with a few showers.",
+                "ForecastMaxtemp": "29",
+                "ForecastMintemp": "25",
+                "ForecastMaxrh": "95",
+                "ForecastMinrh": "75",
+                "ForecastIcon": "pic62.png",
+                "PSR": "Medium",
+                "IconDesc": "Light Rain",
+                "WeekDay": "2"
+            },
+            {
+                "ForecastDate": "20260520",
+                "ForecastWind": "South to southeast force 3.",
+                "ForecastWeather": "Mainly cloudy with a few showers and isolated thunderstorms. Sunny intervals during the day.",
+                "ForecastMaxtemp": "30",
+                "ForecastMintemp": "26",
+                "ForecastMaxrh": "95",
+                "ForecastMinrh": "70",
+                "ForecastIcon": "pic54.png",
+                "PSR": "Medium",
+                "IconDesc": "Sunny Intervals with Showers",
+                "WeekDay": "3"
+            },
+            {
+                "ForecastDate": "20260521",
+                "ForecastWind": "South force 3.",
+                "ForecastWeather": "Mainly cloudy with a few showers. More showers at first with isolated thunderstorms. Sunny intervals in the afternoon.",
+                "ForecastMaxtemp": "30",
+                "ForecastMintemp": "26",
+                "ForecastMaxrh": "95",
+                "ForecastMinrh": "75",
+                "ForecastIcon": "pic62.png",
+                "PSR": "Medium High",
+                "IconDesc": "Light Rain",
+                "WeekDay": "4"
+            },
+            {
+                "ForecastDate": "20260522",
+                "ForecastWind": "South force 3 to 4.",
+                "ForecastWeather": "Sunny periods. Hot during the day. Isolated showers.",
+                "ForecastMaxtemp": "32",
+                "ForecastMintemp": "27",
+                "ForecastMaxrh": "90",
+                "ForecastMinrh": "70",
+                "ForecastIcon": "pic51.png",
+                "PSR": "Low",
+                "IconDesc": "SUNNY PERIODS",
+                "WeekDay": "5"
+            },
+            {
+                "ForecastDate": "20260523",
+                "ForecastWind": "South to southwest force 3 to 4.",
+                "ForecastWeather": "Sunny periods. Isolated showers in the morning. Hot during the day.",
+                "ForecastMaxtemp": "32",
+                "ForecastMintemp": "27",
+                "ForecastMaxrh": "90",
+                "ForecastMinrh": "70",
+                "ForecastIcon": "pic51.png",
+                "PSR": "Low",
+                "IconDesc": "SUNNY PERIODS",
+                "WeekDay": "6"
+            },
+            {
+                "ForecastDate": "20260524",
+                "ForecastWind": "South to southwest force 3 to 4.",
+                "ForecastWeather": "Sunny periods. Hot during the day.",
+                "ForecastMaxtemp": "32",
+                "ForecastMintemp": "27",
+                "ForecastMaxrh": "85",
+                "ForecastMinrh": "65",
+                "ForecastIcon": "pic51.png",
+                "PSR": "Low",
+                "IconDesc": "SUNNY PERIODS",
+                "WeekDay": "0"
+            },
+            {
+                "ForecastDate": "20260525",
+                "ForecastWind": "South to southwest force 3 to 4.",
+                "ForecastWeather": "Sunny periods. Hot during the day.",
+                "ForecastMaxtemp": "32",
+                "ForecastMintemp": "27",
+                "ForecastMaxrh": "85",
+                "ForecastMinrh": "65",
+                "ForecastIcon": "pic51.png",
+                "PSR": "Low",
+                "IconDesc": "SUNNY PERIODS",
+                "WeekDay": "1"
+            },
+            {
+                "ForecastDate": "20260526",
+                "ForecastWind": "South to southwest force 4.",
+                "ForecastWeather": "Sunny periods. Hot during the day.",
+                "ForecastMaxtemp": "32",
+                "ForecastMintemp": "27",
+                "ForecastMaxrh": "85",
+                "ForecastMinrh": "65",
+                "ForecastIcon": "pic51.png",
+                "PSR": "Low",
+                "IconDesc": "SUNNY PERIODS",
+                "WeekDay": "2"
+            }
+        ]
+    },
+    "RHRREAD": {
+        "BulletinDate": "20260518",
+        "BulletinTime": "0802",
+        "UVIndex": "0.2",
+        "Intensity": "low",
+        "hkotemp": "25",
+        "hkorh": "91",
+        "FormattedObsTime": "8 a.m."
+    },
+    "SWT": {
+        "mheadtc": "",
+        "stli": "",
+        "pre8": "",
+        "preamber": "",
+        "mhead1": "",
+        "mhead2": "",
+        "mhead3": "",
+        "smsSwt": "",
+        "tornadoReport": "",
+        "waterspoutReport": "",
+        "gustForecast": "",
+        "hotAdvisory": "",
+        "hot": ""
+    },
+    "Playlist": [
+        {
+            "title": "\u5929\u6c23\u5ee3\u64ad\u7ad9",
+            "subtitle": "\u9999\u6e2f\u5929\u6587\u53f0\u7684\u65e9\u6668\u96fb\u8996\u5929\u6c23\u7bc0\u76ee\u6bcf\u65e5\u4e0a\u5348\u7d04\u4e03\u6642\u53ca\u516b\u6642\u66f4\u65b0\uff0c\u800c\u9ec3\u660f\u7bc0\u76ee\u9022\u661f\u671f\u4e00\u81f3\u4e94\u4e0b\u5348\u7d04\u516d\u6642\u66f4\u65b0\uff0c\u65e8\u5728\u63d0\u4f9b\u4e00\u500b\u89aa\u5207\u6e9d\u901a\u6e20\u9053\uff0c\u8b93\u5e02\u6c11\u4e86\u89e3\u5929\u6c23\u8b8a\u5316\u3002\u7531\u65bc\u5929\u6c23\u77ac\u606f\u842c\u8b8a\uff0c\u6b32\u77e5\u6700\u65b0\u5929\u6c23\u8cc7\u8a0a\uff0c\u8acb\u700f\u89bd\u9999\u6e2f\u5929\u6587\u53f0\u7db2\u9801\uff1ahttps://www.weather.gov.hk \u6216 https://www.hko.gov.hk\u3002",
+            "href": "http://www.youtube.com/playlist?list=PLBdhEGSPvUGUvYi7y2oD6f9OKFVGeutUO",
+            "updated": "2026-05-18T00:00:01Z",
+            "entry_1_title": "\u65e9\u6668\u5929\u6c23\u7bc0\u76ee(05\u670818\u65e5\u4e0a\u53488\u6642) - \u79d1\u5b78\u4e3b\u4efb\u9673\u7dad\u6d35",
+            "entry_1_content": "\u9999\u6e2f\u5929\u6587\u53f0\u7684\u65e9\u6668\u96fb\u8996\u5929\u6c23\u7bc0\u76ee\u6bcf\u65e5\u4e0a\u5348\u7d04\u4e03\u6642\u53ca\u516b\u6642\u66f4\u65b0\uff0c\u800c\u9ec3\u660f\u7bc0\u76ee\u9022\u661f\u671f\u4e00\u81f3\u4e94\u4e0b\u5348\u7d04\u516d\u6642\u66f4\u65b0\uff0c\u65e8\u5728\u63d0\u4f9b\u4e00\u500b\u89aa\u5207\u6e9d\u901a\u6e20\u9053\uff0c\u8b93\u5e02\u6c11\u4e86\u89e3\u5929\u6c23\u8b8a\u5316\u3002\u7531\u65bc\u5929\u6c23\u77ac\u606f\u842c\u8b8a\uff0c\u6b32\u77e5\u6700\u65b0\u5929\u6c23\u8cc7\u8a0a\uff0c\u8acb\u700f\u89bd\u9999\u6e2f\u5929\u6587\u53f0\u7db2\u9801\uff1ahttps://www.weather.gov.hk \u6216 https://www.hko.gov.hk\u3002",
+            "entry_1_href": "http://www.youtube.com/watch?v=HY7f9djeDYM&rel=0&autoplay=1",
+            "entry_1_thumbnail": "https://i.ytimg.com/vi/HY7f9djeDYM/hqdefault.jpg",
+            "uploaded": "2026-05-18T00:00:01Z",
+            "langDesc": "In Chinese Only",
+            "hTimeWithin": "10800000"
+        },
+        {
+            "title": "\u6c23\u8c61\u51b7\u77e5\u8b58",
+            "subtitle": "",
+            "href": "http://www.youtube.com/playlist?list=PLBdhEGSPvUGVuK7fZUxHKzv51Y_2hy_hW",
+            "updated": "2026-05-08T10:30:01Z",
+            "entry_1_title": "\u897f\u5357\u5b63\u5019\u98a8",
+            "entry_1_content": "\u897f\u5357\u5b63\u5019\u98a8\u662f\u9999\u6e2f\u590f\u5b63\u7684\u5e38\u5ba2\uff0c\u6709\u6642\u66f4\u6703\u70ba\u672c\u6e2f\u5e36\u4f86\u5927\u96e8\u3002\u70ba\u751a\u9ebc\u9999\u6e2f\u590f\u5b63\u76db\u884c\u897f\u5357\u98a8\uff1f\u7b2c\u4e94\u767e\u96f6\u56db\u96c6\u300c\u6c23\u8c61\u51b7\u77e5\u8b58\u300d\u70ba\u5927\u5bb6\u4ecb\u7d39\u897f\u5357\u5b63\u5019\u98a8\u7684\u5f62\u6210\u6a5f\u5236\u3002",
+            "entry_1_href": "http://www.youtube.com/watch?v=Fr4k8dQ91rE&rel=0&autoplay=1",
+            "entry_1_thumbnail": "https://i.ytimg.com/vi/Fr4k8dQ91rE/hqdefault.jpg",
+            "uploaded": "2026-05-08T10:30:01Z",
+            "langDesc": "In Chinese Only",
+            "hTimeWithin": "10800000"
+        },
+        {
+            "title": "Central Briefing",
+            "subtitle": "Due to the limitations of internet traffic, it may sometimes take longer for the Observatory to upload or users to download the video, and users should take note of the time validity of the information provided therein.  In taking precautionary measures against inclement weather, please always refer to the latest weather forecasts and warnings issued by the Hong Kong Observatory: http://www.weather.gov.hk/",
+            "href": "http://www.youtube.com/playlist?list=PLBdhEGSPvUGWT_7z9qSdJXHxCLBHOom7p",
+            "updated": "2025-11-11T08:59:22Z",
+            "entry_1_title": "Central Briefing (5:00 pm 11 Nov) - Tong Yu Fai, Senior Scientific Officer",
+            "entry_1_content": "",
+            "entry_1_href": "http://www.youtube.com/watch?v=gwlRPRNIuKw&rel=0&autoplay=1",
+            "entry_1_thumbnail": "https://i.ytimg.com/vi/gwlRPRNIuKw/hqdefault.jpg",
+            "uploaded": "2025-11-11T08:59:22Z",
+            "langDesc": "In English",
+            "hTimeWithin": "1800000"
+        },
+        {
+            "title": "\u5929\u6587\u53f0\u6d88\u606f",
+            "subtitle": "",
+            "href": "http://www.youtube.com/playlist?list=PLBdhEGSPvUGX1EWW54Zt7XN8kFf5NQ-wb",
+            "updated": "2026-03-23T10:07:47Z",
+            "entry_1_title": "\u53f0\u9577\u9673\u6822\u7def\u535a\u58eb\u532f\u5831\u5929\u6587\u53f0\u6700\u65b0\u670d\u52d9\u53ca\u5168\u5e74\u5929\u6c23\u5c55\u671b\uff082026\u5e743\u670823\u65e5\uff09",
+            "entry_1_content": "\u9999\u6e2f\u5929\u6587\u53f0\u53f0\u9577\u9673\u6822\u7def\u535a\u58eb\u56de\u98672025\u5e74\u7684\u5929\u6c23\u72c0\u6cc1\uff0c\u4e26\u95e1\u8ff0\u5c0d\u4eca\u5e74\u672c\u6e2f\u5929\u6c23\u7684\u5c55\u671b\u4ee5\u53ca\u5929\u6587\u53f0\u7684\u6700\u65b0\u670d\u52d9\u3002",
+            "entry_1_href": "http://www.youtube.com/watch?v=cEzB-V43LGE&rel=0&autoplay=1",
+            "entry_1_thumbnail": "https://i.ytimg.com/vi/cEzB-V43LGE/hqdefault.jpg",
+            "uploaded": "2026-03-23T10:07:47Z",
+            "langDesc": "In Chinese Only",
+            "hTimeWithin": "10800000"
+        },
+        {
+            "title": "HKO Online Courses",
+            "subtitle": "",
+            "href": "http://www.youtube.com/playlist?list=PLBdhEGSPvUGX3StG6ndjoA-V0NgWoKYFJ",
+            "updated": "2024-05-24T07:14:24Z",
+            "entry_1_title": "Tropical Cyclone - Motion and Tracks (I)",
+            "entry_1_content": "The first episode of the \"Online Video Course on Tropical Cyclone\" will talk about the different motions and tracks of tropical cyclones and the principles behind.#tropical #cyclone #motion #tracks",
+            "entry_1_href": "http://www.youtube.com/watch?v=q13bLo0iajE&rel=0&autoplay=1",
+            "entry_1_thumbnail": "https://i.ytimg.com/vi/q13bLo0iajE/hqdefault.jpg",
+            "uploaded": "2024-05-24T07:14:24Z",
+            "langDesc": "In English",
+            "hTimeWithin": "10800000"
+        },
+        {
+            "title": "HKO Corporate Video",
+            "subtitle": "",
+            "href": "http://www.youtube.com/playlist?list=PLBdhEGSPvUGW-_DbzBpnjUZl6nD5XOIu6",
+            "updated": "2024-05-27T02:34:46Z",
+            "entry_1_title": "HKO Corporate Video (Updated in 2024)",
+            "entry_1_content": "The Hong Kong Observatory launches a corporate video, using the core values of the Observatory linked by the seven characters of the word \"SCIENCE\" (Serve, Care, Innovate, Enthuse, Nurture, Collaborate and Excel) to introduce the development and services of the Observatory to the public.",
+            "entry_1_href": "http://www.youtube.com/watch?v=ze3L8rveBbg&rel=0&autoplay=1",
+            "entry_1_thumbnail": "https://i.ytimg.com/vi/ze3L8rveBbg/hqdefault.jpg",
+            "uploaded": "2024-05-27T02:34:46Z",
+            "langDesc": "In English",
+            "hTimeWithin": "10800000"
+        }
+    ],
+    "FUV": {
+        "BulletinDate": "20260518",
+        "BulletinTime": "0600",
+        "ForecastTimeInfoMaxUV": "3",
+        "ForecastTimeInfoMaxUvCategory": "Moderate",
+        "ForecastTimeInfoDate": "20260518",
+        "Message": "The maximum UV Index for today will be about 3. The intensity of UV radiation will be Moderate."
+    },
+    "lightning_info": [
+        {
+            "date": "18-May-2026",
+            "time": "07:55-07:59",
+            "color": "#808080"
+        },
+        {
+            "date": "18-May-2026",
+            "time": "08:00-08:04",
+            "color": "#004080"
+        },
+        {
+            "date": "18-May-2026",
+            "time": "08:05-08:09",
+            "color": "#8000FF"
+        },
+        {
+            "date": "18-May-2026",
+            "time": "08:10-08:14",
+            "color": "#00FFFF"
+        },
+        {
+            "date": "18-May-2026",
+            "time": "08:15-08:19",
+            "color": "#DD6F00"
+        },
+        {
+            "date": "18-May-2026",
+            "time": "08:20-08:24",
+            "color": "#FF0000"
+        }
+    ],
+    "header": {
+        "festival_code": "",
+        "solar_term_code": "",
+        "dateTimeDisplay_uc": "2026\u5e745\u670818\u65e5 (\u4e00)",
+        "dateTimeDisplay_en": "18 May 2026 (Mon)",
+        "lunar_date_uc": "\u4e19\u5348, \u99ac\u5e74\u56db\u6708\u521d\u4e8c\u65e5",
+        "solar_term_uc": "",
+        "solar_term_en": "",
+        "publicholiday_uc": "",
+        "publicholiday_en": ""
+    },
+    "hko": {
+        "BulletinTime": "202605180820",
+        "Temperature": "25.2",
+        "RH": "89",
+        "HomeMaxTemperature": "27",
+        "HomeMinTemperature": "24"
+    },
+    "fcartoon": {
+        "BulletinDate": "20260518",
+        "BulletinTime": "0600",
+        "Icon1": "62",
+        "Icon2": null
+    },
+    "currwx": {
+        "btime": "202605180820",
+        "temp": "25.2",
+        "rh": "89"
+    },
+    "ahko": {
+        "date": "20240221",
+        "time": "2000",
+        "content": "",
+        "heading": "",
+        "refimg": ""
+    },
+    "UVindex15min": {
+        "recordTime": "201907181545",
+        "value": 3
+    },
+    "youtube": [
+        "7v5f8GW_Mnc",
+        "8NJUHduPnhE",
+        "4zawtw7GQdM",
+        "FEmCbiVFX0A",
+        "2EecslwoK_k",
+        "oAHFS2dLl_U",
+        "jhnEpSkEciw",
+        "8qunAHUQdRg",
+        "AfZA6d64AEs"
+    ],
+    "warninginforce": {
+        "warning": true
+    },
+    "s": "p"
+}

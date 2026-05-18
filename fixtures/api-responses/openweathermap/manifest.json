@@ -1,0 +1,11 @@
+{
+  "provider": "openweathermap",
+  "description": "OpenWeatherMap (London fixture). Capturing real responses requires a registered API key, so the URLs use `<API_KEY>` as a placeholder — the mock infrastructure (Phase 7.2 / 7.3) MUST substitute the actual key when matching incoming requests. Response files are NOT yet captured; populate by setting OPENWEATHERMAP_API_KEY and running `bash scripts/capture-fixtures.sh openweathermap`.",
+  "captured_at": null,
+  "needs_capture": true,
+  "urls": {
+    "https://api.openweathermap.org/data/2.5/weather?q=London&appid=<API_KEY>&units=metric": "weather.json",
+    "https://api.openweathermap.org/data/2.5/forecast?q=London&appid=<API_KEY>&units=metric": "forecast.json",
+    "https://api.openweathermap.org/data/2.5/air_pollution?lat=51.5074&lon=-0.1278&appid=<API_KEY>": "air-pollution.json"
+  }
+}

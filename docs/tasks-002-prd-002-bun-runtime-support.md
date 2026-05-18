@@ -767,7 +767,7 @@ file weather-linux-x64
 
 ## Phase 7: Bun Tests + Cross-Runtime Parity
 
-### Task 7.1 — Create fixtures directory + manifest format
+### Task 7.1 ✅ — Create fixtures directory + manifest format
 
 **Files:**
 - Create: `fixtures/api-responses/{hko,jma,sg_nea,us_nws,openweathermap}/manifest.json`
