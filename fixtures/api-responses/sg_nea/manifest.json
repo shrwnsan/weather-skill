@@ -1,0 +1,14 @@
+{
+  "provider": "sg_nea",
+  "description": "Singapore NEA (data.gov.sg v2 API). Current weather is reconstructed from 4 measurement endpoints; forecast uses 24-hour + 4-day endpoints. PSI is the air-quality fallback. data.gov.sg rate-limits aggressive bursts (HTTP 429), so the capture script sleeps 1s between requests.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://api-open.data.gov.sg/v2/real-time/api/air-temperature": "air-temperature.json",
+    "https://api-open.data.gov.sg/v2/real-time/api/relative-humidity": "relative-humidity.json",
+    "https://api-open.data.gov.sg/v2/real-time/api/wind-direction": "wind-direction.json",
+    "https://api-open.data.gov.sg/v2/real-time/api/wind-speed": "wind-speed.json",
+    "https://api-open.data.gov.sg/v2/real-time/api/twenty-four-hr-forecast": "24hr-forecast.json",
+    "https://api-open.data.gov.sg/v2/real-time/api/four-day-outlook": "four-day-outlook.json",
+    "https://api-open.data.gov.sg/v2/real-time/api/psi": "psi.json"
+  }
+}

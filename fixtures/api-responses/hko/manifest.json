@@ -1,0 +1,8 @@
+{
+  "provider": "hko",
+  "description": "Hong Kong Observatory. One endpoint serves current + forecast + AQHI.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://www.hko.gov.hk/wxinfo/json/one_json.xml": "one_json.json"
+  }
+}

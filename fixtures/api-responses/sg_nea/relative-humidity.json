@@ -1,0 +1,433 @@
+{
+    "code": 0,
+    "data": {
+        "stations": [
+            {
+                "id": "S117",
+                "deviceId": "S117",
+                "name": "Banyan Road",
+                "location": {
+                    "latitude": 1.2542,
+                    "longitude": 103.6741
+                }
+            },
+            {
+                "id": "S139",
+                "deviceId": "S139",
+                "name": "S139",
+                "location": {
+                    "latitude": 1.26376,
+                    "longitude": 103.61642
+                }
+            },
+            {
+                "id": "S115",
+                "deviceId": "S115",
+                "name": "Tuas South Avenue 3",
+                "location": {
+                    "latitude": 1.2938,
+                    "longitude": 103.6184
+                }
+            },
+            {
+                "id": "S137",
+                "deviceId": "S137",
+                "name": "S137",
+                "location": {
+                    "latitude": 1.2571,
+                    "longitude": 103.698
+                }
+            },
+            {
+                "id": "S116",
+                "deviceId": "S116",
+                "name": "West Coast Highway",
+                "location": {
+                    "longitude": 103.7545,
+                    "latitude": 1.2824
+                }
+            },
+            {
+                "id": "S60",
+                "deviceId": "S60",
+                "name": "Sentosa",
+                "location": {
+                    "latitude": 1.2504,
+                    "longitude": 103.8275
+                }
+            },
+            {
+                "id": "S180",
+                "deviceId": "S180",
+                "name": "S180",
+                "location": {
+                    "latitude": 1.33701,
+                    "longitude": 103.71828
+                }
+            },
+            {
+                "id": "S44",
+                "deviceId": "S44",
+                "name": "Nanyang Avenue",
+                "location": {
+                    "latitude": 1.3458,
+                    "longitude": 103.6817
+                }
+            },
+            {
+                "id": "S43",
+                "deviceId": "S43",
+                "name": "Kim Chuan Road",
+                "location": {
+                    "latitude": 1.3406,
+                    "longitude": 103.8882
+                }
+            },
+            {
+                "id": "S24",
+                "deviceId": "S24",
+                "name": "Upper Changi Road North",
+                "location": {
+                    "latitude": 1.3678,
+                    "longitude": 103.9823
+                }
+            },
+            {
+                "id": "S23",
+                "deviceId": "S23",
+                "name": "S23",
+                "location": {
+                    "longitude": 103.7119,
+                    "latitude": 1.3858
+                }
+            },
+            {
+                "id": "S06",
+                "deviceId": "S06",
+                "name": "Paya Lebar Airport",
+                "location": {
+                    "latitude": 1.357,
+                    "longitude": 103.904
+                }
+            },
+            {
+                "id": "S142",
+                "deviceId": "S142",
+                "name": "S142",
+                "location": {
+                    "longitude": 103.81918,
+                    "latitude": 1.2495
+                }
+            },
+            {
+                "id": "S143",
+                "deviceId": "S143",
+                "name": "S143",
+                "location": {
+                    "longitude": 103.90497,
+                    "latitude": 1.41047
+                }
+            },
+            {
+                "id": "S187",
+                "deviceId": "S187",
+                "name": "S187",
+                "location": {
+                    "longitude": 103.80139,
+                    "latitude": 1.32251
+                }
+            },
+            {
+                "id": "S140",
+                "deviceId": "S140",
+                "name": "S140",
+                "location": {
+                    "latitude": 1.39052,
+                    "longitude": 103.74966
+                }
+            },
+            {
+                "id": "S184",
+                "deviceId": "S184",
+                "name": "S184",
+                "location": {
+                    "latitude": 1.38256,
+                    "longitude": 103.89852
+                }
+            },
+            {
+                "id": "S141",
+                "deviceId": "S141",
+                "name": "S141",
+                "location": {
+                    "latitude": 1.38256,
+                    "longitude": 103.84619
+                }
+            },
+            {
+                "id": "S109",
+                "deviceId": "S109",
+                "name": "Ang Mo Kio Avenue 5",
+                "location": {
+                    "longitude": 103.85,
+                    "latitude": 1.3793
+                }
+            },
+            {
+                "id": "S106",
+                "deviceId": "S106",
+                "name": "Pulau Ubin",
+                "location": {
+                    "longitude": 103.9673,
+                    "latitude": 1.4168
+                }
+            },
+            {
+                "id": "S107",
+                "deviceId": "S107",
+                "name": "East Coast Parkway",
+                "location": {
+                    "latitude": 1.3133,
+                    "longitude": 103.962
+                }
+            },
+            {
+                "id": "S129",
+                "deviceId": "S129",
+                "name": "S129",
+                "location": {
+                    "longitude": 103.93969,
+                    "latitude": 1.32575
+                }
+            },
+            {
+                "id": "S104",
+                "deviceId": "S104",
+                "name": "Woodlands Avenue 9",
+                "location": {
+                    "latitude": 1.4439,
+                    "longitude": 103.7854
+                }
+            },
+            {
+                "id": "S126",
+                "deviceId": "S126",
+                "name": "S126",
+                "location": {
+                    "latitude": 1.37257,
+                    "longitude": 103.72436
+                }
+            },
+            {
+                "id": "S148",
+                "deviceId": "S148",
+                "name": "S148",
+                "location": {
+                    "latitude": 1.3715,
+                    "longitude": 103.9642
+                }
+            },
+            {
+                "id": "S127",
+                "deviceId": "S127",
+                "name": "S127",
+                "location": {
+                    "latitude": 1.30574,
+                    "longitude": 103.87817
+                }
+            },
+            {
+                "id": "S102",
+                "deviceId": "S102",
+                "name": "Semakau Island Landfill",
+                "location": {
+                    "longitude": 103.7657,
+                    "latitude": 1.1902
+                }
+            },
+            {
+                "id": "S125",
+                "deviceId": "S125",
+                "name": "S125",
+                "location": {
+                    "latitude": 1.43379,
+                    "longitude": 103.78073
+                }
+            },
+            {
+                "id": "S50",
+                "deviceId": "S50",
+                "name": "Clementi Road",
+                "location": {
+                    "longitude": 103.7762,
+                    "latitude": 1.3318
+                }
+            },
+            {
+                "id": "S111",
+                "deviceId": "S111",
+                "name": "Scotts Road",
+                "location": {
+                    "longitude": 103.8365,
+                    "latitude": 1.3106
+                }
+            },
+            {
+                "id": "S132",
+                "deviceId": "S132",
+                "name": "S132",
+                "location": {
+                    "longitude": 103.69538,
+                    "latitude": 1.33786
+                }
+            },
+            {
+                "id": "S130",
+                "deviceId": "S130",
+                "name": "S130",
+                "location": {
+                    "longitude": 103.76343,
+                    "latitude": 1.31052
+                }
+            }
+        ],
+        "readings": [
+            {
+                "timestamp": "2026-05-18T08:27:00+08:00",
+                "data": [
+                    {
+                        "stationId": "S117",
+                        "value": 85.2
+                    },
+                    {
+                        "stationId": "S139",
+                        "value": 75.9
+                    },
+                    {
+                        "stationId": "S115",
+                        "value": 87.6
+                    },
+                    {
+                        "stationId": "S137",
+                        "value": 82.5
+                    },
+                    {
+                        "stationId": "S116",
+                        "value": 81.7
+                    },
+                    {
+                        "stationId": "S60",
+                        "value": 81.7
+                    },
+                    {
+                        "stationId": "S180",
+                        "value": 87.9
+                    },
+                    {
+                        "stationId": "S44",
+                        "value": 89.8
+                    },
+                    {
+                        "stationId": "S43",
+                        "value": 84.3
+                    },
+                    {
+                        "stationId": "S24",
+                        "value": 78
+                    },
+                    {
+                        "stationId": "S23",
+                        "value": 91.7
+                    },
+                    {
+                        "stationId": "S06",
+                        "value": 88.2
+                    },
+                    {
+                        "stationId": "S142",
+                        "value": 85.5
+                    },
+                    {
+                        "stationId": "S143",
+                        "value": 89.9
+                    },
+                    {
+                        "stationId": "S187",
+                        "value": 81.8
+                    },
+                    {
+                        "stationId": "S140",
+                        "value": 90.1
+                    },
+                    {
+                        "stationId": "S184",
+                        "value": 84.9
+                    },
+                    {
+                        "stationId": "S141",
+                        "value": 82.7
+                    },
+                    {
+                        "stationId": "S109",
+                        "value": 85.3
+                    },
+                    {
+                        "stationId": "S106",
+                        "value": 90.9
+                    },
+                    {
+                        "stationId": "S107",
+                        "value": 80.8
+                    },
+                    {
+                        "stationId": "S129",
+                        "value": 97.2
+                    },
+                    {
+                        "stationId": "S104",
+                        "value": 85.8
+                    },
+                    {
+                        "stationId": "S126",
+                        "value": 85.8
+                    },
+                    {
+                        "stationId": "S148",
+                        "value": 81.9
+                    },
+                    {
+                        "stationId": "S127",
+                        "value": 91.6
+                    },
+                    {
+                        "stationId": "S102",
+                        "value": 79
+                    },
+                    {
+                        "stationId": "S125",
+                        "value": 84.7
+                    },
+                    {
+                        "stationId": "S50",
+                        "value": 85.3
+                    },
+                    {
+                        "stationId": "S111",
+                        "value": 79.1
+                    },
+                    {
+                        "stationId": "S132",
+                        "value": 80.7
+                    },
+                    {
+                        "stationId": "S130",
+                        "value": 88.1
+                    }
+                ]
+            }
+        ],
+        "readingType": "RH 1M F",
+        "readingUnit": "percentage"
+    },
+    "errorMsg": ""
+}
