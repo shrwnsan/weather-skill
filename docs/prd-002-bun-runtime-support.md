@@ -1,6 +1,6 @@
 # PRD-002: Bun Runtime Support (Dual-Package)
 
-**Status:** Draft
+**Status:** In Progress — Phases 1–6 complete; Phase 7 next
 **Created:** 2026-05-12
 **Priority:** High
 **Release Strategy:** Incremental (Option B) — v0.1 ships batch-1 providers + OpenWeatherMap fallback; batch-2 providers ship in a fast-follow PRD-002b.

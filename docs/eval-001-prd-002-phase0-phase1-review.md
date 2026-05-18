@@ -1,4 +1,4 @@
-# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 Review
+# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 Review
 
 **Reviewed commits:**
 - `67a78b6` — docs(prd-002): finalize PRD with Phase-0 decisions and add tasks file
@@ -6,8 +6,9 @@
 - `807e1fb` — feat(prd-002 phase 2): Bun/TypeScript scaffold + core types
 - `1eba637` — feat(prd-002 phase 3): port batch-1 providers + OWM to Bun
 - `b3c138e` — feat(prd-002 phase 5): port formatters + Telegram sender to Bun
+- `02421e1` — feat(prd-002 phase 6): add Bun CLI + cross-compiled binary
 
-**Date:** 2026-05-13 (updated 2026-05-16)
+**Date:** 2026-05-13 (updated 2026-05-17)
 **Status:** Open
 
 ---
@@ -113,6 +114,29 @@
 - `bun run typecheck` → 0 errors
 - `pytest` → 69/69 pass (zero regressions)
 
+## Commit 02421e1 (Phase 6 Implementation)
+
+| # | Severity | Issue | Status |
+|---|----------|-------|--------|
+| P6-1 | Medium | `parseInt` in `parseArgs` silently truncates floats (e.g. `--days=3.5` → `3`). Python's `argparse` with `type=int` rejects `"3.5"` with an error. Minor behavioral divergence — negligible for real CLI usage but fails strict parity if tested. | Fixed in `src/cli.ts` — added `parseStrictInt` helper that pre-validates with `/^-?\d+$/` before calling `parseInt`. Now `--days 3.5` errors with `argument --days: invalid int value: '3.5'`, matching Python's argparse message style. Applied to `--days` and `--topic-id`. |
+| P6-2 | Low | `--days=0` and `--days=-1` are accepted without validation. Python accepts them too (`argparse` doesn't range-check `type=int` by default). Parity-preserving, but negative days is semantically wrong for both runtimes. | WontFix (parity-preserving) — would diverge from Python. If we want a range check it has to land on both runtimes simultaneously, otherwise the parity test fails. |
+| P6-3 | Low | `run()` catch block references `args.verbose` (L263) but `args` is only assigned inside the try block after the `_help` early return. If `parseArgs` succeeds but a later line throws, `args` is in scope. However, if `parseArgs` itself threw, `args` would be undefined on L263 — but the outer catch on L196-200 returns before reaching L263, so this is unreachable. No bug. | Acknowledged — reviewer self-resolved. The early `parseArgs` catch returns before the inner try, so `args` is always assigned when the inner catch runs. No code change. |
+| P6-4 | Low | `build` script output renamed from `weather` to `weather-linux-x64`. This avoids colliding with the `weather/` Python package directory, which is the right call. However, the task spec (6.2) still references `--outfile weather` and `./weather --location`. Doc/spec should be updated to match. | Fixed in `docs/tasks-002-prd-002-bun-runtime-support.md` — Task 6.2 now references `--outfile weather-linux-x64` and `./weather-linux-x64` consistently, with a parenthetical noting the directory-collision rationale. |
+
+**Verified correct in Phase 6:**
+- `parseArgs` handles all 9 flags: `-l/--location`, `-f/--forecast`, `-d/--days`, `--format {text,telegram,whatsapp,json}`, `--send`, `--chat-id`, `--topic-id`, `--provider`, `-v/--verbose`, `-h/--help`
+- Both `--flag value` and `--flag=value` forms supported
+- Exit codes match Python: 0 (success), 1 (error), 2 (`--send` + `--format json`)
+- `--provider <unknown>` lists available providers sorted alphabetically and exits 1 — matches Python's `NoProviderError` behavior
+- `--format` validates against the same 4 choices as Python's `argparse choices=["text","telegram","whatsapp","json"]`
+- `sortKeys` recursively sorts object keys for deterministic JSON — matches Python's `json.dumps(..., sort_keys=True)`
+- `toJson` replacer handles `Date` via `toISOString()` — matches Python's `hasattr(o, "isoformat")` → `.isoformat()`
+- TS enums serialize as their string values (e.g. `WeatherCondition.Sunny` → `"sunny"`) — verified via `bun -e` test. Matches Python's enum `.value` serialization.
+- `import.meta.main` guard prevents side effects on import — correct for a dual-purpose module (importable + executable)
+- `run()` returns exit code (doesn't call `process.exit` directly) — testable from unit tests
+- `package.json` build script uses `--target=bun-linux-x64` for NanoClaw compatibility; output renamed to `weather-linux-x64`
+- Binary size: 90 MB Linux x64, 61 MB Darwin arm64 — both well under 150 MB ceiling
+
 ---
 
 ## Quick Wins
@@ -129,3 +153,5 @@ These are low-effort fixes that improve correctness:
 8. Fix JMA `getForecast` default from `days=3` to `days=7` (P3-7) ✅
 9. Remove unused `roundTemp` export from `src/utils.ts` (P5-4) ✅
 10. Add defensive `w !== "N/A"` filter to the wind block in both Bun formatters for symmetric parity with Python's whatsapp.py / telegram.py (P5-8) ✅
+11. Add `parseStrictInt` helper in `src/cli.ts` so `--days 3.5` errors instead of silently truncating to `3` (P6-1) ✅
+12. Update task 6.2 spec to reference `weather-linux-x64` outfile (P6-4) ✅

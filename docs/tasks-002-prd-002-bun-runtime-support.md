@@ -2,7 +2,7 @@
 
 **PRD:** `docs/prd-002-bun-runtime-support.md`
 **Created:** 2026-05-12
-**Last reviewed:** 2026-05-12
+**Last reviewed:** 2026-05-17
 **Scope:** v0.1 (Bun port for HKO, JMA, SG NEA, US NWS, OpenWeatherMap)
 
 ## Conventions
@@ -724,7 +724,7 @@ Implement `WhatsAppFormatter`.
 
 ## Phase 6: Bun CLI + Compiled Binary
 
-### Task 6.1 — Implement `src/cli.ts` with arg parsing
+### Task 6.1 ✅ — Implement `src/cli.ts` with arg parsing
 
 **File:** `src/cli.ts`
 **Depends on:** Phase 3, Phase 5
@@ -746,21 +746,21 @@ bun run src/cli.ts --location "Hong Kong" --format json | jq .temperature
 
 ---
 
-### Task 6.2 — Build compiled binary + verify size
+### Task 6.2 ✅ — Build compiled binary + verify size
 
 **Depends on:** 6.1
 **Parallel:** no
 
 **Steps:**
 
-1. Run `bun build src/cli.ts --compile --target=bun-linux-x64 --outfile weather`
-2. Verify `./weather --location "Hong Kong"` works on a Linux container (e.g. via `docker run --rm -v $(pwd):/w alpine /w/weather --location "Hong Kong"` — note: requires glibc, may need `--target=bun-linux-x64-musl` for Alpine).
+1. Run `bun build src/cli.ts --compile --target=bun-linux-x64 --outfile weather-linux-x64` (the outfile must NOT be `weather` — it collides with the existing `weather/` Python package directory).
+2. Verify `./weather-linux-x64 --location "Hong Kong"` works on a Linux container (e.g. via `docker run --rm -v $(pwd):/w alpine /w/weather-linux-x64 --location "Hong Kong"` — note: requires glibc, may need `--target=bun-linux-x64-musl` for Alpine).
 3. Verify size < 150MB. If larger, escalate to NanoClaw team for ceiling confirmation.
 
 **Verify:**
 ```bash
-ls -lh weather
-file weather
+ls -lh weather-linux-x64
+file weather-linux-x64
 ```
 
 ---

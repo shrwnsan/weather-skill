@@ -17,7 +17,7 @@
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "build": "bun build src/cli.ts --compile --target=bun-linux-x64 --outfile weather"
+    "build": "bun build src/cli.ts --compile --target=bun-linux-x64 --outfile weather-linux-x64"
   },
   "devDependencies": {
     "@types/bun": "latest",
