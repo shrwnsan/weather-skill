@@ -80,6 +80,15 @@ export function parseArgs(argv: string[]): CliArgs | { _help: true } {
 
   const formatChoices = new Set(["text", "telegram", "whatsapp", "json"]);
 
+  // Match Python argparse `type=int`: reject any string that isn't a
+  // clean integer (e.g. "3.5" must error, not silently truncate to 3).
+  const parseStrictInt = (s: string, flag: string): number => {
+    if (!/^-?\d+$/.test(s)) {
+      throw new Error(`argument ${flag}: invalid int value: '${s}'`);
+    }
+    return parseInt(s, 10);
+  };
+
   let i = 0;
   while (i < argv.length) {
     const raw = argv[i]!;
@@ -113,12 +122,9 @@ export function parseArgs(argv: string[]): CliArgs | { _help: true } {
         args.forecast = true;
         break;
       case "-d":
-      case "--days": {
-        const v = parseInt(next(), 10);
-        if (Number.isNaN(v)) throw new Error(`--days expects an integer`);
-        args.days = v;
+      case "--days":
+        args.days = parseStrictInt(next(), "--days");
         break;
-      }
       case "--format": {
         const v = next();
         if (!formatChoices.has(v)) {
@@ -135,12 +141,9 @@ export function parseArgs(argv: string[]): CliArgs | { _help: true } {
       case "--chat-id":
         args.chat_id = next();
         break;
-      case "--topic-id": {
-        const v = parseInt(next(), 10);
-        if (Number.isNaN(v)) throw new Error(`--topic-id expects an integer`);
-        args.topic_id = v;
+      case "--topic-id":
+        args.topic_id = parseStrictInt(next(), "--topic-id");
         break;
-      }
       case "--provider":
         args.provider = next();
         break;
