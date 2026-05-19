@@ -835,7 +835,7 @@ For each provider, write tests that:
 
 ---
 
-### Task 7.5 — Formatter tests
+### Task 7.5 ✅ — Formatter tests
 
 **Files:**
 - `test/formatters/cli_text.test.ts`
@@ -851,7 +851,7 @@ Snapshot tests for each formatter against a fixed `WeatherData` input.
 
 ---
 
-### Task 7.6 — CLI integration tests
+### Task 7.6 ✅ — CLI integration tests
 
 **File:** `test/cli.test.ts`
 **Depends on:** Phase 6, 7.3
