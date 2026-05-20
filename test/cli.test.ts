@@ -74,26 +74,63 @@ describe("CLI integration", () => {
       expect(code).toBe(0);
       expect(io.stdout).toContain("Weather for Hong Kong");
     });
+
+    test("location alias --location 'hk' routes through HKO (P7.6-2)", async () => {
+      // P3-1 fix: `parseLocation` applies `normalizeLocation` so the
+      // alias map kicks in. End-to-end CLI integration coverage for
+      // alias resolution → provider routing → data emission.
+      const code = await run(["--location", "hk", "--format", "json"]);
+      expect(code).toBe(0);
+      const parsed = JSON.parse(io.stdout);
+      expect(parsed.location).toBe("Hong Kong");
+      expect(parsed.provider_name).toBe("hko");
+    });
+
+    test("--provider hko explicitly selects HKO", async () => {
+      // Non-default provider selection — pairs with the alias test
+      // above to cover both the auto-chain and explicit-name paths.
+      const code = await run([
+        "--location", "Hong Kong",
+        "--provider", "hko",
+        "--format", "json",
+      ]);
+      expect(code).toBe(0);
+      const parsed = JSON.parse(io.stdout);
+      expect(parsed.provider_name).toBe("hko");
+    });
   });
 
   describe("json output", () => {
-    test("--format json produces sorted-key JSON", async () => {
+    test("--format json produces sorted-key JSON with the expected key set", async () => {
       const code = await run(["--location", "Hong Kong", "--format", "json"]);
       expect(code).toBe(0);
 
       const parsed = JSON.parse(io.stdout);
-      // Sorted keys: when we re-stringify with the same indent, the output
-      // must match because keys are already sorted.
-      const keys = Object.keys(parsed);
-      const sorted = [...keys].sort();
-      expect(keys).toEqual(sorted);
+
+      // P7.6-3: pin the exact key sequence the HKO fixture produces.
+      // Sorted alphabetical: catches both unsorted output AND key-spelling
+      // regressions (e.g. `wind_speed` vs `windspeed`).
+      expect(Object.keys(parsed)).toEqual([
+        "condition",
+        "condition_raw",
+        "description",
+        "fetched_at",
+        "humidity",
+        "location",
+        "observed_at",
+        "precipitation_chance",
+        "provider_name",
+        "temp_high",
+        "temp_low",
+        "temperature",
+        "uv_index",
+        "wind_description",
+      ]);
 
       expect(parsed.location).toBe("Hong Kong");
       expect(parsed.provider_name).toBe("hko");
       // Frozen clock: fetched_at must be exactly the freeze instant.
       expect(parsed.fetched_at).toBe("2026-01-01T00:00:00.000Z");
-      // Snake_case fields, no transform shim.
-      expect(parsed).toHaveProperty("condition_raw");
     });
 
     test("--format json --forecast --days 2 produces a JSON array", async () => {

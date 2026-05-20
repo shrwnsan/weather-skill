@@ -15,7 +15,7 @@ import {
   TelegramFormatter,
   escapeMdv2,
 } from "../../src/formatters/telegram.js";
-import { forecastDays, fullyPopulatedCurrent } from "./fixtures.js";
+import { aqiOnlyCurrent, forecastDays, fullyPopulatedCurrent } from "./fixtures.js";
 
 describe("TelegramFormatter", () => {
   const fmt = new TelegramFormatter();
@@ -37,10 +37,18 @@ describe("TelegramFormatter", () => {
         "🌧️ Rain chance: 70%",
         "🌬️ Air Quality: Moderate \\(AQHI 4\\)",
         "☀️ UV Index: 7.0 \\(High\\)",
+        "🌅 Sunrise: 06:30 | 🌇 Sunset: 19:45",
         "",
         "Warm humid with rain expected — perfect weather for a cozy day indoors",
       ].join("\n"),
     );
+  });
+
+  test("renders the AQI (non-AQHI) air-quality branch", () => {
+    // P7.5-3: separate branch from the AQHI line above.
+    const out = fmt.format(aqiOnlyCurrent);
+    expect(out).toContain("🌬️ Air Quality: Unhealthy \\(AQI 180\\)");
+    expect(out).not.toContain("AQHI");
   });
 
   test("formats a 2-day forecast snapshot", () => {
@@ -80,15 +88,14 @@ describe("escapeMdv2", () => {
       .toBe("It's 25°C \\(feels like 28\\)\\.");
   });
 
-  test("never double-escapes", () => {
-    // Idempotency: feeding the output back through must not add more slashes.
+  test("double-escape documents non-idempotency (P7.5-1)", () => {
+    // `escapeMdv2` is NOT idempotent — Telegram MarkdownV2 requires
+    // backslashes themselves be escaped, so a second pass DOES add
+    // more slashes. Callers must escape exactly once, never re-feed
+    // already-escaped text. This test pins that behavior.
     const once = escapeMdv2("foo. bar!");
-    const twice = escapeMdv2(once);
-    // Double-pass DOES re-escape the existing backslashes' siblings, so this
-    // is mainly here to document that callers must escape exactly once.
     expect(once).toBe("foo\\. bar\\!");
-    // The second pass adds an extra escape for `.` and `!` again because
-    // the formatter assumes raw input. Just assert the first-pass output.
+    const twice = escapeMdv2(once);
     expect(twice).not.toBe(once);
   });
 });

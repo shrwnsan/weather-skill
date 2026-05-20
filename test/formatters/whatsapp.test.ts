@@ -8,7 +8,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { WhatsAppFormatter } from "../../src/formatters/whatsapp.js";
-import { forecastDays, fullyPopulatedCurrent } from "./fixtures.js";
+import { aqiOnlyCurrent, forecastDays, fullyPopulatedCurrent } from "./fixtures.js";
 
 describe("WhatsAppFormatter", () => {
   const fmt = new WhatsAppFormatter();
@@ -30,10 +30,18 @@ describe("WhatsAppFormatter", () => {
         "🌧️ Rain chance: 70%",
         "🌬️ Air Quality: Moderate (AQHI 4)",
         "☀️ UV Index: 7.0 (High)",
+        "🌅 Sunrise: 06:30 | 🌇 Sunset: 19:45",
         "",
         "_Warm humid with rain expected — perfect weather for a cozy day indoors_",
       ].join("\n"),
     );
+  });
+
+  test("renders the AQI (non-AQHI) air-quality branch", () => {
+    // P7.5-3: separate branch from the AQHI line above.
+    const out = fmt.format(aqiOnlyCurrent);
+    expect(out).toContain("🌬️ Air Quality: Unhealthy (AQI 180)");
+    expect(out).not.toContain("AQHI");
   });
 
   test("formats a 2-day forecast snapshot", () => {
