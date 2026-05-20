@@ -1,4 +1,4 @@
-# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 Review
+# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 + Phase 7.5 + Phase 7.6 Review
 
 **Reviewed commits:**
 - `67a78b6` — docs(prd-002): finalize PRD with Phase-0 decisions and add tasks file
@@ -7,8 +7,9 @@
 - `1eba637` — feat(prd-002 phase 3): port batch-1 providers + OWM to Bun
 - `b3c138e` — feat(prd-002 phase 5): port formatters + Telegram sender to Bun
 - `02421e1` — feat(prd-002 phase 6): add Bun CLI + cross-compiled binary
+- `120c82a` — feat(prd-002 phase 7.5+7.6): add formatter + CLI integration tests
 
-**Date:** 2026-05-13 (updated 2026-05-17)
+**Date:** 2026-05-13 (updated 2026-05-19)
 **Status:** Open
 
 ---
@@ -137,6 +138,35 @@
 - `package.json` build script uses `--target=bun-linux-x64` for NanoClaw compatibility; output renamed to `weather-linux-x64`
 - Binary size: 90 MB Linux x64, 61 MB Darwin arm64 — both well under 150 MB ceiling
 
+## Commit 120c82a (Phase 7.5 + 7.6 Implementation)
+
+| # | Severity | Issue | Status |
+|---|----------|-------|--------|
+| P7.5-1 | Low | `escapeMdv2` test `"never double-escapes"` name is misleading — the test body documents that double-escaping **does** happen (`twice !== once`) and the comment explains why. The test name says the opposite of what it proves. Should be renamed to `"double-escape documents non-idempotency"` or similar. | Fixed — test renamed to `double-escape documents non-idempotency (P7.5-1)` in `test/formatters/telegram.test.ts`; comment updated to state `escapeMdv2` is intentionally non-idempotent. |
+| P7.5-2 | Low | `test/formatters/fixtures.ts` — `fullyPopulatedCurrent` does not include `sunrise`/`sunset` fields, so the Telegram and WhatsApp snapshot tests never exercise the astro line (`🌅 Sunrise: ... | 🌇 Sunset: ...`). A second fixture with astro data would close the gap. | Fixed — added `sunrise: "06:30"` / `sunset: "19:45"` to `fullyPopulatedCurrent`; Telegram and WhatsApp full-current snapshots now assert the astro line. |
+| P7.5-3 | Low | `test/formatters/fixtures.ts` — no fixture exercises the `aqi` (non-AQHI) air quality branch. Both formatters have `else if (data.aqi != null)` paths that render "AQI" instead of "AQHI" — these are untested. | Fixed — added `aqiOnlyCurrent` fixture (Beijing, `aqi: 180`); Telegram and WhatsApp now have dedicated AQI-branch tests asserting `AQI 180` rendering. |
+| P7.6-1 | Low | `test/cli.test.ts:29-49` — `captureIO()` monkey-patches `process.stdout.write` / `process.stderr.write`. If a test throws before `io.restore()` runs, the real streams remain patched. The `afterEach` calls `io.restore()`, so in practice Bun's test runner always calls `afterEach`, but using a `try/finally` in the capture wrapper would be more defensive. | Acknowledged — Bun's test runner guarantees `afterEach` execution. No code change needed. |
+| P7.6-2 | Medium | `test/cli.test.ts` — all 10 CLI tests target the Hong Kong location (default + explicit). No test exercises location aliases (`"hk"`, `"nyc"`) or non-default providers. The alias fix from P3-1 is untested at the CLI level. While `parseLocation` alias resolution is tested at the model level, a CLI integration test for `"hk" → "Hong Kong"` would guard against future regressions in the `buildDefaultSkill` → `getCurrent` pipeline. | Fixed — added two tests in `test/cli.test.ts`: alias `--location hk` resolves to `Hong Kong` via HKO, and explicit `--provider hko` selects HKO directly. |
+| P7.6-3 | Low | `test/cli.test.ts:80-97` — the JSON sorted-key test asserts `Object.keys(parsed)` is sorted but doesn't verify key order matches Python's `json.dumps(..., sort_keys=True)` for any specific key sequence. A stronger assertion would check the first N keys match an expected order. The current test catches unsorted output but not key-spelling regressions (e.g. `wind_speed` vs `windspeed`). | Fixed — test now pins the exact 14-key sequence the HKO fixture emits in alphabetical order; catches both unsorted output and key-spelling regressions. |
+
+**Verified correct in Phase 7.5 + 7.6:**
+- `MDV2_ESCAPE_CHARS` exported from `src/formatters/telegram.ts` matches Python's `r'_*[]()~`>#+-=|{}.!'` exactly — 18 chars verified
+- `escapeMdv2` iterates character-by-character with `Set.has()` lookup — byte-identical behavior to Python's `for char in text: if char in MDV2_ESCAPE_CHARS`
+- Telegram formatter snapshot output verified line-by-line against `src/formatters/telegram.ts` source: escaping on location, date, description, wind, AQ quality, UV desc, summary — all match source logic
+- WhatsApp snapshot verified: no `\` characters in output (correct — WhatsApp formatter never calls `escapeMdv2`)
+- CLI text snapshot: `"no N/A placeholders"` test correctly mirrors Python's `cli_text.py` policy (skip rows with missing data)
+- CLI text forecast uses `formatIsoDate` (UTC) → `"2026-01-02"` format, matching the snapshot
+- Telegram/WhatsApp forecast uses `formatShortDate` → `"Fri Jan 2"` format, matching snapshots
+- CLI integration: `captureIO` + `freezeTime` + fetch mock combo works cleanly — 34/34 tests pass
+- `--send --format json` → exit 2 with proper error message
+- `--provider nonexistent` → exit 1 with sorted provider list `"hko, jma, nws, sg_nea"`
+- `--days 3.5` → exit 1 with strict-int error (P6-1 fix coverage)
+- `--help` → exit 0 with full usage text on stdout
+- `--format xml` → exit 1 with choices error
+- `--bogus` → exit 1 with unrecognized argument error
+- `CHANGELOG.md` entry is thorough and accurate
+- `tasks-002` marks Task 7.5 ✅ and Task 7.6 ✅
+
 ---
 
 ## Quick Wins
@@ -155,3 +185,8 @@ These are low-effort fixes that improve correctness:
 10. Add defensive `w !== "N/A"` filter to the wind block in both Bun formatters for symmetric parity with Python's whatsapp.py / telegram.py (P5-8) ✅
 11. Add `parseStrictInt` helper in `src/cli.ts` so `--days 3.5` errors instead of silently truncating to `3` (P6-1) ✅
 12. Update task 6.2 spec to reference `weather-linux-x64` outfile (P6-4) ✅
+13. Rename misleading `escapeMdv2` test from `never double-escapes` to `double-escape documents non-idempotency` (P7.5-1) ✅
+14. Add `sunrise`/`sunset` to the full-current fixture so Telegram/WhatsApp astro line is covered (P7.5-2) ✅
+15. Add an `aqiOnlyCurrent` fixture so the non-AQHI `aqi` branch is covered in both formatters (P7.5-3) ✅
+16. Add CLI integration coverage for the `hk` alias and explicit `--provider hko` selection (P7.6-2) ✅
+17. Pin the exact JSON key sequence (HKO 14-key set) in the sorted-key CLI test to catch key-spelling regressions (P7.6-3) ✅

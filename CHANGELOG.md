@@ -55,6 +55,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `bunfig.toml` — updated the `[test] preload` comment to reflect that the global fetch mock is now active by default.
   - `fixtures/api-responses/us_nws/manifest.json` + `scripts/capture-fixtures.sh` — fixed the points URL from `40.7128,-74.0060` (literal capture-script string) to `40.7128,-74.006` to match what both Python's `f"{lon}"` and JS template literals actually produce for `-74.006` (the lat/lon in `weather/data/cities/us-nws.json`). Without this both mock infrastructures would 404 every NWS request.
   - Verified: `pytest` 69/69 pass (no regressions; freezegun import resolves locally); `bun test test/setup.test.ts` 8/8 pass; `bun run typecheck` 0 errors.
+- **Bun formatter + CLI integration tests** (PRD-002 Phase 7.5 + 7.6) — first end-to-end Bun test coverage of the rendered output and CLI entry point:
+  - `test/formatters/fixtures.ts` — shared `fullyPopulatedCurrent` and two-day `forecastDays` `WeatherData` payloads. UTC-midnight forecast dates combined with the `freezeTime()` helper (Thu 2026-01-01T00:00:00Z) give deterministic day-of-week labels (`Fri Jan 2`, `Sat Jan 3`) across runtimes.
+  - `test/formatters/cli_text.test.ts` — 4 tests: platform identifier, full-snapshot current + 2-day forecast assertions, and verification that the formatter skips rows whose data is `null`/`undefined` instead of emitting `N/A` placeholders (mirrors `weather/formatters/cli_text.py`).
+  - `test/formatters/telegram.test.ts` — 8 tests: platform identifier, full-snapshot current + 2-day forecast, plus a focused suite on `escapeMdv2` that pins the exact 18-char Telegram-reserved set, asserts every reserved char gets a single backslash, leaves non-reserved chars untouched, and documents the (deliberate) lack of idempotency.
+  - `test/formatters/whatsapp.test.ts` — 4 tests: platform identifier, full-snapshot current + 2-day forecast, and explicit assertion that no `\` characters appear (mirrors the Python asymmetry — Telegram escapes, WhatsApp doesn't).
+  - `test/cli.test.ts` — 10 integration tests driving `src/cli.ts` `run()` directly with `process.stdout/stderr.write` capture: text output for `--location "Hong Kong"`, sorted-key JSON shape + frozen `fetched_at`, JSON-array forecast, `--send --format json` → exit 2, `--provider nonexistent` → exit 1 with sorted-provider list, plus argparse-parity regressions for `--help`, `--days 3.5` (P6-1 strict-int), `--format xml` (invalid choice), and `--bogus` (unknown flag).
+  - `test/setup.ts` was already auto-installing the fetch mock at `beforeAll`; the CLI test additionally opts into `freezeTime()` per `beforeEach`/`afterEach` so frozen-clock assertions on `fetched_at` are deterministic without affecting other test files.
+  - Verified: `bun test` → 34/34 pass (8 setup + 16 formatter + 10 CLI); `bun run typecheck` → 0 errors; `pytest` → 69/69 pass (no Python regressions).
 
 ## [0.2.1] - 2026-04-17
 
