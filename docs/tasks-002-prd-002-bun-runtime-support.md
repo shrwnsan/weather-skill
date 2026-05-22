@@ -814,7 +814,7 @@ file weather-linux-x64
 
 ---
 
-### Task 7.4 — Provider tests (5 files, parallel)
+### Task 7.4 ✅ — Provider tests (5 files, parallel)
 
 **Files:**
 - `test/providers/hko.test.ts`
