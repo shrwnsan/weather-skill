@@ -1,4 +1,4 @@
-# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 + Phase 7.5 + Phase 7.6 Review
+# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 + Phase 7.4 + Phase 7.5 + Phase 7.6 Review
 
 **Reviewed commits:**
 - `67a78b6` — docs(prd-002): finalize PRD with Phase-0 decisions and add tasks file
@@ -8,8 +8,9 @@
 - `b3c138e` — feat(prd-002 phase 5): port formatters + Telegram sender to Bun
 - `02421e1` — feat(prd-002 phase 6): add Bun CLI + cross-compiled binary
 - `120c82a` — feat(prd-002 phase 7.5+7.6): add formatter + CLI integration tests
+- `528c4c0` — feat(prd-002 phase 7.4): add Bun provider tests for all 5 providers
 
-**Date:** 2026-05-13 (updated 2026-05-19)
+**Date:** 2026-05-13 (updated 2026-05-23)
 **Status:** Open
 
 ---
@@ -138,6 +139,34 @@
 - `package.json` build script uses `--target=bun-linux-x64` for NanoClaw compatibility; output renamed to `weather-linux-x64`
 - Binary size: 90 MB Linux x64, 61 MB Darwin arm64 — both well under 150 MB ceiling
 
+## Commit 528c4c0 (Phase 7.4 Implementation)
+
+| # | Severity | Issue | Status |
+|---|----------|-------|--------|
+| P7.4-1 | Medium | SG NEA `getCurrent` error-path test regex `/NEA API error/` is overly broad — it matches any `ProviderError` from that provider, not specifically the `{text, code}` object-shape crash. A stronger assertion would verify both the wrapper message and the inner error cause (e.g. `TypeError` from `.toLowerCase()` on a non-string). File: `test/providers/sg_nea.test.ts:37`. | Open |
+| P7.4-2 | Medium | NWS `getCurrent` test asserts `typeof result.wind_speed === "number"` but does not pin the actual value, despite having deterministic fixture data (`windSpeed.value = 5.4`). The NWS provider treats this as m/s and multiplies by 3.6, but the fixture's `unitCode` is `wmoUnit:km_h-1` (km/h). The comment says "documented separately" but there is no inline TODO or issue reference tracking this latent unit-mismatch bug. File: `test/providers/us_nws.test.ts:46-49`. | Open — relates to P3-4 wind-unit mismatch batch |
+| P7.4-3 | Medium | `test/setup.ts` `freezeTime()` overrides `Date.UTC` but the `FrozenDate.UTC` implementation forwards `undefined` for omitted args when called with fewer than 7 parameters, causing `Date.UTC(y, mo, d, hh, mm)` to return `NaN`. HKO test works around by not calling `freezeTime()` at all and using fixture-derived constants instead. This bug will bite any future test that uses `freezeTime` + a provider that calls `Date.UTC` with partial args. File: `test/setup.ts:125-135`. | Open |
+| P7.4-4 | Medium | SG NEA live API schema change — `general.forecast` and `forecasts[].forecast` now return `{text, code}` objects instead of bare strings. The provider's `textToCondition()` calls `.toLowerCase()` on the value, which throws on an object. This is a **provider bug** (not just a test issue), affecting both `getCurrent` and `getForecast` against real data. Mirrors a latent Python-side bug in `weather/providers/sg_nea.py`. The test correctly captures the failure mode with `rejects.toThrow(/NEA API error/)`. Files: `src/providers/sg_nea.ts:90`, `test/providers/sg_nea.test.ts:37`. | Deferred — provider fix batched for follow-up |
+| P7.4-5 | Medium | JMA weekly forecast day-0 has missing `temp_high`/`temp_low`/`precipitation_chance` — the canned `forecast-130000.json` has empty strings for `tempsMin[0]`/`tempsMax[0]`/`pops[0]` (today is covered by the short-term block). The provider parses these as `NaN` → `undefined`. The test is correctly skipped with a `test.skip` documenting the scout finding. The provider should fall back to the short-term block for day 0. File: `test/providers/jma.test.ts:75-85`. | Deferred — provider fix batched for follow-up |
+| P7.4-6 | Low | HKO and NWS `condition` assertions use `not.toBe(WeatherCondition.Unknown)` instead of asserting the specific mapped condition. For fixture-replay tests, asserting the exact `WeatherCondition` value would confirm the icon/weather-code mapping is correct, not just that a mapping exists. Files: `test/providers/hko.test.ts:42,61`, `test/providers/us_nws.test.ts:41`. | Open |
+| P7.4-7 | Low | OpenWeatherMap test file has zero fixture-replay coverage — only tests constructor and `supportsLocation`. The 2 skipped tests are blocked on fixture capture (`needs_capture: true` in manifest). Consider whether this file should have been deferred entirely until fixtures are captured, since it adds no integration coverage. File: `test/providers/openweathermap.test.ts`. | Acknowledged — file is scaffolding for when fixtures land |
+| P7.4-8 | Low | NWS `getForecast` test uses `toBeCloseTo((68 - 32) * 5 / 9, 5)` for `temp_low` but `(68 - 32) * 5 / 9 = 20.0` is an exact integer in IEEE 754. `toBe(20)` would be clearer and equally correct. Style nit only. File: `test/providers/us_nws.test.ts:65`. | WontFix — style preference, assertion is correct |
+| P7.4-9 | Low | No provider test file verifies the `LocationNotSupportedError` throw path for `getCurrent()`/`getForecast()` with an unsupported location. The `supportsLocation` tests check `false` is returned, but the throw guard in each provider's `getCurrent` (e.g. HKO L59-63) is untested. Low priority since the guard is a simple `if (!supports) throw`. | Open |
+
+**Verified correct in Phase 7.4:**
+- All 12 active tests pass against fixture data; 5 skipped tests have valid, well-documented reasons
+- HKO: alias matching (`"Hong Kong"`, `"hk"`, `"Paris"`), `getCurrent` field assertions (temperature 25.2, humidity 89, `observed_at` 2026-05-18T08:20Z from `BulletinTime`), 3-day `getForecast` shape + first-day high/low/date
+- JMA: Japanese locale alias (`"東京"`), `getCurrent` short-term parsing (tempLow=18, tempHigh=29, temperature=23.5 derived average, precip=0, overview description present), weekly `getForecast` 5-day cap with day 1 verified (tempLow=17, tempHigh=28, pops=10)
+- SG NEA: alias matching (`"Singapore"`, `"sg"`, `"Bangkok"`), `getCurrent` error-path assertion (`rejects.toThrow(/NEA API error/)`) correctly captures the `{text, code}` object-shape crash
+- NWS: alias matching (`"New York"`, `"Chicago"`, `"Hong Kong"`), `getCurrent` observation chain (temperature 26.7, humidity 46, `condition_raw "Clear"` → `WeatherCondition.Sunny`, `observed_at` 2026-05-17T23:51Z), 5-day `getForecast` first-period parsing (`PartlyCloudy`, F→C conversion, wind direction SW)
+- OWM: instantiation + `supportsLocation` returns `true` for London/Hong Kong/Tokyo
+- All tests use `mockFetch` preload from Phase 7.3 — no live network calls
+- `bun test` → 50 pass / 5 skip / 0 fail (169 expects across 10 files)
+- `bun run typecheck` → 0 errors
+- `pytest` → 69/69 pass (no Python regressions)
+- CHANGELOG.md entry is thorough and accurate
+- tasks-002 marks Task 7.4 ✅
+
 ## Commit 120c82a (Phase 7.5 + 7.6 Implementation)
 
 | # | Severity | Issue | Status |
@@ -190,3 +219,7 @@ These are low-effort fixes that improve correctness:
 15. Add an `aqiOnlyCurrent` fixture so the non-AQHI `aqi` branch is covered in both formatters (P7.5-3) ✅
 16. Add CLI integration coverage for the `hk` alias and explicit `--provider hko` selection (P7.6-2) ✅
 17. Pin the exact JSON key sequence (HKO 14-key set) in the sorted-key CLI test to catch key-spelling regressions (P7.6-3) ✅
+18. Fix `freezeTime()` `Date.UTC` partial-args bug in `test/setup.ts` — forward only provided args, not `undefined` (P7.4-3)
+19. Fix SG NEA provider to unwrap `{text, code}` object shape from data.gov.sg v2 API (P7.4-4)
+20. Fix JMA provider to fall back to short-term block for weekly day-0 temps/pops when weekly values are empty strings (P7.4-5)
+21. Assert specific `WeatherCondition` values instead of `not.toBe(Unknown)` in HKO and NWS fixture-replay tests (P7.4-6)
