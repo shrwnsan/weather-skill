@@ -122,16 +122,13 @@ export function freezeTime(): void {
       return Origin.parse(str);
     }
 
-    static override UTC(
-      year: number,
-      month?: number,
-      date?: number,
-      hours?: number,
-      minutes?: number,
-      seconds?: number,
-      ms?: number,
-    ): number {
-      return Origin.UTC(year, month, date, hours, minutes, seconds, ms);
+    static override UTC(...args: Parameters<typeof Date.UTC>): number {
+      // P7.4-3 fix: forward only the args actually passed in. Earlier
+      // versions of this override declared 7 named params and forwarded
+      // them all, which caused Date.UTC with <7 args to receive
+      // `undefined` for the trailing slots and return `NaN`
+      // (e.g. providers calling Date.UTC(y, mo, d, hh, mm)).
+      return Origin.UTC(...args);
     }
   }
 
