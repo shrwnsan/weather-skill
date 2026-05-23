@@ -6,17 +6,18 @@
  * `HKOProvider` for Hong Kong.
  */
 
-import { describe, expect, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
 import { parseLocation } from "../../src/models.js";
 import { HKOProvider } from "../../src/providers/hko.js";
-import { WeatherCondition } from "../../src/types.js";
+import { LocationNotSupportedError, WeatherCondition } from "../../src/types.js";
+import { freezeTime, restoreTime } from "../setup.js";
 
 describe("HKOProvider", () => {
-  // No freezeTime() — observed_at / forecast_date assertions compare
-  // against fixture-derived constants rather than wall-clock "now".
-  // (HKO uses Date.UTC() internally; freezeTime in setup.ts mishandles
-  // partial-arg Date.UTC calls — see Phase 7.4 notes.)
+  // freezeTime is safe again now that P7.4-3 fixed the Date.UTC
+  // partial-arg polyfill in test/setup.ts.
+  beforeEach(freezeTime);
+  afterEach(restoreTime);
 
   const hk = parseLocation("Hong Kong");
 
@@ -43,6 +44,9 @@ describe("HKOProvider", () => {
     expect(result.observed_at).toBeInstanceOf(Date);
     // BulletinTime "202605180820" → 2026-05-18 08:20 UTC
     expect(result.observed_at?.toISOString()).toBe("2026-05-18T08:20:00.000Z");
+    // P7.4-6: pin the specific WeatherCondition mapping.
+    // rhrread.Icon1 = "62" → "pic62.png" → HKO_ICON_MAP → "rain"
+    expect(result.condition).toBe(WeatherCondition.Rain);
   });
 
   test("getForecast returns N days", async () => {
@@ -57,7 +61,24 @@ describe("HKOProvider", () => {
     expect(today.temp_low).toBe(24);
     expect(today.forecast_date).toBeInstanceOf(Date);
     expect(today.forecast_date?.toISOString().slice(0, 10)).toBe("2026-05-18");
-    // pic62.png → Rain in HKO_ICON_MAP (sanity-check it's not Unknown)
-    expect(today.condition).not.toBe(WeatherCondition.Unknown);
+    // P7.4-6: pin the specific WeatherCondition mapping.
+    // F9D.WeatherForecast[0].ForecastIcon = "pic62.png" → HKO_ICON_MAP → "rain"
+    expect(today.condition).toBe(WeatherCondition.Rain);
+  });
+
+  test("getCurrent throws LocationNotSupportedError for non-HK location", async () => {
+    // P7.4-9: cover the throw guard at the top of getCurrent.
+    const provider = new HKOProvider();
+    await expect(
+      provider.getCurrent(parseLocation("Paris")),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
+  });
+
+  test("getForecast throws LocationNotSupportedError for non-HK location", async () => {
+    // P7.4-9: cover the throw guard at the top of getForecast.
+    const provider = new HKOProvider();
+    await expect(
+      provider.getForecast(parseLocation("Paris"), 3),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
   });
 });

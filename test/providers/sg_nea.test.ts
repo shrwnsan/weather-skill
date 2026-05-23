@@ -16,6 +16,7 @@ import { describe, expect, test } from "bun:test";
 
 import { parseLocation } from "../../src/models.js";
 import { SGNEAProvider } from "../../src/providers/sg_nea.js";
+import { LocationNotSupportedError } from "../../src/types.js";
 
 describe("SGNEAProvider", () => {
   const sg = parseLocation("Singapore");
@@ -30,11 +31,17 @@ describe("SGNEAProvider", () => {
   test("getCurrent throws ProviderError against current canned fixture", async () => {
     // The canned 24hr-forecast.json has `general.forecast = {text,code}`
     // (the new live schema). The provider's `textToCondition()` calls
-    // `.toLowerCase()` on it, which throws — caught and wrapped as
-    // ProviderError. We assert the failure mode so the regression is
-    // visible until the provider is patched.
+    // `.toLowerCase()` on the object, throwing
+    // `TypeError: ...toLowerCase is not a function`. SGNEAProvider
+    // catches that and wraps it as `ProviderError("NEA API error: ...")`.
+    //
+    // P7.4-1: assert both the wrapper prefix AND the inner
+    // `.toLowerCase` failure mode, so accidental refactors that
+    // squash this into a generic ProviderError still get flagged.
     const provider = new SGNEAProvider();
-    await expect(provider.getCurrent(sg)).rejects.toThrow(/NEA API error/);
+    await expect(provider.getCurrent(sg)).rejects.toThrow(
+      /NEA API error:.*toLowerCase is not a function/,
+    );
   });
 
   // SKIPPED — scout finding (see file header). Re-enable after
@@ -62,5 +69,21 @@ describe("SGNEAProvider", () => {
     expect(day0.provider_name).toBe("sg_nea");
     expect(day0.temp_high).toBe(34);
     expect(day0.temp_low).toBe(25);
+  });
+
+  test("getCurrent throws LocationNotSupportedError for non-SG location", async () => {
+    // P7.4-9: cover the throw guard at the top of getCurrent.
+    const provider = new SGNEAProvider();
+    await expect(
+      provider.getCurrent(parseLocation("Bangkok")),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
+  });
+
+  test("getForecast throws LocationNotSupportedError for non-SG location", async () => {
+    // P7.4-9: cover the throw guard at the top of getForecast.
+    const provider = new SGNEAProvider();
+    await expect(
+      provider.getForecast(parseLocation("Bangkok"), 4),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
   });
 });

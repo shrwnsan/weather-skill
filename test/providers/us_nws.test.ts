@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
 import { parseLocation } from "../../src/models.js";
 import { NWSProvider } from "../../src/providers/us_nws.js";
-import { WeatherCondition } from "../../src/types.js";
+import { LocationNotSupportedError, WeatherCondition } from "../../src/types.js";
 import { freezeTime, restoreTime } from "../setup.js";
 
 describe("NWSProvider", () => {
@@ -43,10 +43,16 @@ describe("NWSProvider", () => {
     expect(result.condition_raw).toBe("Clear");
     expect(result.condition).toBe(WeatherCondition.Sunny); // "Clear" → Sunny
     expect(result.observed_at?.toISOString()).toBe("2026-05-17T23:51:00.000Z");
-    // wind_speed is populated (m/s × 3.6 in provider; we just check
-    // that something numeric came through — the unit-mismatch issue
-    // is documented separately, not in scope for Phase 7.4).
-    expect(typeof result.wind_speed).toBe("number");
+    // P7.4-2 / P3-4: pin the exact value the provider currently
+    // produces, so a future unit-mismatch fix will turn this test
+    // red and force a deliberate update.
+    //
+    // Fixture: observations.json `windSpeed = { unitCode:
+    // "wmoUnit:km_h-1", value: 5.4 }` (km/h). The provider treats
+    // every windSpeed.value as m/s and multiplies by 3.6, yielding
+    // 5.4 * 3.6 = 19.44. When `windSpeed.unitCode` is honored, the
+    // assertion below should change to 5.4.
+    expect(result.wind_speed).toBeCloseTo(19.44, 5);
   });
 
   test("getForecast returns up to N daytime/nighttime days", async () => {
@@ -65,5 +71,21 @@ describe("NWSProvider", () => {
     expect(day0.temp_low).toBeCloseTo((68 - 32) * 5 / 9, 5);
     expect(day0.forecast_date).toBeInstanceOf(Date);
     expect(day0.wind_direction).toBe("SW");
+  });
+
+  test("getCurrent throws LocationNotSupportedError for non-US location", async () => {
+    // P7.4-9: cover the throw guard at the top of getCurrent.
+    const provider = new NWSProvider();
+    await expect(
+      provider.getCurrent(parseLocation("Hong Kong")),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
+  });
+
+  test("getForecast throws LocationNotSupportedError for non-US location", async () => {
+    // P7.4-9: cover the throw guard at the top of getForecast.
+    const provider = new NWSProvider();
+    await expect(
+      provider.getForecast(parseLocation("Hong Kong"), 5),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
   });
 });

@@ -19,7 +19,7 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
 import { parseLocation } from "../../src/models.js";
 import { JMAProvider } from "../../src/providers/jma.js";
-import { WeatherCondition } from "../../src/types.js";
+import { LocationNotSupportedError, WeatherCondition } from "../../src/types.js";
 import { freezeTime, restoreTime } from "../setup.js";
 
 describe("JMAProvider", () => {
@@ -46,8 +46,9 @@ describe("JMAProvider", () => {
     expect(result.temp_low).toBe(18);
     expect(result.temp_high).toBe(29);
     expect(result.temperature).toBe(23.5);
-    // weatherCodes[0] = "100" (clear / sunny in JMA_WEATHER_CODE_MAP)
-    expect(result.condition).not.toBe(WeatherCondition.Unknown);
+    // P7.4-6: pin the specific WeatherCondition mapping.
+    // weatherCodes[0] = "100" → JMA_WEATHER_CODE_MAP → "sunny"
+    expect(result.condition).toBe(WeatherCondition.Sunny);
     // pops are all "0" → max = 0
     expect(result.precipitation_chance).toBe(0);
     // description sourced from overview_forecast.text
@@ -66,8 +67,9 @@ describe("JMAProvider", () => {
     expect(today.provider_name).toBe("jma");
     // timeDefines[0] = "2026-05-18T00:00:00+09:00" → 2026-05-17T15:00Z
     expect(today.forecast_date?.toISOString()).toBe("2026-05-17T15:00:00.000Z");
-    // weatherCodes[0] = "100" maps to a valid condition (not Unknown)
-    expect(today.condition).not.toBe(WeatherCondition.Unknown);
+    // P7.4-6: pin the specific WeatherCondition mapping.
+    // weatherCodes[0] = "100" → JMA_WEATHER_CODE_MAP → "sunny"
+    expect(today.condition).toBe(WeatherCondition.Sunny);
 
     // Day 1 (index 1) has populated values: tempsMin=17, tempsMax=28, pops=10
     const day1 = days[1]!;
@@ -89,5 +91,21 @@ describe("JMAProvider", () => {
     expect(today.temp_high).toBeDefined();
     expect(today.temp_low).toBeDefined();
     expect(today.precipitation_chance).toBeDefined();
+  });
+
+  test("getCurrent throws LocationNotSupportedError for non-JP location", async () => {
+    // P7.4-9: cover the throw guard at the top of getCurrent.
+    const provider = new JMAProvider();
+    await expect(
+      provider.getCurrent(parseLocation("Hong Kong")),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
+  });
+
+  test("getForecast throws LocationNotSupportedError for non-JP location", async () => {
+    // P7.4-9: cover the throw guard at the top of getForecast.
+    const provider = new JMAProvider();
+    await expect(
+      provider.getForecast(parseLocation("Hong Kong"), 5),
+    ).rejects.toBeInstanceOf(LocationNotSupportedError);
   });
 });
