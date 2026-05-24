@@ -1,0 +1,41 @@
+[
+  {
+    "condition": "rain",
+    "condition_raw": "Light Rain",
+    "description": "Cloudy with a few showers.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-18T00:00:00.000Z",
+    "location": "Hong Kong",
+    "precipitation_chance": 30,
+    "provider_name": "hko",
+    "temp_high": 27,
+    "temp_low": 24,
+    "temperature": 24
+  },
+  {
+    "condition": "rain",
+    "condition_raw": "Light Rain",
+    "description": "Mainly cloudy with a few showers.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-19T00:00:00.000Z",
+    "location": "Hong Kong",
+    "precipitation_chance": 50,
+    "provider_name": "hko",
+    "temp_high": 29,
+    "temp_low": 25,
+    "temperature": 25
+  },
+  {
+    "condition": "drizzle",
+    "condition_raw": "Sunny Intervals with Showers",
+    "description": "Mainly cloudy with a few showers and isolated thunderstorms. Sunny intervals during the day.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-20T00:00:00.000Z",
+    "location": "Hong Kong",
+    "precipitation_chance": 50,
+    "provider_name": "hko",
+    "temp_high": 30,
+    "temp_low": 26,
+    "temperature": 26
+  }
+]

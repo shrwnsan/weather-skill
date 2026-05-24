@@ -866,7 +866,7 @@ Snapshot tests for each formatter against a fixed `WeatherData` input.
 
 ---
 
-### Task 7.7 — Cross-runtime JSON parity test
+### Task 7.7 ✅ — Cross-runtime JSON parity test
 
 **Files:**
 - `test/parity.test.ts` (Bun side)
