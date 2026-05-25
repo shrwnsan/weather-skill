@@ -1,4 +1,4 @@
-# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 + Phase 7.4 + Phase 7.5 + Phase 7.6 Review
+# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 + Phase 7.4 + Phase 7.5 + Phase 7.6 + Phase 7.7 Review
 
 **Reviewed commits:**
 - `67a78b6` — docs(prd-002): finalize PRD with Phase-0 decisions and add tasks file
@@ -9,8 +9,9 @@
 - `02421e1` — feat(prd-002 phase 6): add Bun CLI + cross-compiled binary
 - `120c82a` — feat(prd-002 phase 7.5+7.6): add formatter + CLI integration tests
 - `528c4c0` — feat(prd-002 phase 7.4): add Bun provider tests for all 5 providers
+- `fe98aa1` — feat(prd-002 phase 7.7): cross-runtime JSON parity gate
 
-**Date:** 2026-05-13 (updated 2026-05-23)
+**Date:** 2026-05-13 (updated 2026-05-25)
 **Status:** Open
 
 ---
@@ -196,6 +197,36 @@
 - `CHANGELOG.md` entry is thorough and accurate
 - `tasks-002` marks Task 7.5 ✅ and Task 7.6 ✅
 
+## Commit fe98aa1 (Phase 7.7 Implementation)
+
+| # | Severity | Issue | Status |
+|---|----------|-------|--------|
+| P7.7-1 | Medium | `to_jsonable` in `weather/cli.py:57-62` — `datetime` branch uses `.replace("+00:00", "Z")` which is a simple string substitution. If a datetime has a non-UTC offset (e.g. `+05:30`), it would produce `2026-01-01T00:00:00.000+05:30Z` — an invalid ISO timestamp. The `dt.astimezone(timezone.utc)` call on line 60 converts to UTC first, so the offset is always `+00:00` in practice. However, if `tzinfo` is set to a non-UTC zone and `.astimezone()` is somehow bypassed (defensive programming concern), the replace would corrupt the string. Risk is near-zero since the code path is deterministic, but a `assert dt.tzinfo == timezone.utc` or `dt.utcoffset() == timedelta(0)` guard before the replace would make the invariant explicit. | Acknowledged — the `.astimezone(timezone.utc)` on line 60 guarantees the offset is always `+00:00`. Adding an assert would be pure defense-in-depth with no practical benefit. |
+| P7.7-2 | Medium | `to_jsonable` coerces `float.is_integer()` to `int`, so `27.0` → `27`. However, it does **not** coerce non-finite floats (`inf`, `nan`). `json.dumps` will raise `ValueError` on these. The Bun side (`JSON.stringify`) converts them to `null`. This divergence is latent — no provider currently emits `inf`/`nan` — but `to_jsonable` is a public API that could be called on arbitrary data. | Acknowledged — no provider emits `inf`/`nan` (verified by grep across all provider files). If a provider ever does, both runtimes need a coordinated fix. Not worth adding code for a case that doesn't exist. |
+| P7.7-3 | Low | `test/parity.test.ts:77` appends `"\n"` to `toJson(data)` output, and `tests/test_parity.py:57` does the same via `_serialize`. This trailing newline is part of the byte-for-byte contract. The snapshots all end with a trailing newline (verified). However, the `toJson` function itself does **not** append `\n` — the CLI's `console.log` / `process.stdout.write(toJson(data) + "\n")` handles that. The parity tests must match this manual `+ "\n"` or they'd fail on a trivial whitespace diff. The approach is correct but the newline ownership is split across test helpers and the CLI entry point. | Acknowledged — newline is part of the wire contract. Both test files handle it consistently. |
+| P7.7-4 | Low | Python parity test (`tests/test_parity.py:83`) uses `asyncio.run(_go())` inside a synchronous pytest function. If another test in the same session leaves a running event loop (e.g. `pytest-asyncio` in `auto` mode), this could raise `RuntimeError: asyncio.run() cannot be called from a running event loop`. Current `conftest.py` fixtures are synchronous, so this works today. But if the project ever switches to `pytest-asyncio` mode or adds async fixtures, this pattern will break. | Acknowledged — works today. If `pytest-asyncio` mode changes, both this file and `conftest.py` would need updating together. |
+| P7.7-5 | Low | The parity CI workflow (`.github/workflows/parity.yml`) does not run `bun install --frozen-lockfile` with the `--production` flag, meaning dev dependencies are installed. The existing `python-ci.yml` and `bun-ci.yml` also install full dependencies. Consistent with project convention — not a bug. | WontFix — consistent with existing CI patterns. |
+| P7.7-6 | Low | Parity matrix excludes JMA forecast, SG NEA, and OpenWeatherMap. The PR body documents these exclusions thoroughly. Once P7.4-4 (SG NEA `{text, code}` unwrap) and P7.4-5 (JMA day-0 fallback + date divergence) are fixed, the parity matrix should be expanded. The excluded providers are tracked in existing eval items. | Deferred — tracked by P7.4-4 and P7.4-5. |
+
+**Verified correct in Phase 7.7:**
+- `to_jsonable` correctly handles all five type branches: `list`, `dict` (dropping `None` values), `Enum` → `.value`, `datetime` → UTC ISO ms `…Z`, `date` → midnight-UTC ISO, integral `float` → `int`
+- `datetime` normalization: naive datetimes get `timezone.utc` via `.replace()` (line 58), then `.astimezone(timezone.utc)` converts (idempotent for UTC), then `.isoformat(timespec="milliseconds").replace("+00:00", "Z")` matches `Date.prototype.toISOString()`
+- `date` normalization: `f"{value.isoformat()}T00:00:00.000Z"` matches Bun's `new Date("2026-05-18").toISOString()` output
+- `ensure_ascii=False` in `json.dumps` allows CJK characters (JMA descriptions) to pass through as raw UTF-8, matching Bun's `JSON.stringify` behavior
+- `sort_keys=True` matches Bun's `sortKeys()` recursive key sort
+- Both test suites use the same 5 committed snapshots from `fixtures/parity/` — transitive parity proof
+- Bun side: `toJson(data) + "\n"` via `src/cli.ts:toJson` → `JSON.stringify(sortKeys(data), replacer, 2)`
+- Python side: `_serialize(to_jsonable(asdict(data)))` → `json.dumps(..., indent=2, sort_keys=True, ensure_ascii=False) + "\n"`
+- Snapshot refresh mechanism: `UPDATE_PARITY_SNAPSHOTS=1` env var on both sides, consistent UX
+- CI workflow runs both sides independently with `TZ=UTC`, Python matrices over 3.11 + 3.13
+- All 7 CI checks pass (Bun parity + Python parity ×2 + existing test suite ×4)
+- `bun test` → 63 pass / 5 skip / 0 fail (was 58/5/0, +5 parity)
+- `pytest` → 74/74 pass (was 69, +5 parity)
+- `bun run typecheck` → 0 errors
+- CHANGELOG.md entry is thorough — correctly flags the wire-shape change as breaking
+- `tasks-002` marks Task 7.7 ✅
+- PR body architecture diagram, parity matrix table, and deliberate-exclusion rationale are all accurate
+
 ---
 
 ## Quick Wins
@@ -226,3 +257,6 @@ These are low-effort fixes that improve correctness:
 22. Tighten SG NEA error-path regex to include the inner `toLowerCase is not a function` failure mode (P7.4-1) ✅
 23. Pin NWS `wind_speed` to the exact current value (19.44) with a tracking comment for P3-4 (P7.4-2) ✅
 24. Add `LocationNotSupportedError` throw-path tests for `getCurrent` / `getForecast` across HKO, JMA, SG NEA, US NWS (P7.4-9) ✅
+25. Expand parity matrix to include SG NEA once P7.4-4 is fixed (P7.7-6)
+26. Expand parity matrix to include JMA forecast once P7.4-5 + date divergence are fixed (P7.7-6)
+27. Expand parity matrix to include OpenWeatherMap once fixtures are captured (P7.7-6)
