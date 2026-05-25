@@ -157,21 +157,23 @@ await skill.send(message, "telegram");
 
 ## Providers
 
-| Provider | Coverage | API Key | Priority | Forecast | Air Quality |
-|----------|----------|---------|----------|----------|-------------|
-| HKO | Hong Kong | Free | 1 | 9-day | AQHI (HK scale) |
-| SG NEA | Singapore | Free | 2 | 4-day | PSI (1-hr) |
-| JMA | Japan | Free | 3 | 7-day | No |
-| CWA | Taiwan | Required | 4 | 7-day | No |
-| UK Met Office | United Kingdom | Required | 5 | 7-day | No |
-| BOM | Australia | Free | 6 | 7-day | No |
-| MetService | New Zealand | Free | 7 | Current only | No |
-| NWS | USA | Free | 7 | 7-day | No |
-| BMKG | Indonesia | Free | 8 | 3-day | No |
-| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No |
-| KMA | South Korea | Required | 9 | 3-day | No |
-| TMD | Thailand | Required | 9 | 7-day | No |
-| OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API |
+The Bun/npm package and the compiled binary currently ship **5 of 13** providers (the four most-popular free regional providers + OpenWeatherMap as the global fallback). The remaining 8 are Python-only; porting them is tracked under PRD-002b.
+
+| Provider | Coverage | API Key | Priority | Forecast | Air Quality | Bun |
+|----------|----------|---------|----------|----------|-------------|-----|
+| HKO | Hong Kong | Free | 1 | 9-day | AQHI (HK scale) | ✅ |
+| SG NEA | Singapore | Free | 2 | 4-day | PSI (1-hr) | ✅ |
+| JMA | Japan | Free | 3 | 7-day | No | ✅ |
+| CWA | Taiwan | Required | 4 | 7-day | No | — |
+| UK Met Office | United Kingdom | Required | 5 | 7-day | No | — |
+| BOM | Australia | Free | 6 | 7-day | No | — |
+| MetService | New Zealand | Free | 7 | Current only | No | — |
+| NWS | USA | Free | 7 | 7-day | No | ✅ |
+| BMKG | Indonesia | Free | 8 | 3-day | No | — |
+| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No | — |
+| KMA | South Korea | Required | 9 | 3-day | No | — |
+| TMD | Thailand | Required | 9 | 7-day | No | — |
+| OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API | ✅ |
 
 ### Provider Selection Logic
 
