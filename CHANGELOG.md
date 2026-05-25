@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.1.0-bun] - 2026-05-25
+
+**Cross-runtime release.** Adds a Bun/TypeScript implementation of the weather skill alongside the existing Python package, with a shared JSON data layer, byte-for-byte parity-tested CLI output, and a standalone Linux/macOS binary distribution that needs no runtime install. The Python package itself continues at its own version line; this tag covers the new Bun runtime and the supporting cross-runtime infrastructure produced under PRD-002.
+
+Highlights:
+
+- **`@shrwnsan/weather-skill`** — new npm package (ESM, Bun ≥ 1.1.30). 5 providers (HKO, JMA, SG NEA, US NWS, OpenWeatherMap), 3 formatters (cli_text, telegram, whatsapp), 1 sender (Telegram via built-in `fetch`). Same `WeatherSkill` orchestrator surface as the Python package.
+- **Compiled binary** — `weather-linux-x64` (~90 MB) and `weather-darwin-arm64` (~61 MB) built by `bun build --compile`. Bundles the Bun runtime + every shared JSON data file so the binary runs anywhere with `glibc` / arm64 macOS, no `pip install`, no `npm install`.
+- **Shared data layer** — all condition maps, location aliases, and city tables moved out of Python source into `weather/data/*.json` so both runtimes consume the same source of truth.
+- **Cross-runtime parity gate** — new CI workflow asserts that Python's `weather --format json` output is byte-identical to Bun's for every (provider, mode) pair in the matrix (5 cases today: HKO ×2, JMA current, US NWS ×2). Snapshots committed under `fixtures/parity/`.
+- **Python `--format json` wire shape** — normalized via the new public `weather.cli.to_jsonable` helper to match the Bun wire shape (drops `None` fields, UTC `…Z` millisecond ISO datetimes, integral floats → int, `ensure_ascii=False`). **Breaking change** for callers that grepped the previous null-heavy / `+00:00` Python output. The previous shape was never released — it was added under `[Unreleased]` alongside the Bun port and reshaped before the first cross-runtime tag.
+
+Full per-phase detail follows.
+
 ### Changed
 
 - **Shared data layer** (PRD-002 Phase 1) — moved all hardcoded condition maps, location aliases, and city tables out of Python source into `weather/data/*.json`. Providers now load via `importlib.resources` so the data ships in the wheel and can be consumed by future runtimes (Bun port). Zero behavioral changes; all 69 tests pass.
@@ -80,6 +94,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `.github/workflows/parity.yml` — new CI workflow running both gates on `push` to `main` + `pull_request`. Bun job uses `oven-sh/setup-bun@v2`; Python job matrices over 3.11 and 3.13. `TZ=UTC` set on both. Either side failing fails the workflow.
   - Coverage matrix: HKO current + forecast (3), JMA current, US NWS current + forecast (5). Deliberate exclusions: **SG NEA** — both runtimes crash on the data.gov.sg v2 `{text, code}` object shape (eval P7.4-4), reinstate after the provider fix lands. **OpenWeatherMap** — fixtures `needs_capture: true`. **JMA forecast** — Bun preserves raw `timeDefines` instant (JST midnight = 15:00Z prior day) while Python's provider calls `.date()` first and stores a logical-day value; a real cross-runtime JMA divergence to fix alongside P7.4-5, not a normalizer issue.
   - Verified: `bun test test/parity.test.ts` → 5/5 pass; `pytest tests/test_parity.py` → 5/5 pass; full `bun test` → 63/68 pass + 5 skipped (0 failures); full `pytest` → 74/74 pass; `bun run typecheck` → 0 errors.
+- **Docs + release** (PRD-002 Phase 8) — updated user-facing docs for the cross-runtime release:
+  - `SKILL.md` — frontmatter `compatibility:` now lists Python + Bun + compiled binary; providers table gains a `Bun` column marking the 5 Bun-available entries vs the 8 Python-only ones; Integration section adds a Bun/TypeScript snippet (`buildDefaultSkill` + manual provider chain) and a Compiled-binary section; Agent Execution lists all three invocation styles; File Structure expanded to show `src/`, `test/`, `fixtures/`, and the docs/PRD layout.
+  - `README.md` — adds a distribution-formats table at the top (Python / Bun / standalone binary), Install section with curl-download commands for the binaries, Bun/TypeScript API examples (matching the Python ones), explicit note on the snake_case-data + camelCase-method interface convention.
+  - This `CHANGELOG.md` entry — first cross-runtime tag `[0.1.0-bun] - 2026-05-25`.
 
 ## [0.2.1] - 2026-04-17
 
