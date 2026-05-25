@@ -927,7 +927,7 @@ Add `## [0.1.0-bun] - 2026-XX-XX` entry summarizing the Bun port.
 
 ---
 
-### Task 8.4 — Tag and release `v0.1.0-bun`
+### Task 8.4 ✅ — Tag and release `v0.1.0-bun`
 
 **Depends on:** 8.1, 8.2, 8.3, 6.2
 **Parallel:** no
