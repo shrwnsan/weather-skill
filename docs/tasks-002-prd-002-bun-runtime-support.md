@@ -888,7 +888,7 @@ Snapshot tests for each formatter against a fixed `WeatherData` input.
 
 ## Phase 8: Docs + GitHub Release
 
-### Task 8.1 — Update SKILL.md
+### Task 8.1 ✅ — Update SKILL.md
 
 **File:** `SKILL.md`
 **Depends on:** Phase 7
@@ -903,7 +903,7 @@ Snapshot tests for each formatter against a fixed `WeatherData` input.
 
 ---
 
-### Task 8.2 — Update README
+### Task 8.2 ✅ — Update README
 
 **File:** `README.md`
 **Depends on:** Phase 7
@@ -915,7 +915,7 @@ Add Bun installation instructions, compiled binary download link, Bun usage exam
 
 ---
 
-### Task 8.3 — Update CHANGELOG
+### Task 8.3 ✅ — Update CHANGELOG
 
 **File:** `CHANGELOG.md`
 **Depends on:** Phase 7

@@ -2,6 +2,50 @@
 
 A platform-agnostic weather skill for AI agents. Fetches weather data from multiple providers and delivers formatted reports to various messaging platforms.
 
+Ships in **three** distribution formats — pick whichever fits your agent's runtime:
+
+| Runtime | Install | Providers | Notes |
+|---------|---------|-----------|-------|
+| Python  | `pip install weather-skill` | **13** | Reference implementation; full provider chain. |
+| Bun / npm | `bun add @shrwnsan/weather-skill` | **5** | HKO, JMA, SG NEA, US NWS, OpenWeatherMap. Ideal for TypeScript runtimes and Docker images without Python. |
+| Standalone binary | Download `weather-linux-x64` (~90 MB) or `weather-darwin-arm64` (~61 MB) from [Releases](https://github.com/shrwnsan/weather-skill/releases) | **5** | Same as Bun, zero-install. Single self-contained ELF / Mach-O. |
+
+All three produce **byte-identical** `--format json` output for the same input — guaranteed in CI by the cross-runtime parity gate (PRD-002 Phase 7.7).
+
+## Install
+
+### Python
+
+```bash
+pip install weather-skill
+```
+
+Requires Python 3.10 or later. Installs the `weather` console script and the `weather` Python package (importable as `from weather import WeatherSkill`).
+
+### Bun
+
+```bash
+bun add @shrwnsan/weather-skill
+```
+
+Requires Bun ≥ 1.1.30. Installs the npm package; the CLI is available via `bun x @shrwnsan/weather-skill …`.
+
+### Compiled binary (no runtime install)
+
+```bash
+# Linux x86-64
+curl -L -o weather https://github.com/shrwnsan/weather-skill/releases/latest/download/weather-linux-x64
+chmod +x weather
+./weather --location "Hong Kong"
+
+# macOS arm64
+curl -L -o weather https://github.com/shrwnsan/weather-skill/releases/latest/download/weather-darwin-arm64
+chmod +x weather
+./weather --location "Hong Kong"
+```
+
+The binary bundles the Bun runtime + all `weather/data/*.json` so it runs anywhere with `glibc` (Linux) or macOS arm64. No Python, no Bun, no `npm install`.
+
 ## Quick Start (Agent Usage)
 
 ```bash
@@ -20,6 +64,8 @@ python -m weather.cli --location "Hong Kong" --format telegram
 # Send to Telegram
 python -m weather.cli --location "Hong Kong" --format telegram --send
 ```
+
+The exact same flags work with the Bun and binary distributions — substitute `bun x @shrwnsan/weather-skill` or `./weather-linux-x64` for `python -m weather.cli`.
 
 **All environment variables are optional.** 8 of 13 providers work without any API key. The skill outputs to stdout by default — agents capture this and route to their own channels. Env vars are only needed for specific providers or direct Telegram delivery.
 
@@ -66,23 +112,68 @@ message = skill.format(data, platform="telegram")
 await skill.send(message, channel="telegram")
 ```
 
+### Bun / TypeScript API
+
+```typescript
+import { buildDefaultSkill } from "@shrwnsan/weather-skill";
+
+// Built-in factory — registers HKO, JMA, SG NEA, US NWS, and
+// (if OPENWEATHERMAP_API_KEY is set) OpenWeatherMap; registers all
+// three formatters unconditionally and TelegramSender iff
+// TELEGRAM_BOT_TOKEN is set.
+const skill = buildDefaultSkill();
+
+const data = await skill.getCurrent("Hong Kong");
+const message = skill.format(data, "telegram");
+await skill.send(message, "telegram");
+```
+
+For a manual provider chain (mirrors the Python example above):
+
+```typescript
+import {
+  WeatherSkill,
+  HKOProvider,
+  OpenWeatherMapProvider,
+  TelegramFormatter,
+  TelegramSender,
+} from "@shrwnsan/weather-skill";
+
+const skill = new WeatherSkill();
+skill.addProvider(new HKOProvider());
+skill.addProvider(new OpenWeatherMapProvider(process.env.OPENWEATHERMAP_API_KEY!));
+skill.addFormatter("telegram", new TelegramFormatter());
+skill.addSender("telegram", new TelegramSender({
+  bot_token: process.env.TELEGRAM_BOT_TOKEN!,
+  default_chat_id: process.env.TELEGRAM_CHAT_ID!,
+}));
+
+const data = await skill.getCurrent("Hong Kong");
+const message = skill.format(data, "telegram");
+await skill.send(message, "telegram");
+```
+
+> **Data interface convention:** the Bun/TypeScript package uses **snake_case** field names on data interfaces (`WeatherData`, `Location`, `SendResult`) to match the Python `dataclasses.asdict()` shape. Method names are camelCase (`getCurrent`, `addProvider`, `addFormatter`). No transform shim.
+
 ## Providers
 
-| Provider | Coverage | API Key | Priority | Forecast | Air Quality |
-|----------|----------|---------|----------|----------|-------------|
-| HKO | Hong Kong | Free | 1 | 9-day | AQHI (HK scale) |
-| SG NEA | Singapore | Free | 2 | 4-day | PSI (1-hr) |
-| JMA | Japan | Free | 3 | 7-day | No |
-| CWA | Taiwan | Required | 4 | 7-day | No |
-| UK Met Office | United Kingdom | Required | 5 | 7-day | No |
-| BOM | Australia | Free | 6 | 7-day | No |
-| MetService | New Zealand | Free | 7 | Current only | No |
-| NWS | USA | Free | 7 | 7-day | No |
-| BMKG | Indonesia | Free | 8 | 3-day | No |
-| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No |
-| KMA | South Korea | Required | 9 | 3-day | No |
-| TMD | Thailand | Required | 9 | 7-day | No |
-| OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API |
+The Bun/npm package and the compiled binary currently ship **5 of 13** providers (the four most-popular free regional providers + OpenWeatherMap as the global fallback). The remaining 8 are Python-only; porting them is tracked under PRD-002b.
+
+| Provider | Coverage | API Key | Priority | Forecast | Air Quality | Bun |
+|----------|----------|---------|----------|----------|-------------|-----|
+| HKO | Hong Kong | Free | 1 | 9-day | AQHI (HK scale) | ✅ |
+| SG NEA | Singapore | Free | 2 | 4-day | PSI (1-hr) | ✅ |
+| JMA | Japan | Free | 3 | 7-day | No | ✅ |
+| CWA | Taiwan | Required | 4 | 7-day | No | — |
+| UK Met Office | United Kingdom | Required | 5 | 7-day | No | — |
+| BOM | Australia | Free | 6 | 7-day | No | — |
+| MetService | New Zealand | Free | 7 | Current only | No | — |
+| NWS | USA | Free | 7 | 7-day | No | ✅ |
+| BMKG | Indonesia | Free | 8 | 3-day | No | — |
+| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No | — |
+| KMA | South Korea | Required | 9 | 3-day | No | — |
+| TMD | Thailand | Required | 9 | 7-day | No | — |
+| OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API | ✅ |
 
 ### Provider Selection Logic
 
@@ -199,18 +290,37 @@ Default location is **Hong Kong**. The HKO provider is used automatically for HK
 weather-skill/
 ├── SKILL.md              # Skill definition (triggers, instructions)
 ├── README.md             # This file
-├── docs/                 # Documentation
-│   └── provider-selection.md
-├── weather/              # Python package (single source of truth)
-│   ├── cli.py            # CLI implementation
-│   ├── models.py         # Data models
-│   ├── skill.py          # WeatherSkill orchestrator
-│   ├── bootstrap.py      # Default skill builder
-│   ├── providers/        # Weather data providers
-│   ├── formatters/       # Output formatters
-│   │   └── cli_text.py   # CLI text formatter
-│   └── senders/          # Message senders
-└── tests/                # Test suite
+├── CHANGELOG.md
+├── pyproject.toml        # Python packaging
+├── package.json          # Bun packaging (@shrwnsan/weather-skill)
+├── docs/
+│   ├── provider-selection.md
+│   ├── prd-002-bun-runtime-support.md      # Bun port spec
+│   └── tasks-002-prd-002-bun-runtime-support.md
+├── weather/              # Python package — 13 providers (reference impl)
+│   ├── cli.py
+│   ├── models.py
+│   ├── skill.py
+│   ├── bootstrap.py
+│   ├── data/             # Shared JSON data (loaded by both runtimes)
+│   ├── providers/        # 13 providers
+│   ├── formatters/       # telegram, whatsapp, cli_text
+│   └── senders/          # telegram
+├── src/                  # Bun/TypeScript package — 5 providers (v0.1)
+│   ├── cli.ts
+│   ├── bootstrap.ts
+│   ├── skill.ts
+│   ├── models.ts
+│   ├── types.ts
+│   ├── data-loader.ts    # JSON-module imports of weather/data/*
+│   ├── providers/        # hko, sg_nea, jma, us_nws, openweathermap
+│   ├── formatters/       # cli_text, telegram, whatsapp
+│   └── senders/          # telegram
+├── tests/                # Python test suite (pytest)
+├── test/                 # Bun test suite (bun:test)
+└── fixtures/
+    ├── api-responses/    # Canned provider responses (mock_http / mockFetch)
+    └── parity/           # Phase 7.7 cross-runtime byte-equality snapshots
 ```
 
 ## License
