@@ -1,0 +1,16 @@
+{
+  "condition": "rain",
+  "condition_raw": "<a title=\"Show in new window\" href=\"javascript:Wxword('0003')\">Cloudy</a> with <a title=\"Show in new window\" href=\"javascript:Wxword('0015')\">a few showers</a>. The maximum temperature will be around 27 degrees during the day. <a title=\"Show in new window\" href=\"javascript:Wxword('0079')\">Moderate</a> to <a title=\"Show in new window\" href=\"javascript:Wxword('0081')\">fresh</a> east to southeasterly winds, <a title=\"Show in new window\" href=\"javascript:Wxword('0083')\">strong</a> offshore and on high ground <a title=\"Show in new window\" href=\"javascript:Wxword('0483')\">at first</a>.",
+  "description": "Cloudy with a few showers. The maximum temperature will be around 27 degrees during the day. Moderate to fresh east to southeasterly winds, strong offshore and on high ground at first.",
+  "fetched_at": "2026-01-01T00:00:00.000Z",
+  "humidity": 89,
+  "location": "Hong Kong",
+  "observed_at": "2026-05-18T08:20:00.000Z",
+  "precipitation_chance": 30,
+  "provider_name": "hko",
+  "temp_high": 27,
+  "temp_low": 24,
+  "temperature": 25.2,
+  "uv_index": 0,
+  "wind_description": "East to southeast force 4 to 5, force 6 offshore and on high ground at first."
+}

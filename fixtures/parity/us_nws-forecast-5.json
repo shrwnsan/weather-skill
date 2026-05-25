@@ -1,0 +1,67 @@
+[
+  {
+    "condition": "partly_cloudy",
+    "condition_raw": "Partly Cloudy",
+    "description": "Partly cloudy, with a low around 68. Southwest wind 3 to 9 mph.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-17T00:00:00.000Z",
+    "location": "New York",
+    "provider_name": "nws",
+    "temp_low": 20,
+    "temperature": 20,
+    "wind_direction": "SW",
+    "wind_speed": 9.65604
+  },
+  {
+    "condition": "sunny",
+    "condition_raw": "Sunny",
+    "description": "Sunny. High near 81, with temperatures falling to around 79 in the afternoon. Southeast wind 3 to 12 mph, with gusts as high as 22 mph.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-18T00:00:00.000Z",
+    "location": "New York",
+    "provider_name": "nws",
+    "temp_high": 27.22222222222222,
+    "temperature": 27.22222222222222,
+    "wind_direction": "SE",
+    "wind_speed": 12.07005
+  },
+  {
+    "condition": "sunny",
+    "condition_raw": "Sunny",
+    "description": "Sunny, with a high near 88. Southwest wind 7 to 14 mph.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-19T00:00:00.000Z",
+    "location": "New York",
+    "provider_name": "nws",
+    "temp_high": 31.11111111111111,
+    "temperature": 31.11111111111111,
+    "wind_direction": "SW",
+    "wind_speed": 16.89807
+  },
+  {
+    "condition": "sunny",
+    "condition_raw": "Mostly Sunny then Showers And Thunderstorms",
+    "description": "Showers and thunderstorms after 2pm. Mostly sunny. High near 85, with temperatures falling to around 78 in the afternoon. Chance of precipitation is 80%. New rainfall amounts less than a tenth of an inch possible.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-20T00:00:00.000Z",
+    "location": "New York",
+    "provider_name": "nws",
+    "temp_high": 29.444444444444443,
+    "temperature": 29.444444444444443,
+    "wind_direction": "W",
+    "wind_speed": 20.92142
+  },
+  {
+    "condition": "sunny",
+    "condition_raw": "Partly Sunny",
+    "description": "Partly sunny, with a high near 67.",
+    "fetched_at": "2026-01-01T00:00:00.000Z",
+    "forecast_date": "2026-05-21T00:00:00.000Z",
+    "location": "New York",
+    "provider_name": "nws",
+    "temp_high": 19.444444444444443,
+    "temperature": 19.444444444444443,
+    "wind_direction": "NE",
+    "wind_speed": 16.0934
+  }
+]
