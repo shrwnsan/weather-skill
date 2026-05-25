@@ -1,4 +1,4 @@
-# Eval-001: PRD-002 Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 5 + Phase 6 + Phase 7.4 + Phase 7.5 + Phase 7.6 + Phase 7.7 Review
+# Eval-001: PRD-002 Phase 0 → Phase 8 Review
 
 **Reviewed commits:**
 - `67a78b6` — docs(prd-002): finalize PRD with Phase-0 decisions and add tasks file
@@ -10,8 +10,9 @@
 - `120c82a` — feat(prd-002 phase 7.5+7.6): add formatter + CLI integration tests
 - `528c4c0` — feat(prd-002 phase 7.4): add Bun provider tests for all 5 providers
 - `fe98aa1` — feat(prd-002 phase 7.7): cross-runtime JSON parity gate
+- `8af0aa6` — feat(prd-002 phase 8): docs + first cross-runtime release
 
-**Date:** 2026-05-13 (updated 2026-05-25)
+**Date:** 2026-05-13 (updated 2026-05-26)
 **Status:** Open
 
 ---
@@ -227,6 +228,27 @@
 - `tasks-002` marks Task 7.7 ✅
 - PR body architecture diagram, parity matrix table, and deliberate-exclusion rationale are all accurate
 
+## Commit 8af0aa6 (Phase 8 Implementation — Docs + Release)
+
+| # | Severity | Issue | Status |
+|---|----------|-------|--------|
+| P8-1 | Medium | `README.md` and `SKILL.md` mention `weather-darwin-arm64` as a downloadable binary, but `package.json` only defines a build script for `weather-linux-x64`. The darwin-arm64 binary has no automated build step. If it's produced manually or planned for a separate workflow, this should be noted. Consumers following the curl-download instructions will get a 404 for the darwin binary until a release actually publishes it. | Open — darwin-arm64 build either needs a `package.json` script entry or the docs should note it's produced separately. |
+| P8-2 | Low | `SKILL.md` Integration section Bun/TypeScript example uses `HKOProvider` and `TelegramSender` imports but doesn't show `JMAProvider`, `SGNEAProvider`, or `NWSProvider` — all of which are exported from `src/index.ts`. The Python example also only shows `HKOProvider` and `OpenWeatherMapProvider`. Consistent pattern (show 2, imply the rest), but worth noting the `SGNEAProvider` export name differs from the file name `sg_nea.ts` (PascalCase vs snake_case). | Acknowledged — examples are intentionally minimal. |
+| P8-3 | Low | `CHANGELOG.md` uses version `0.1.0-bun` which is a prerelease-style semver. The PR body says "Task 8.4: tag `v0.1.0-bun` on the merge commit." This is consistent but the `-bun` suffix could confuse semver parsers that treat it as a prerelease of `0.1.0`. Not a doc bug — the version scheme is deliberate per PRD-002. | Acknowledged — deliberate versioning choice. |
+| P8-4 | Low | `SKILL.md` file structure tree lists `docs/prd-002-bun-runtime-support.md` but the actual file is `docs/prd-002-bun-runtime-support.md` (no `prd-` prefix). Wait — checking: the actual filename is `docs/prd-002-bun-runtime-support.md`. The tree in SKILL.md says `prd-002-bun-runtime-support.md` which matches. Verified correct. | Not an issue — verified correct on re-check. |
+| P8-5 | Low | `README.md` providers table header row now has 6 columns (Provider, Coverage, API Key, Priority, Forecast, Air Quality) but the SKILL.md table has 5 columns (Provider, Coverage, API Key, Priority, Bun). The README table doesn't have the Bun column, so consumers reading only README won't know which providers are available in the Bun package without checking SKILL.md. | Open — consider adding a `Bun` column to the README providers table for consistency with SKILL.md. |
+| P8-6 | Low | `SKILL.md` agent execution section shows three invocation variants (Python, Bun, binary) for current weather but only shows Python for forecast and Telegram send, with a comment "# or any of the Bun / binary variants above with the same flags". This is technically correct but the forecast section should show the full three-way pattern like the current weather section does, for consistency. | Acknowledged — the shorthand is sufficient; repeating all three variants for every subsection would be noisy. |
+
+**Verified correct in Phase 8:**
+- All 4 changed files are markdown — no code paths modified. Doc-only PR.
+- `CHANGELOG.md`: `[Unreleased]` is correctly empty; `## [0.1.0-bun] - 2026-05-25` heading is present with accurate 5-bullet summary; Phase 8 entry under Added is correct.
+- `SKILL.md`: `compatibility` frontmatter updated to mention all three distributions; providers table has correct 13 rows with 5 Bun checkmarks (HKO, SG NEA, JMA, NWS, OpenWeatherMap) matching actual `src/providers/` contents; Integration section has Python, Bun/TypeScript, and Compiled-binary subsections with syntactically valid code examples; Agent Execution shows all three invocation variants; File Structure tree matches actual repo layout.
+- `README.md`: Distribution-formats table is accurate (3 runtimes, correct provider counts); Install section has Python, Bun, and binary subsections with valid curl commands; Bun/TypeScript API examples use correct import paths and symbol names (`buildDefaultSkill`, `WeatherSkill`, `HKOProvider`, `OpenWeatherMapProvider`, `TelegramFormatter`, `TelegramSender` — all verified in `src/index.ts`); snake_case-data / camelCase-method convention note is accurate; File Structure tree matches SKILL.md and actual layout.
+- `docs/tasks-002`: Tasks 8.1, 8.2, 8.3 marked ✅; 8.4 (tag) correctly noted as post-merge.
+- `npm` package name `@shrwnsan/weather-skill` verified in `package.json`.
+- Compiled binary name `weather-linux-x64` verified in `package.json` build script.
+- All CI checks pass (7/7): Bun parity, Python parity (3.11 + 3.13), Python test (3.10–3.13).
+
 ---
 
 ## Quick Wins
@@ -260,3 +282,5 @@ These are low-effort fixes that improve correctness:
 25. Expand parity matrix to include SG NEA once P7.4-4 is fixed (P7.7-6)
 26. Expand parity matrix to include JMA forecast once P7.4-5 + date divergence are fixed (P7.7-6)
 27. Expand parity matrix to include OpenWeatherMap once fixtures are captured (P7.7-6)
+28. Add `weather-darwin-arm64` build script to `package.json` or document how it's produced (P8-1)
+29. Add `Bun` column to README providers table for consistency with SKILL.md (P8-5)
