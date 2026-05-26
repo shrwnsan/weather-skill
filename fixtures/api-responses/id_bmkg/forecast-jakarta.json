@@ -1,0 +1,49 @@
+{
+  "lokasi": {
+    "kotkab": "Kota Jakarta Pusat",
+    "provinsi": "DKI Jakarta"
+  },
+  "data": [
+    {
+      "cuaca": [
+        [
+          {
+            "local_datetime": "2026-01-01 07:00:00",
+            "utc_datetime": "2026-01-01 00:00:00",
+            "t": 29,
+            "hu": 78,
+            "weather_desc_en": "Rain",
+            "ws": 8,
+            "wd": "SW",
+            "tcc": 80,
+            "vs_text": "> 10 km"
+          },
+          {
+            "local_datetime": "2026-01-01 12:00:00",
+            "utc_datetime": "2026-01-01 05:00:00",
+            "t": 32,
+            "hu": 70,
+            "weather_desc_en": "Partly Cloudy",
+            "ws": 10,
+            "wd": "W",
+            "tcc": 60,
+            "vs_text": "> 10 km"
+          }
+        ],
+        [
+          {
+            "local_datetime": "2026-01-02 12:00:00",
+            "utc_datetime": "2026-01-02 05:00:00",
+            "t": 31,
+            "hu": 72,
+            "weather_desc_en": "Partly Cloudy",
+            "ws": 9,
+            "wd": "S",
+            "tcc": 50,
+            "vs_text": "> 10 km"
+          }
+        ]
+      ]
+    }
+  ]
+}

@@ -21,6 +21,7 @@ import { TelegramFormatter } from "./formatters/telegram.js";
 import { WhatsAppFormatter } from "./formatters/whatsapp.js";
 import { DWDProvider } from "./providers/de_dwd.js";
 import { HKOProvider } from "./providers/hko.js";
+import { BMKGProvider } from "./providers/id_bmkg.js";
 import { JMAProvider } from "./providers/jma.js";
 import { KMAProvider } from "./providers/kr_kma.js";
 import { MetServiceProvider } from "./providers/nz_metservice.js";
@@ -59,6 +60,7 @@ function buildProviders(): IWeatherProvider[] {
     new NWSProvider(),
     new DWDProvider(),
     new MetServiceProvider(),
+    new BMKGProvider(),
   ];
 
   // Key-required: OpenWeatherMap (global fallback).

@@ -1,0 +1,8 @@
+{
+  "provider": "id_bmkg",
+  "description": "BMKG public forecast fixture for Jakarta.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=31.71.01.1001": "forecast-jakarta.json"
+  }
+}

@@ -50,6 +50,7 @@ export { NWSProvider } from "./providers/us_nws.js";
 export { DWDProvider } from "./providers/de_dwd.js";
 export { MetServiceProvider } from "./providers/nz_metservice.js";
 export { KMAProvider } from "./providers/kr_kma.js";
+export { BMKGProvider } from "./providers/id_bmkg.js";
 
 export { CliTextFormatter } from "./formatters/cli_text.js";
 export {
