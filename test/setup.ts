@@ -34,6 +34,7 @@ const PROVIDERS = [
   "openweathermap",
   "de_dwd",
   "nz_metservice",
+  "id_bmkg",
 ] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────
