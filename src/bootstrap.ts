@@ -19,6 +19,7 @@
 import { CliTextFormatter } from "./formatters/cli_text.js";
 import { TelegramFormatter } from "./formatters/telegram.js";
 import { WhatsAppFormatter } from "./formatters/whatsapp.js";
+import { DWDProvider } from "./providers/de_dwd.js";
 import { HKOProvider } from "./providers/hko.js";
 import { JMAProvider } from "./providers/jma.js";
 import { OpenWeatherMapProvider } from "./providers/openweathermap.js";
@@ -54,6 +55,7 @@ function buildProviders(): IWeatherProvider[] {
     new SGNEAProvider(),
     new JMAProvider(),
     new NWSProvider(),
+    new DWDProvider(),
   ];
 
   // Key-required: OpenWeatherMap (global fallback).
