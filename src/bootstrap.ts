@@ -22,6 +22,7 @@ import { WhatsAppFormatter } from "./formatters/whatsapp.js";
 import { DWDProvider } from "./providers/de_dwd.js";
 import { HKOProvider } from "./providers/hko.js";
 import { JMAProvider } from "./providers/jma.js";
+import { KMAProvider } from "./providers/kr_kma.js";
 import { MetServiceProvider } from "./providers/nz_metservice.js";
 import { OpenWeatherMapProvider } from "./providers/openweathermap.js";
 import { SGNEAProvider } from "./providers/sg_nea.js";
@@ -64,6 +65,11 @@ function buildProviders(): IWeatherProvider[] {
   const owmKey = process.env.OPENWEATHERMAP_API_KEY;
   if (owmKey) {
     providers.push(new OpenWeatherMapProvider(owmKey));
+  }
+
+  const kmaKey = process.env.KMA_SERVICE_KEY;
+  if (kmaKey) {
+    providers.push(new KMAProvider(kmaKey));
   }
 
   return providers;
