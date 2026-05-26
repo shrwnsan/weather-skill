@@ -48,6 +48,7 @@ export { OpenWeatherMapProvider } from "./providers/openweathermap.js";
 export { SGNEAProvider } from "./providers/sg_nea.js";
 export { NWSProvider } from "./providers/us_nws.js";
 export { DWDProvider } from "./providers/de_dwd.js";
+export { MetServiceProvider } from "./providers/nz_metservice.js";
 
 export { CliTextFormatter } from "./formatters/cli_text.js";
 export {
