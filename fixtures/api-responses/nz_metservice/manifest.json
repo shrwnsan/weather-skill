@@ -1,0 +1,8 @@
+{
+  "provider": "nz_metservice",
+  "description": "MetService local observations fixture for Auckland.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://www.metservice.com/publicData/localObs_auckland": "local-obs-auckland.json"
+  }
+}
