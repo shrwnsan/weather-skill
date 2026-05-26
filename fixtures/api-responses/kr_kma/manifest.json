@@ -1,0 +1,9 @@
+{
+  "provider": "kr_kma",
+  "description": "KMA nowcast and village forecast fixtures for Seoul.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://apis.data.go.kr/1360000/VilageFcstInfoService2.0/getUltraSrtNcst?serviceKey=test-key&numOfRows=100&pageNo=1&dataType=JSON&base_date=20260101&base_time=0800&nx=60&ny=127": "nowcast-seoul.json",
+    "https://apis.data.go.kr/1360000/VilageFcstInfoService2.0/getVilageFcst?serviceKey=test-key&numOfRows=1000&pageNo=1&dataType=JSON&base_date=20260101&base_time=0800&nx=60&ny=127": "forecast-seoul.json"
+  }
+}

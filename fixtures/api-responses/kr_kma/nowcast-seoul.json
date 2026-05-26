@@ -1,0 +1,8 @@
+{
+  "response": {"body": {"items": {"item": [
+    {"category": "T1H", "obsrValue": "22.5"},
+    {"category": "REH", "obsrValue": "65"},
+    {"category": "WSD", "obsrValue": "3.2"},
+    {"category": "PTY", "obsrValue": "0"}
+  ]}}}
+}
