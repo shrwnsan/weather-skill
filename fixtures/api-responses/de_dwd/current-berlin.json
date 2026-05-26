@@ -1,0 +1,12 @@
+{
+  "weather": {
+    "timestamp": "2026-05-18T10:00:00+00:00",
+    "temperature": 18.4,
+    "relative_humidity": 66.7,
+    "wind_speed_10": 12.3,
+    "wind_direction_10": 225,
+    "icon": "partly-cloudy-day",
+    "visibility": 20000,
+    "pressure_msl": 1014.2
+  }
+}

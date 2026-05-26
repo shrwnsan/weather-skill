@@ -1,0 +1,36 @@
+{
+  "weather": [
+    {
+      "timestamp": "2026-05-18T00:00:00+00:00",
+      "temperature": 12,
+      "relative_humidity": 70,
+      "wind_speed_10": 8,
+      "precipitation": 0,
+      "icon": "clear-day"
+    },
+    {
+      "timestamp": "2026-05-18T12:00:00+00:00",
+      "temperature": 20,
+      "relative_humidity": 60,
+      "wind_speed_10": 14,
+      "precipitation": 0.5,
+      "icon": "rain"
+    },
+    {
+      "timestamp": "2026-05-19T00:00:00+00:00",
+      "temperature": 11,
+      "relative_humidity": 80,
+      "wind_speed_10": 6,
+      "precipitation": 0,
+      "icon": "clear-day"
+    },
+    {
+      "timestamp": "2026-05-19T12:00:00+00:00",
+      "temperature": 17,
+      "relative_humidity": 70,
+      "wind_speed_10": 10,
+      "precipitation": 0,
+      "icon": "clear-day"
+    }
+  ]
+}

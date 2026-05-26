@@ -1,0 +1,9 @@
+{
+  "provider": "de_dwd",
+  "description": "Bright Sky fixtures for Berlin current weather and hourly forecast aggregation.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://api.brightsky.dev/current_weather?lat=52.5200&lon=13.4050": "current-berlin.json",
+    "https://api.brightsky.dev/weather?lat=52.5200&lon=13.4050&date=2026-01-01&last_date=2026-01-03": "weather-berlin.json"
+  }
+}
