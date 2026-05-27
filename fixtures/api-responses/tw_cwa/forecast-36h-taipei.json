@@ -1,0 +1,22 @@
+{
+  "records": {
+    "location": [
+      {
+        "weatherElement": [
+          {
+            "elementName": "Wx",
+            "time": [
+              {"parameter": {"parameterName": "多雲短暫雨"}}
+            ]
+          },
+          {
+            "elementName": "PoP",
+            "time": [
+              {"parameter": {"parameterName": "40"}}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
