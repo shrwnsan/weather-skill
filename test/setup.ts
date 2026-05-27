@@ -37,6 +37,7 @@ const PROVIDERS = [
   "kr_kma",
   "id_bmkg",
   "au_bom",
+  "th_tmd",
 ] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────

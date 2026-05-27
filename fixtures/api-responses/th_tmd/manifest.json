@@ -1,0 +1,9 @@
+{
+  "provider": "th_tmd",
+  "description": "TMD observation and 7-day forecast fixtures for Bangkok.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://data.tmd.go.th/api/WeatherToday/v2/?uid=test-key&ukey=test-key&format=json": "observation-bangkok.json",
+    "https://data.tmd.go.th/api/WeatherForecast7Days/v2/?uid=test-key&ukey=test-key&province=%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3&format=json": "forecast-bangkok.json"
+  }
+}

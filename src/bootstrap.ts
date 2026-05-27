@@ -28,6 +28,7 @@ import { KMAProvider } from "./providers/kr_kma.js";
 import { MetServiceProvider } from "./providers/nz_metservice.js";
 import { OpenWeatherMapProvider } from "./providers/openweathermap.js";
 import { SGNEAProvider } from "./providers/sg_nea.js";
+import { TMDProvider } from "./providers/th_tmd.js";
 import { NWSProvider } from "./providers/us_nws.js";
 import { TelegramSender } from "./senders/telegram.js";
 import { WeatherSkill, type WeatherSkillInit } from "./skill.js";
@@ -74,6 +75,11 @@ function buildProviders(): IWeatherProvider[] {
   const kmaKey = process.env.KMA_SERVICE_KEY;
   if (kmaKey) {
     providers.push(new KMAProvider(kmaKey));
+  }
+
+  const tmdKey = process.env.TMD_API_TOKEN;
+  if (tmdKey) {
+    providers.push(new TMDProvider(tmdKey));
   }
 
   return providers;

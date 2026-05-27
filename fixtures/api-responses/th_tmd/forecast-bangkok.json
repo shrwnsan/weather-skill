@@ -1,0 +1,25 @@
+{
+  "Provinces": {
+    "Province": [
+      {
+        "ProvinceNameThai": "กรุงเทพมหานคร",
+        "ForecastDaily": [
+          {
+            "Date": "15/04/2026",
+            "MaxTemperature": "35",
+            "MinTemperature": "27",
+            "WeatherDescription": "Partly Cloudy",
+            "RainChance": "10%"
+          },
+          {
+            "Date": "16/04/2026",
+            "MaxTemperature": "33",
+            "MinTemperature": "26",
+            "WeatherDescription": "Thunder Storm",
+            "RainChance": "60%"
+          }
+        ]
+      }
+    ]
+  }
+}
