@@ -51,12 +51,9 @@ export { DWDProvider } from "./providers/de_dwd.js";
 export { MetServiceProvider } from "./providers/nz_metservice.js";
 export { BMKGProvider } from "./providers/id_bmkg.js";
 export { BOMProvider } from "./providers/au_bom.js";
-<<<<<<< HEAD
 export { KMAProvider } from "./providers/kr_kma.js";
-||||||| parent of c6ecb9c (feat(prd-002b): port TMD provider to Bun)
-=======
 export { TMDProvider } from "./providers/th_tmd.js";
->>>>>>> c6ecb9c (feat(prd-002b): port TMD provider to Bun)
+export { UKMetOfficeProvider } from "./providers/uk_metoffice.js";
 
 export { CliTextFormatter } from "./formatters/cli_text.js";
 export {

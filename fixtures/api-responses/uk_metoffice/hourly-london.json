@@ -1,0 +1,22 @@
+{
+  "features": [
+    {
+      "properties": {
+        "timeSeries": [
+          {
+            "time": "2026-05-18T10:00:00Z",
+            "screenTemperature": 14.2,
+            "feelsLikeTemperature": 13.1,
+            "screenRelativeHumidity": 75.6,
+            "windSpeed10m": 5,
+            "windDirectionFrom10m": 225,
+            "significantWeatherCode": 7,
+            "visibility": 12000,
+            "uvIndex": 3,
+            "probOfPrecipitation": 40
+          }
+        ]
+      }
+    }
+  ]
+}

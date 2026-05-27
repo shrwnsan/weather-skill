@@ -1,0 +1,9 @@
+{
+  "provider": "uk_metoffice",
+  "description": "Met Office hourly and daily GeoJSON fixtures for London.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/hourly?latitude=51.5074&longitude=-0.1278": "hourly-london.json",
+    "https://data.hub.api.metoffice.gov.uk/sitespecific/v0/point/daily?latitude=51.5074&longitude=-0.1278": "daily-london.json"
+  }
+}
