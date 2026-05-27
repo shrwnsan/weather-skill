@@ -1,0 +1,17 @@
+{
+  "records": {
+    "Station": [
+      {
+        "WeatherElement": {
+          "AirTemperature": 28.4,
+          "RelativeHumidity": 70.2,
+          "WindSpeed": 3.2,
+          "WindDirection": 45
+        },
+        "ObsTime": {
+          "DateTime": "2026-05-18T10:00:00+00:00"
+        }
+      }
+    ]
+  }
+}

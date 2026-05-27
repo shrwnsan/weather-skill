@@ -39,6 +39,7 @@ const PROVIDERS = [
   "au_bom",
   "th_tmd",
   "uk_metoffice",
+  "tw_cwa",
 ] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────
