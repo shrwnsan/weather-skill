@@ -36,7 +36,12 @@ const PROVIDERS = [
   "nz_metservice",
   "id_bmkg",
   "au_bom",
+<<<<<<< HEAD
   "kr_kma",
+||||||| parent of c6ecb9c (feat(prd-002b): port TMD provider to Bun)
+=======
+  "th_tmd",
+>>>>>>> c6ecb9c (feat(prd-002b): port TMD provider to Bun)
 ] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────

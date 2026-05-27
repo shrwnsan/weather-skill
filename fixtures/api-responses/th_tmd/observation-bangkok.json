@@ -1,0 +1,15 @@
+{
+  "Stations": {
+    "Station": [
+      {
+        "WmoStationNumber": "48455",
+        "Observation": {
+          "MeanTemperature": "32.5",
+          "MeanRelativeHumidity": "72",
+          "MaxTemperature": "35.0",
+          "MinTemperature": "27.0"
+        }
+      }
+    ]
+  }
+}
