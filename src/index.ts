@@ -53,6 +53,7 @@ export { KMAProvider } from "./providers/kr_kma.js";
 export { BMKGProvider } from "./providers/id_bmkg.js";
 export { BOMProvider } from "./providers/au_bom.js";
 export { TMDProvider } from "./providers/th_tmd.js";
+export { UKMetOfficeProvider } from "./providers/uk_metoffice.js";
 
 export { CliTextFormatter } from "./formatters/cli_text.js";
 export {

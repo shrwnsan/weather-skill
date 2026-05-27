@@ -38,6 +38,7 @@ const PROVIDERS = [
   "id_bmkg",
   "au_bom",
   "th_tmd",
+  "uk_metoffice",
 ] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────
