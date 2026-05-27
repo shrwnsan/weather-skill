@@ -35,6 +35,7 @@ const PROVIDERS = [
   "de_dwd",
   "nz_metservice",
   "id_bmkg",
+  "au_bom",
 ] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────

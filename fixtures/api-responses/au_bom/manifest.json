@@ -1,0 +1,8 @@
+{
+  "provider": "au_bom",
+  "description": "BOM observations and forecast fixtures for Sydney.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://www.bom.gov.au/fwo/IDN60801/IDN60801.94767.json": "observations-sydney.json"
+  }
+}
