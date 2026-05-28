@@ -166,7 +166,7 @@ describe("CLI integration", () => {
       expect(io.stderr).toContain("Error: Provider not found: nonexistent");
       expect(io.stderr).toContain("Available providers:");
       // Sorted alphabetically per src/cli.ts → run()
-      expect(io.stderr).toContain("hko, jma, nws, sg_nea");
+      expect(io.stderr).toContain("bmkg, bom, dwd, hko, jma, metservice, nws, sg_nea");
       expect(io.stdout).toBe("");
     });
   });

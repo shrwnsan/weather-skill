@@ -29,6 +29,7 @@ const NZ_LOCATIONS: Record<string, { id: string; lat: number; lon: number }> = {
   invercargill: { id: "invercargill", lat: -46.4132, lon: 168.3538 },
   gisborne: { id: "gisborne", lat: -38.6624, lon: 178.0179 },
   wanganui: { id: "wanganui", lat: -39.9299, lon: 175.0514 },
+  whanganui: { id: "wanganui", lat: -39.9299, lon: 175.0514 },
   "hawke's bay": { id: "hawkesBay", lat: -39.6, lon: 176.85 },
 };
 
