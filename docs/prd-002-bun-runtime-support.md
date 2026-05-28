@@ -1,6 +1,6 @@
 # PRD-002: Bun Runtime Support (Dual-Package)
 
-**Status:** In Progress — Phases 1–6 complete; Phase 7 next
+**Status:** PRD-002 complete — `v0.1.0-bun` released; PRD-002b next
 **Created:** 2026-05-12
 **Priority:** High
 **Release Strategy:** Incremental (Option B) — v0.1 ships batch-1 providers + OpenWeatherMap fallback; batch-2 providers ship in a fast-follow PRD-002b.
@@ -11,8 +11,8 @@ Two Bun releases instead of one big-bang port:
 
 | Release | Providers | ETA | Goal |
 |---------|-----------|-----|------|
-| **`@shrwnsan/weather-skill@0.1.0`** (this PRD) | HKO, JMA, SG NEA, US NWS, **+ OpenWeatherMap (global fallback)** | ~15h | Unblock NanoClaw immediately. Locations not covered by the 4 regional providers fall through to OWM (degraded but functional). |
-| **`@shrwnsan/weather-skill@1.0.0`** (PRD-002b) | + CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD | ~25h additional | Full feature parity with Python package. |
+| **`v0.1.0-bun` GitHub release** (this PRD) | HKO, JMA, SG NEA, US NWS, **+ OpenWeatherMap (global fallback)** | ~15h | Unblock NanoClaw immediately via Bun source/package use and standalone binaries. Locations not covered by the 4 regional providers fall through to OWM (degraded but functional). |
+| **`v1.0.0` / PRD-002b** | + CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD | ~25h additional | Full feature parity with Python package for agent-skill consumers. |
 
 **Rationale:** the 4 batch-1 providers cover HK, Japan, Singapore, and USA — historically the highest-traffic regions for the existing Python skill. OpenWeatherMap covers everywhere else with reduced fidelity (no AQHI, generic icons). Shipping v0.1 in ~15h delivers measurable value to NanoClaw 25h sooner than waiting for the full 13-provider port, and gives us a real production signal before committing to batch 2.
 
@@ -52,17 +52,19 @@ A Bun-only rewrite would break Python agents. A Python-only approach leaves Nano
 5. **Updated SKILL.md** — document both Python and Bun integration patterns; replace stale NanoClaw Python snippet with the Bun snippet; clearly mark which 4 regional providers are batch-1 and which 8 are deferred to batch-2.
 6. **Zero disruption to existing Python users** — `from weather import WeatherSkill` continues to work unchanged, and `pip install weather-skill` continues to ship all required data files (resolved via Option A in *Data Packaging*).
 
+**Binary size note:** Bun standalone executables embed the Bun runtime plus application code and shared JSON data. The released binaries are expected to be tens of megabytes (`weather-linux-x64` is ~90 MB; `weather-darwin-arm64` is ~61 MB). This is acceptable for PRD-002 because the binary target is agents/containers that cannot install Python, Bun, npm packages, or build locally. Future builds may use `--minify`, `--sourcemap=none`, disabled compile autoload flags, `strip`, and compressed release archives to reduce download size, but dramatic reductions should not be expected without requiring a runtime install.
+
 ### Deferred to PRD-002b (v1.0)
 
 7. Bun ports of CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD providers (~25h).
-8. npm publish to public registry (v0.1 distributed via GitHub release + compiled binary; npm publish gated on production signal from NanoClaw).
+8. Agent-focused distribution docs and release artifacts for OpenClaw, NanoClaw, Hermes Agent, and similar consumers. npm publishing is optional and not a core PRD-002b requirement.
 
 ## Non-Goals
 
 - Replacing the Python package. Both packages are first-class and maintained.
 - Adding new providers, formatters, or senders (that's a separate PRD).
 - Building a shared library / FFI bridge between Python and Bun (over-engineering).
-- npm package publishing (can be added later; compiled binary covers the immediate NanoClaw case).
+- npm package publishing as a required milestone. This repository is primarily an agent skill; npm can be added later if a concrete agent integration benefits from it, but GitHub release artifacts and direct repository/skill installation are sufficient for PRD-002b.
 - Supporting Node.js specifically (Bun is the target runtime; Node compat is a nice-to-have, not a requirement).
 - Python→TypeScript transpilation tools (the port is manual for correctness).
 
@@ -617,8 +619,9 @@ bun run src/cli.ts --location "<location>"
 ### PRD-002b (deferred)
 
 - [ ] Bun ports of CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD with parity tests
-- [ ] `npm publish @shrwnsan/weather-skill@1.0.0`
 - [ ] All 13 providers return data consistent with Python implementations
+- [ ] Agent-facing install/execution docs cover Python runtime, Bun runtime, and standalone binaries for OpenClaw, NanoClaw, Hermes Agent, and similar consumers
+- [ ] Optional only: evaluate npm publication if an agent consumer explicitly needs registry-based installation
 
 ## Open Questions
 
@@ -631,8 +634,7 @@ bun run src/cli.ts --location "<location>"
 3. **Bun version pinning.** Bun is evolving rapidly. What minimum Bun version should we target? Suggest Bun >= 1.1 (stable `fetch`, `build --compile`, `test` runner).
    - **Proposed:** Bun >= 1.1.30 (broad availability + stable `--compile`). Pin in `package.json` `engines` field and CI matrix.
 
-4. **npm publish scope.** Should the Bun package be published to npm eventually? If so, under what name (`weather-skill`, `@claw/weather-skill`, etc.)? Not blocking for v1 but worth deciding early to avoid renames.
-   - **Proposed:** Reserve `@shrwnsan/weather-skill` (matches the GitHub owner per [`pyproject.toml`](file:///Users/karma/Developer/personal/weather-skill/pyproject.toml#L20-L23)) immediately, even if publish is deferred. Cheap insurance.
+4. **npm publish scope.** Decision updated after `v0.1.0-bun`: `@shrwnsan/weather-skill` is not currently published to npm, and npm publication is no longer a required PRD-002b outcome. The project is primarily an agent skill for OpenClaw, NanoClaw, Hermes Agent, and similar systems, so direct repository/skill installation plus GitHub release binaries are the default distribution path. Revisit npm only if a specific consumer requires registry-based installation.
 
 5. **Test data for provider tests.** Provider tests need HTTP mocking. Python tests likely use their own approach. Bun has `bun:test` with built-in mocking. Should test fixture data (mock API responses) also live in `data/` or be duplicated per test suite?
    - **Proposed:** Add a top-level `fixtures/api-responses/<provider>/` (gitignored from packaging) — both runtimes load the same canned JSON files. This is what enables the cross-runtime JSON snapshot test mentioned in *JSON Schema Parity*.
@@ -661,7 +663,7 @@ bun run src/cli.ts --location "<location>"
 | Phase | Scope |
 |-------|-------|
 | **9** | Bun providers (batch 2): CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD |
-| **10** | Tests for batch-2 providers + bump to `v1.0.0` + npm publish |
+| **10** | Tests for batch-2 providers + parity verification + `v1.0.0` GitHub release artifacts and agent docs |
 
 ## Effort Estimate
 
@@ -685,7 +687,7 @@ bun run src/cli.ts --location "<location>"
 | Phase | Hours (low) | Hours (high) | Notes |
 |-------|------------:|-------------:|-------|
 | 9 — Providers batch 2 | 8 | 13 | 8 remaining providers (CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD); some require API keys for live verification |
-| 10 — Tests + npm publish | 3 | 5 | 8-provider mocks, parity tests, npm publish workflow |
+| 10 — Tests + release/docs | 3 | 5 | 8-provider mocks, parity tests, agent-facing docs, GitHub release artifacts; npm publish evaluation only if needed |
 | **PRD-002b Total** | **~11** | **~18** | Mid-point: ~14h |
 
 **Combined v0.1 + v1.0:** ~30–50h, but value lands at ~25h instead of ~40h, with production signal between releases to course-correct.
@@ -700,12 +702,12 @@ bun run src/cli.ts --location "<location>"
 | Python wheel stops shipping data files | **Medium** | **High** — every `pip install` breaks | Resolve via Option A in *Data Packaging* section. Add a smoke test: `pip wheel . && unzip -l *.whl \| grep data/.*\.json` in CI. |
 | JSON output schema diverges (snake/camel/date format) | **Medium** | Medium — agents that parse JSON break on one runtime | Implement camelCase→snake_case shim in Bun JSON serializer; add cross-runtime snapshot diff test. |
 | Shared JSON data drifts out of sync | Low | Medium — one package updated, other broken | CI validates both packages against same data files |
-| Bun compiled binary size is too large for NanoClaw Docker | Low | High — defeats the purpose | Bench: Bun compiled binaries are typically ~50-100MB stripped. Verify with NanoClaw team **before** Phase 6. |
+| Bun compiled binary size is too large for NanoClaw Docker | Low | High — defeats the purpose | Released sizes are ~90 MB for Linux x64 and ~61 MB for macOS arm64, which is normal for Bun standalone binaries because they embed the runtime. Optimize with minification/strip/compressed archives where useful, but expect tens of MB unless requiring a runtime install. |
 | Telegram MarkdownV2 escape rules drift between Python and TS | Low | Medium — rejected messages | Reuse the same escape character set ([`telegram.py:15`](file:///Users/karma/Developer/personal/weather-skill/weather/formatters/telegram.py#L15)) as a constant in shared data, or duplicate with a parity unit test |
 | Maintenance burden of two codebases | High | Medium — ongoing cost | Shared data reduces the highest-drift surface. Provider logic is stable and rarely changes. |
 
 ## Dependencies
 
 - **Bun >= 1.1** installed in dev environment and CI
-- **NanoClaw team confirmation** that a compiled Bun binary (~80-120MB) is acceptable in their Docker image
+- **NanoClaw team confirmation** that a compiled Bun binary around the current released size (~60-90MB depending on target) is acceptable in their Docker image
 - **No new Python dependencies** — `json` and `pathlib` are stdlib

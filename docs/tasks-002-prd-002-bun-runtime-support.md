@@ -944,6 +944,13 @@ Add `## [0.1.0-bun] - 2026-XX-XX` entry summarizing the Bun port.
 ## Out of Scope (PRD-002b — fast-follow)
 
 - Phase 4 (batch-2 providers): CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD
-- npm publish to public registry
-- Cross-platform binary builds (`bun-darwin-arm64`, `bun-darwin-x64`, `bun-windows-x64`)
+- npm publish to public registry as a required milestone. Decision after `v0.1.0-bun`: `@shrwnsan/weather-skill` is not currently published to npm, and this project is primarily an agent skill for OpenClaw, NanoClaw, Hermes Agent, and similar consumers. Use direct repository/skill installation plus GitHub release binaries by default; revisit npm only if a concrete consumer needs registry-based install.
+- Additional cross-platform binary builds beyond the released `weather-linux-x64` (~90 MB) and `weather-darwin-arm64` (~61 MB). These sizes are normal for Bun standalone executables because they embed the Bun runtime. Future builds can try `--minify`, `--sourcemap=none`, disabled compile autoload flags, `strip`, and compressed release archives, but large reductions require not shipping a standalone runtime.
 - Python `utils.py` formatter deduplication refactor
+
+## PRD-002b Ready Scope
+
+- Port the remaining 8 providers to Bun: CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD.
+- Add provider tests and cross-runtime parity coverage so all 13 providers return data consistent with Python.
+- Update agent-facing docs for Python runtime, Bun runtime, and standalone binary execution across OpenClaw, NanoClaw, Hermes Agent, and similar consumers.
+- Prepare `v1.0.0` GitHub release artifacts. npm publication remains optional and should only be added if an agent integration explicitly requires it.

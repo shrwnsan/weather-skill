@@ -19,8 +19,12 @@
 import { CliTextFormatter } from "./formatters/cli_text.js";
 import { TelegramFormatter } from "./formatters/telegram.js";
 import { WhatsAppFormatter } from "./formatters/whatsapp.js";
+import { BOMProvider } from "./providers/au_bom.js";
+import { DWDProvider } from "./providers/de_dwd.js";
 import { HKOProvider } from "./providers/hko.js";
+import { BMKGProvider } from "./providers/id_bmkg.js";
 import { JMAProvider } from "./providers/jma.js";
+import { MetServiceProvider } from "./providers/nz_metservice.js";
 import { OpenWeatherMapProvider } from "./providers/openweathermap.js";
 import { SGNEAProvider } from "./providers/sg_nea.js";
 import { NWSProvider } from "./providers/us_nws.js";
@@ -54,6 +58,10 @@ function buildProviders(): IWeatherProvider[] {
     new SGNEAProvider(),
     new JMAProvider(),
     new NWSProvider(),
+    new DWDProvider(),
+    new MetServiceProvider(),
+    new BMKGProvider(),
+    new BOMProvider(),
   ];
 
   // Key-required: OpenWeatherMap (global fallback).

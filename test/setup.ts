@@ -26,7 +26,17 @@ const FIXTURES_ROOT = resolve(import.meta.dir, "..", "fixtures", "api-responses"
 const FROZEN_ISO = "2026-01-01T00:00:00.000Z";
 const FROZEN_MS = new Date(FROZEN_ISO).getTime();
 
-const PROVIDERS = ["hko", "jma", "sg_nea", "us_nws", "openweathermap"] as const;
+const PROVIDERS = [
+  "hko",
+  "jma",
+  "sg_nea",
+  "us_nws",
+  "openweathermap",
+  "de_dwd",
+  "nz_metservice",
+  "id_bmkg",
+  "au_bom",
+] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────
 

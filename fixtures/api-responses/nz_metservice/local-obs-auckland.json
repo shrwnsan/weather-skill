@@ -1,0 +1,16 @@
+{
+  "threeHour": {
+    "temp": "16.5",
+    "humidity": "82",
+    "windSpeed": "18",
+    "windDirection": "SW",
+    "pressure": "1012.4",
+    "windChill": "15.8",
+    "dateTimeISO": "2026-05-18T09:00:00+00:00"
+  },
+  "twentyFourHour": {
+    "maxTemp": "19",
+    "minTemp": "12",
+    "rainfall": "2.4"
+  }
+}

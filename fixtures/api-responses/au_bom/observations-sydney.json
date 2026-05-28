@@ -1,0 +1,38 @@
+{
+  "observations": {
+    "data": [
+      {
+        "air_temp": 21.7,
+        "apparent_temp": 20.9,
+        "rel_hum": 63,
+        "wind_spd_kmh": 19,
+        "wind_dir": "SSE",
+        "press_msl": 1018.4,
+        "rain_trace": "0.0",
+        "local_date_time_full": "20260518103000"
+      }
+    ]
+  },
+  "forecasts": [
+    {
+      "date": "2026-05-18",
+      "max_temp": 23,
+      "min_temp": 15,
+      "icon_descriptor": "shower or two",
+      "short_text": "Shower or two.",
+      "probability_of_precipitation": "60",
+      "uv": "4",
+      "extended_text": "Cloudy. Shower or two."
+    },
+    {
+      "date": "2026-05-19",
+      "max_temp": 24,
+      "min_temp": 14,
+      "icon_descriptor": "sunny",
+      "short_text": "Sunny.",
+      "probability_of_precipitation": "5",
+      "uv": "5",
+      "extended_text": "Sunny."
+    }
+  ]
+}
