@@ -65,8 +65,10 @@ export class CWAProvider implements IWeatherProvider {
     try {
       const cwaName = this.getCwaName(location);
       const station = CWA_STATIONS[cwaName] ?? cwaName.replace(/[市縣]$/, "");
-      const obs = await this.fetchApi(CWA_OBSERVATION_ID, { Authorization: this.apiKey, StationName: station });
-      const fc = await this.fetchApi(CWA_FORECAST_36HR_ID, { Authorization: this.apiKey, locationName: cwaName });
+      const [obs, fc] = await Promise.all([
+        this.fetchApi(CWA_OBSERVATION_ID, { Authorization: this.apiKey, StationName: station }),
+        this.fetchApi(CWA_FORECAST_36HR_ID, { Authorization: this.apiKey, locationName: cwaName }),
+      ]);
       return this.parseCurrent(cwaName, obs, fc);
     } catch (e) {
       if (e instanceof LocationNotSupportedError) throw e;
