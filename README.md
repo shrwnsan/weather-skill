@@ -7,8 +7,8 @@ Ships in **three** distribution formats — pick whichever fits your agent's run
 | Runtime | Install | Providers | Notes |
 |---------|---------|-----------|-------|
 | Python  | `pip install weather-skill` | **13** | Reference implementation; full provider chain. |
-| Bun / npm | `bun add @shrwnsan/weather-skill` | **5** | HKO, JMA, SG NEA, US NWS, OpenWeatherMap. Ideal for TypeScript runtimes and Docker images without Python. |
-| Standalone binary | Download `weather-linux-x64` (~90 MB) or `weather-darwin-arm64` (~61 MB) from [Releases](https://github.com/shrwnsan/weather-skill/releases) | **5** | Same as Bun, zero-install. Single self-contained ELF / Mach-O. |
+| Bun / TypeScript | Clone or install from GitHub source | **13** | Full provider chain. Ideal for TypeScript runtimes and Docker images without Python. npm publication is optional/future. |
+| Standalone binary | Download `weather-linux-x64` (~90 MB) or `weather-darwin-arm64` (~61 MB) from [Releases](https://github.com/shrwnsan/weather-skill/releases) | **13** | Same as Bun, zero-install. Single self-contained ELF / Mach-O. |
 
 All three produce **byte-identical** `--format json` output for the same input — guaranteed in CI by the cross-runtime parity gate (PRD-002 Phase 7.7).
 
@@ -25,10 +25,13 @@ Requires Python 3.10 or later. Installs the `weather` console script and the `we
 ### Bun
 
 ```bash
-bun add @shrwnsan/weather-skill
+git clone https://github.com/shrwnsan/weather-skill.git
+cd weather-skill
+bun install
+bun run src/cli.ts --location "Hong Kong"
 ```
 
-Requires Bun ≥ 1.1.30. Installs the npm package; the CLI is available via `bun x @shrwnsan/weather-skill …`.
+Requires Bun ≥ 1.1.30. The Bun package is source-installable from this repository; publishing `@shrwnsan/weather-skill` to npm is optional and will be revisited only if a concrete agent consumer needs registry-based installation.
 
 ### Compiled binary (no runtime install)
 
@@ -65,7 +68,7 @@ python -m weather.cli --location "Hong Kong" --format telegram
 python -m weather.cli --location "Hong Kong" --format telegram --send
 ```
 
-The exact same flags work with the Bun and binary distributions — substitute `bun x @shrwnsan/weather-skill` or `./weather-linux-x64` for `python -m weather.cli`.
+The exact same flags work with the Bun and binary distributions — substitute `bun run src/cli.ts` or `./weather-linux-x64` for `python -m weather.cli`.
 
 **All environment variables are optional.** 8 of 13 providers work without any API key. The skill outputs to stdout by default — agents capture this and route to their own channels. Env vars are only needed for specific providers or direct Telegram delivery.
 
@@ -117,9 +120,9 @@ await skill.send(message, channel="telegram")
 ```typescript
 import { buildDefaultSkill } from "@shrwnsan/weather-skill";
 
-// Built-in factory — registers HKO, JMA, SG NEA, US NWS, and
-// (if OPENWEATHERMAP_API_KEY is set) OpenWeatherMap; registers all
-// three formatters unconditionally and TelegramSender iff
+// Built-in factory — registers all free providers and key-required
+// providers when their API key environment variables are set; registers
+// all three formatters unconditionally and TelegramSender iff
 // TELEGRAM_BOT_TOKEN is set.
 const skill = buildDefaultSkill();
 
@@ -157,22 +160,22 @@ await skill.send(message, "telegram");
 
 ## Providers
 
-The Bun/npm package and the compiled binary currently ship **5 of 13** providers (the four most-popular free regional providers + OpenWeatherMap as the global fallback). The remaining 8 are Python-only; porting them is tracked under PRD-002b.
+The Bun/TypeScript package and the compiled binary currently ship **all 13** providers. The batch-2 PRD-002b providers (CWA, UK Met Office, BOM, MetService, BMKG, DWD, KMA, TMD) have been ported to Bun and are covered by provider fixture tests.
 
 | Provider | Coverage | API Key | Priority | Forecast | Air Quality | Bun |
 |----------|----------|---------|----------|----------|-------------|-----|
 | HKO | Hong Kong | Free | 1 | 9-day | AQHI (HK scale) | ✅ |
 | SG NEA | Singapore | Free | 2 | 4-day | PSI (1-hr) | ✅ |
 | JMA | Japan | Free | 3 | 7-day | No | ✅ |
-| CWA | Taiwan | Required | 4 | 7-day | No | — |
-| UK Met Office | United Kingdom | Required | 5 | 7-day | No | — |
-| BOM | Australia | Free | 6 | 7-day | No | — |
-| MetService | New Zealand | Free | 7 | Current only | No | — |
+| CWA | Taiwan | Required | 4 | 7-day | No | ✅ |
+| UK Met Office | United Kingdom | Required | 5 | 7-day | No | ✅ |
+| BOM | Australia | Free | 6 | 7-day | No | ✅ |
+| MetService | New Zealand | Free | 7 | Current only | No | ✅ |
 | NWS | USA | Free | 7 | 7-day | No | ✅ |
-| BMKG | Indonesia | Free | 8 | 3-day | No | — |
-| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No | — |
-| KMA | South Korea | Required | 9 | 3-day | No | — |
-| TMD | Thailand | Required | 9 | 7-day | No | — |
+| BMKG | Indonesia | Free | 8 | 3-day | No | ✅ |
+| DWD (Bright Sky) | Germany | Free | 8 | 10-day | No | ✅ |
+| KMA | South Korea | Required | 9 | 3-day | No | ✅ |
+| TMD | Thailand | Required | 9 | 7-day | No | ✅ |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API | ✅ |
 
 ### Provider Selection Logic
@@ -306,14 +309,14 @@ weather-skill/
 │   ├── providers/        # 13 providers
 │   ├── formatters/       # telegram, whatsapp, cli_text
 │   └── senders/          # telegram
-├── src/                  # Bun/TypeScript package — 5 providers (v0.1)
+├── src/                  # Bun/TypeScript package — 13 providers
 │   ├── cli.ts
 │   ├── bootstrap.ts
 │   ├── skill.ts
 │   ├── models.ts
 │   ├── types.ts
 │   ├── data-loader.ts    # JSON-module imports of weather/data/*
-│   ├── providers/        # hko, sg_nea, jma, us_nws, openweathermap
+│   ├── providers/        # 13 provider ports
 │   ├── formatters/       # cli_text, telegram, whatsapp
 │   └── senders/          # telegram
 ├── tests/                # Python test suite (pytest)

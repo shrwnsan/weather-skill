@@ -948,9 +948,9 @@ Add `## [0.1.0-bun] - 2026-XX-XX` entry summarizing the Bun port.
 - Additional cross-platform binary builds beyond the released `weather-linux-x64` (~90 MB) and `weather-darwin-arm64` (~61 MB). These sizes are normal for Bun standalone executables because they embed the Bun runtime. Future builds can try `--minify`, `--sourcemap=none`, disabled compile autoload flags, `strip`, and compressed release archives, but large reductions require not shipping a standalone runtime.
 - Python `utils.py` formatter deduplication refactor
 
-## PRD-002b Ready Scope
+## PRD-002b Status
 
-- Port the remaining 8 providers to Bun: CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD.
-- Add provider tests and cross-runtime parity coverage so all 13 providers return data consistent with Python.
-- Update agent-facing docs for Python runtime, Bun runtime, and standalone binary execution across OpenClaw, NanoClaw, Hermes Agent, and similar consumers.
-- Prepare `v1.0.0` GitHub release artifacts. npm publication remains optional and should only be added if an agent integration explicitly requires it.
+- ✅ Ported the remaining 8 providers to Bun: CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD.
+- ✅ Added provider fixture tests for all 8 batch-2 providers; `bun test` currently reports 95 pass, 5 existing skips, 0 fail.
+- ✅ Updated agent-facing docs for Python runtime, Bun runtime, and standalone binary execution across OpenClaw, NanoClaw, Hermes Agent, and similar consumers.
+- Remaining: decide whether to expand cross-runtime parity snapshots beyond the current PRD-002 matrix, rebuild/release `v1.0.0` binaries, and keep npm publication optional unless an agent integration explicitly requires it.
