@@ -1,7 +1,7 @@
 ---
 name: weather-skill
 description: Retrieves current weather and forecasts for user-specified locations and formats results for chat platforms. Use when users ask about weather conditions, forecast outlooks, AQHI or UV levels, or location-based weather summaries.
-compatibility: Available as both a Python package (13 providers) and a Bun/TypeScript package (5 providers, also distributed as a standalone Linux x86-64 binary that needs no runtime install). Telegram send flow requires TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
+compatibility: Available as both a Python package (13 providers) and a Bun/TypeScript package (13 providers, also distributed as standalone Linux x86-64 and macOS arm64 binaries that need no runtime install). Telegram send flow requires TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
 ---
 
 # Weather Skill
@@ -57,22 +57,22 @@ This skill provides weather information for any location, with special support f
 
 ## Providers
 
-The Bun/TypeScript package (`@shrwnsan/weather-skill`) currently ships **5 of 13** providers (the four most-popular free regional providers + OpenWeatherMap as the global fallback). The remaining 8 providers are Python-only; porting them is tracked under PRD-002b.
+The Bun/TypeScript package currently ships **all 13** providers. The batch-2 PRD-002b providers (CWA, UK Met Office, BOM, MetService, BMKG, DWD, KMA, TMD) have been ported to Bun and are covered by provider fixture tests. `@shrwnsan/weather-skill` is the package name in `package.json`; npm publication is optional/future, so agents should use direct repository/skill installation or GitHub release binaries by default.
 
 | Provider | Coverage | API Key | Priority | Bun |
 |----------|----------|---------|----------|-----|
 | HKO | Hong Kong | Free | 1 (primary for HK) | ✅ |
 | SG NEA | Singapore | Free | 2 | ✅ |
 | JMA | Japan | Free | 3 | ✅ |
-| CWA | Taiwan | Required | 4 | — Python only |
-| UK Met Office | United Kingdom | Required | 5 | — Python only |
-| BOM | Australia | Free | 6 | — Python only |
-| MetService | New Zealand | Free | 7 | — Python only |
+| CWA | Taiwan | Required | 4 | ✅ |
+| UK Met Office | United Kingdom | Required | 5 | ✅ |
+| BOM | Australia | Free | 6 | ✅ |
+| MetService | New Zealand | Free | 7 | ✅ |
 | NWS | USA | Free | 7 | ✅ |
-| BMKG | Indonesia | Free | 8 | — Python only |
-| DWD (Bright Sky) | Germany | Free | 8 | — Python only |
-| KMA | South Korea | Required | 9 | — Python only |
-| TMD | Thailand | Required | 9 | — Python only |
+| BMKG | Indonesia | Free | 8 | ✅ |
+| DWD (Bright Sky) | Germany | Free | 8 | ✅ |
+| KMA | South Korea | Required | 9 | ✅ |
+| TMD | Thailand | Required | 9 | ✅ |
 | OpenWeatherMap | Global | Required | 10 (fallback) | ✅ |
 
 ## Output Formats
@@ -128,8 +128,8 @@ await skill.send(message, channel="telegram")
 ```typescript
 import { buildDefaultSkill } from "@shrwnsan/weather-skill";
 
-// Built-in factory — registers HKO, JMA, SG NEA, NWS, and OWM (if
-// OPENWEATHERMAP_API_KEY is set); registers the three formatters
+// Built-in factory — registers all free providers and key-required providers
+// when their API key environment variables are set; registers the three formatters
 // unconditionally and TelegramSender iff TELEGRAM_BOT_TOKEN is set.
 const skill = buildDefaultSkill();
 
@@ -178,7 +178,7 @@ When a user requests weather information, execute one of the following depending
 python -m weather.cli --location "<location>"
 
 # Bun install
-bun x @shrwnsan/weather-skill --location "<location>"
+bun run src/cli.ts --location "<location>"
 
 # Standalone binary (no install)
 ./weather-linux-x64 --location "<location>"
@@ -255,14 +255,14 @@ weather-skill/
 │   │                     #   th_tmd, openweathermap)
 │   ├── formatters/       # telegram, whatsapp, cli_text
 │   └── senders/          # telegram
-├── src/                  # Bun/TypeScript package (5 providers in v0.1)
+├── src/                  # Bun/TypeScript package (13 providers)
 │   ├── cli.ts
 │   ├── bootstrap.ts
 │   ├── skill.ts
 │   ├── models.ts
 │   ├── types.ts
 │   ├── data-loader.ts    # JSON-module imports of weather/data/*
-│   ├── providers/        # hko, sg_nea, jma, us_nws, openweathermap
+│   ├── providers/        # 13 provider ports
 │   ├── formatters/       # cli_text, telegram, whatsapp
 │   └── senders/          # telegram
 ├── tests/                # Python test suite (pytest)
