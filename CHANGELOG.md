@@ -6,13 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **PRD-002b Bun provider parity** — ported the remaining 8 Python-only providers to the Bun/TypeScript runtime, bringing Bun and standalone binaries to the full 13-provider chain:
+  - `src/providers/tw_cwa.ts` — Taiwan CWA (key-required, current + 7-day forecast)
+  - `src/providers/uk_metoffice.ts` — UK Met Office DataHub (key-required, current + 7-day forecast)
+  - `src/providers/au_bom.ts` — Australia BOM (free, current + 7-day forecast)
+  - `src/providers/nz_metservice.ts` — New Zealand MetService (free, current observations)
+  - `src/providers/id_bmkg.ts` — Indonesia BMKG (free, current + 3-day forecast)
+  - `src/providers/de_dwd.ts` — Germany DWD/Bright Sky (free, current + forecast)
+  - `src/providers/kr_kma.ts` — South Korea KMA (key-required, current + 3-day forecast)
+  - `src/providers/th_tmd.ts` — Thailand TMD (key-required, current + 7-day forecast)
+- **Batch-2 Bun fixture tests** — added canned API responses and provider tests for all 8 PRD-002b providers under `fixtures/api-responses/{tw_cwa,uk_metoffice,au_bom,nz_metservice,id_bmkg,de_dwd,kr_kma,th_tmd}/` and `test/providers/*.test.ts`.
+- **Bun bootstrap/export coverage** — `buildDefaultSkill()` now registers all free providers by default and registers key-required providers when their environment variables are present (`CWA_API_KEY`, `METOFFICE_API_KEY`, `KMA_SERVICE_KEY`, `TMD_API_TOKEN`, `OPENWEATHERMAP_API_KEY`).
+
+### Changed
+
+- README and `SKILL.md` now document Bun/compiled-binary support for all 13 providers. npm publication remains optional; GitHub release binaries and direct agent-skill installation are the default distribution path.
+
 ## [0.1.0-bun] - 2026-05-25
 
 **Cross-runtime release.** Adds a Bun/TypeScript implementation of the weather skill alongside the existing Python package, with a shared JSON data layer, byte-for-byte parity-tested CLI output, and a standalone Linux/macOS binary distribution that needs no runtime install. The Python package itself continues at its own version line; this tag covers the new Bun runtime and the supporting cross-runtime infrastructure produced under PRD-002.
 
 Highlights:
 
-- **`@shrwnsan/weather-skill`** — new npm package (ESM, Bun ≥ 1.1.30). 5 providers (HKO, JMA, SG NEA, US NWS, OpenWeatherMap), 3 formatters (cli_text, telegram, whatsapp), 1 sender (Telegram via built-in `fetch`). Same `WeatherSkill` orchestrator surface as the Python package.
+- **`@shrwnsan/weather-skill` Bun package scaffold** — new package metadata/source distribution shape (ESM, Bun ≥ 1.1.30). 5 providers (HKO, JMA, SG NEA, US NWS, OpenWeatherMap), 3 formatters (cli_text, telegram, whatsapp), 1 sender (Telegram via built-in `fetch`). Same `WeatherSkill` orchestrator surface as the Python package. Public npm publication was deferred; direct repository/skill installation and GitHub release binaries are the default distribution paths.
 - **Compiled binary** — `weather-linux-x64` (~90 MB) and `weather-darwin-arm64` (~61 MB) built by `bun build --compile`. Bundles the Bun runtime + every shared JSON data file so the binary runs anywhere with `glibc` / arm64 macOS, no `pip install`, no `npm install`.
 - **Shared data layer** — all condition maps, location aliases, and city tables moved out of Python source into `weather/data/*.json` so both runtimes consume the same source of truth.
 - **Cross-runtime parity gate** — new CI workflow asserts that Python's `weather --format json` output is byte-identical to Bun's for every (provider, mode) pair in the matrix (5 cases today: HKO ×2, JMA current, US NWS ×2). Snapshots committed under `fixtures/parity/`.

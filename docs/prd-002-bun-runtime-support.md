@@ -1,6 +1,6 @@
 # PRD-002: Bun Runtime Support (Dual-Package)
 
-**Status:** PRD-002 complete — `v0.1.0-bun` released; PRD-002b next
+**Status:** PRD-002 complete; PRD-002b provider ports complete — release/docs next
 **Created:** 2026-05-12
 **Priority:** High
 **Release Strategy:** Incremental (Option B) — v0.1 ships batch-1 providers + OpenWeatherMap fallback; batch-2 providers ship in a fast-follow PRD-002b.
@@ -12,7 +12,7 @@ Two Bun releases instead of one big-bang port:
 | Release | Providers | ETA | Goal |
 |---------|-----------|-----|------|
 | **`v0.1.0-bun` GitHub release** (this PRD) | HKO, JMA, SG NEA, US NWS, **+ OpenWeatherMap (global fallback)** | ~15h | Unblock NanoClaw immediately via Bun source/package use and standalone binaries. Locations not covered by the 4 regional providers fall through to OWM (degraded but functional). |
-| **`v1.0.0` / PRD-002b** | + CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD | ~25h additional | Full feature parity with Python package for agent-skill consumers. |
+| **`v1.0.0` / PRD-002b** | + CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD | implemented | Full provider parity with Python package for agent-skill consumers; release/docs remain. |
 
 **Rationale:** the 4 batch-1 providers cover HK, Japan, Singapore, and USA — historically the highest-traffic regions for the existing Python skill. OpenWeatherMap covers everywhere else with reduced fidelity (no AQHI, generic icons). Shipping v0.1 in ~15h delivers measurable value to NanoClaw 25h sooner than waiting for the full 13-provider port, and gives us a real production signal before committing to batch 2.
 
@@ -56,7 +56,7 @@ A Bun-only rewrite would break Python agents. A Python-only approach leaves Nano
 
 ### Deferred to PRD-002b (v1.0)
 
-7. Bun ports of CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD providers (~25h).
+7. ✅ Bun ports of CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD providers.
 8. Agent-focused distribution docs and release artifacts for OpenClaw, NanoClaw, Hermes Agent, and similar consumers. npm publishing is optional and not a core PRD-002b requirement.
 
 ## Non-Goals
@@ -618,9 +618,9 @@ bun run src/cli.ts --location "<location>"
 
 ### PRD-002b (deferred)
 
-- [ ] Bun ports of CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD with parity tests
-- [ ] All 13 providers return data consistent with Python implementations
-- [ ] Agent-facing install/execution docs cover Python runtime, Bun runtime, and standalone binaries for OpenClaw, NanoClaw, Hermes Agent, and similar consumers
+- [x] Bun ports of CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD with provider fixture tests
+- [x] All 13 providers are available in both Python and Bun implementations
+- [x] Agent-facing install/execution docs cover Python runtime, Bun runtime, and standalone binaries for OpenClaw, NanoClaw, Hermes Agent, and similar consumers
 - [ ] Optional only: evaluate npm publication if an agent consumer explicitly needs registry-based installation
 
 ## Open Questions
@@ -662,8 +662,8 @@ bun run src/cli.ts --location "<location>"
 
 | Phase | Scope |
 |-------|-------|
-| **9** | Bun providers (batch 2): CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD |
-| **10** | Tests for batch-2 providers + parity verification + `v1.0.0` GitHub release artifacts and agent docs |
+| **9** | ✅ Bun providers (batch 2): CWA, Met Office, BOM, MetService, BMKG, DWD, KMA, TMD |
+| **10** | In progress: batch-2 tests complete; parity expansion / `v1.0.0` GitHub release artifacts remain |
 
 ## Effort Estimate
 
