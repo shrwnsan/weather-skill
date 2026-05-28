@@ -24,9 +24,13 @@ import { DWDProvider } from "./providers/de_dwd.js";
 import { HKOProvider } from "./providers/hko.js";
 import { BMKGProvider } from "./providers/id_bmkg.js";
 import { JMAProvider } from "./providers/jma.js";
+import { KMAProvider } from "./providers/kr_kma.js";
 import { MetServiceProvider } from "./providers/nz_metservice.js";
 import { OpenWeatherMapProvider } from "./providers/openweathermap.js";
 import { SGNEAProvider } from "./providers/sg_nea.js";
+import { TMDProvider } from "./providers/th_tmd.js";
+import { CWAProvider } from "./providers/tw_cwa.js";
+import { UKMetOfficeProvider } from "./providers/uk_metoffice.js";
 import { NWSProvider } from "./providers/us_nws.js";
 import { TelegramSender } from "./senders/telegram.js";
 import { WeatherSkill, type WeatherSkillInit } from "./skill.js";
@@ -68,6 +72,26 @@ function buildProviders(): IWeatherProvider[] {
   const owmKey = process.env.OPENWEATHERMAP_API_KEY;
   if (owmKey) {
     providers.push(new OpenWeatherMapProvider(owmKey));
+  }
+
+  const kmaKey = process.env.KMA_SERVICE_KEY;
+  if (kmaKey) {
+    providers.push(new KMAProvider(kmaKey));
+  }
+
+  const tmdKey = process.env.TMD_API_TOKEN;
+  if (tmdKey) {
+    providers.push(new TMDProvider(tmdKey));
+  }
+
+  const metOfficeKey = process.env.METOFFICE_API_KEY;
+  if (metOfficeKey) {
+    providers.push(new UKMetOfficeProvider(metOfficeKey));
+  }
+
+  const cwaKey = process.env.CWA_API_KEY;
+  if (cwaKey) {
+    providers.push(new CWAProvider(cwaKey));
   }
 
   return providers;

@@ -1,0 +1,32 @@
+{
+  "features": [
+    {
+      "properties": {
+        "timeSeries": [
+          {
+            "time": "2026-05-18T00:00:00Z",
+            "dayMaxScreenTemperature": 18,
+            "nightMinScreenTemperature": 9,
+            "daySignificantWeatherCode": 9,
+            "dayProbabilityOfPrecipitation": 55,
+            "maxUvIndex": 4,
+            "midday10MWindSpeed": 6,
+            "midday10MWindDirection": 225,
+            "middayRelativeHumidity": 70.2
+          },
+          {
+            "time": "2026-05-19T00:00:00Z",
+            "dayMaxScreenTemperature": 20,
+            "nightMinScreenTemperature": 10,
+            "daySignificantWeatherCode": 1,
+            "dayProbabilityOfPrecipitation": 5,
+            "maxUvIndex": 5,
+            "midday10MWindSpeed": 4,
+            "midday10MWindDirection": 180,
+            "middayRelativeHumidity": 60
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "provider": "tw_cwa",
+  "description": "CWA observation, 36-hour forecast, and weekly forecast fixtures for Taipei.",
+  "captured_at": "2026-05-18",
+  "urls": {
+    "https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=test-key&StationName=%E8%87%BA%E5%8C%97": "observation-taipei.json",
+    "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=test-key&locationName=%E8%87%BA%E5%8C%97%E5%B8%82": "forecast-36h-taipei.json",
+    "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=test-key&locationName=%E8%87%BA%E5%8C%97%E5%B8%82": "forecast-week-taipei.json"
+  }
+}

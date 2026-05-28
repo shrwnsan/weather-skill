@@ -1,0 +1,42 @@
+{
+  "records": {
+    "locations": [
+      {
+        "location": [
+          {
+            "weatherElement": [
+              {
+                "elementName": "Wx",
+                "time": [
+                  {"startTime": "2026-05-18T00:00:00+08:00", "elementValue": [{"value": "多雲短暫雨"}]},
+                  {"startTime": "2026-05-19T00:00:00+08:00", "elementValue": [{"value": "晴"}]}
+                ]
+              },
+              {
+                "elementName": "MinT",
+                "time": [
+                  {"elementValue": [{"value": "24"}]},
+                  {"elementValue": [{"value": "25"}]}
+                ]
+              },
+              {
+                "elementName": "MaxT",
+                "time": [
+                  {"elementValue": [{"value": "30"}]},
+                  {"elementValue": [{"value": "31"}]}
+                ]
+              },
+              {
+                "elementName": "PoP12h",
+                "time": [
+                  {"elementValue": [{"value": "40"}]},
+                  {"elementValue": [{"value": "10"}]}
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
