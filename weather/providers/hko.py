@@ -121,7 +121,8 @@ class HKOProvider(WeatherProvider):
         uv_data = data.get("RHRREAD", {})
         if uv_data.get("UVIndex"):
             try:
-                uv_index = int(float(uv_data["UVIndex"]))
+                # HKO reports UV as fractional strings (e.g. "0.4", "3.7"); preserve precision
+                uv_index = float(uv_data["UVIndex"])
             except (ValueError, TypeError):
                 pass
 

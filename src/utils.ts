@@ -101,9 +101,7 @@ export function formatIsoDate(d: Date): string {
  * Telegram/WhatsApp formatters.
  *
  * Mirrors `_aqhi_quality()` in `weather/formatters/telegram.py` and
- * `whatsapp.py`. **Distinct** from `aqhiStr()` in `models.ts`, which
- * powers `WeatherData.aqhi_str` for the CLI formatter and uses
- * shorter labels ("High" vs. "High Risk").
+ * `whatsapp.py`. Labels are aligned with `aqhiStr()` in `models.ts`.
  */
 export function aqhiQuality(aqhi: number): string {
   if (aqhi <= 3) return "Low";
