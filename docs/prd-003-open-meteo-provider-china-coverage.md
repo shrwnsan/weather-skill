@@ -65,11 +65,10 @@ Value proposition of adding Open-Meteo:
 
 ## Non-Goals
 
-- Python-runtime port (Open-Meteo provider lives in `src/` only for now; a Python mirror is a separate task).
 - Adding a dedicated China weather bureau provider (e.g. CMA). Open-Meteo already covers Chinese cities; a dedicated provider can be added as PRD-004 if higher accuracy is needed.
 - Extending Chinese city coverage beyond the 10 cities in the issue (additional cities can be added incrementally to `cn.json`).
 - Building an auto-geocoding layer (Nominatim/HERE/etc.) — coordinate lookup stays file-based for simplicity and offline operation.
-- Parity gate updates (Open-Meteo fixture responses will have `needs_capture: true`; parity testing is deferred to a follow-up).
+- Parity gate updates (fixture for Open-Meteo is hand-crafted with `needs_capture: false`; cross-runtime parity gate integration is deferred to a follow-up).
 
 ## Design
 
@@ -85,7 +84,7 @@ Priority 6    BOM        — Australia (free)
 Priority 7    NWS        — USA (free)
 Priority 7    MetService — New Zealand (free)
 Priority 8    DWD        — Germany (free)
-Priority 9    BMKG       — Indonesia (free)
+Priority 8    BMKG       — Indonesia (free)
 Priority 9    KMA        — South Korea (key required)
 Priority 9    TMD        — Thailand (key required)
 Priority 10   OWM        — Global (key required)
@@ -171,7 +170,8 @@ Since OWM and every dedicated provider have lower priority numbers (higher prior
 |------|---------|
 | `weather/data/condition_maps/wmo-codes.json` | WMO 4680 code → `WeatherCondition` string |
 | `weather/data/cities/cn.json` | 10 Chinese cities with `[lat, lon]` |
-| `src/providers/open_meteo.ts` | `OpenMeteoProvider` implementation |
+| `src/providers/open_meteo.ts` | `OpenMeteoProvider` (Bun/TS) |
+| `weather/providers/open_meteo.py` | `OpenMeteoProvider` (Python) |
 
 ### Modified Files
 
@@ -181,14 +181,19 @@ Since OWM and every dedicated provider have lower priority numbers (higher prior
 | `src/data-loader.ts` | Import `cn.json` + `wmo-codes.json`; export `CN_CITIES` and `WMO_CODE_MAP` |
 | `src/bootstrap.ts` | Unconditionally push `new OpenMeteoProvider()` after the key-gated providers |
 | `src/index.ts` | Re-export `OpenMeteoProvider` |
+| `weather/bootstrap.py` | Unconditionally append `OpenMeteoProvider()` in `_build_providers()` |
+| `weather/providers/__init__.py` | Add docstring entry, import, and `__all__` entry for `OpenMeteoProvider` |
+| `test/setup.ts` | Add `"open_meteo"` to `PROVIDERS` constant so fixture loader includes it |
+| `tests/conftest.py` | Add `"open_meteo"` to `_PROVIDERS` tuple so `mock_http` serves its fixtures |
 
 ### Test Assets
 
 | File | Purpose |
 |------|---------|
-| `fixtures/api-responses/open_meteo/manifest.json` | URL → response filename mapping (`needs_capture: true`) |
+| `fixtures/api-responses/open_meteo/manifest.json` | URL → filename mapping; uses `{ "urls": { "url": "file" } }` format to match `test/setup.ts` / `conftest.py`; `needs_capture: false` (hand-crafted) |
 | `fixtures/api-responses/open_meteo/shenzhen-current.json` | Canned current + daily response for Shenzhen |
-| `test/providers/open_meteo.test.ts` | `supportsLocation`, `getCurrent` parse, alias matching |
+| `test/providers/open_meteo.test.ts` | `supportsLocation`, `getCurrent` parse, alias matching (Bun) |
+| `tests/test_open_meteo.py` | `supports_location`, `get_current` parse, alias matching (Python) |
 
 ### Chinese City Data (`cn.json`)
 
@@ -275,11 +280,13 @@ export class OpenMeteoProvider implements IWeatherProvider {
 }
 ```
 
-`getCurrent` calls the forecast endpoint with both `current=...` and `daily=...` (to pick up today's high/low), parses `response.current` plus `response.daily[0]`.
+`getCurrent` calls the forecast endpoint with both `current=...` and `daily=...` (to pick up today's high/low), parses `response.current` plus `response.daily[0]`. Sets `observed_at` from `new Date(current.time)` (ISO string e.g. `"2026-01-01T12:00"`).
 
 `getForecast` calls with `daily=...` only, maps each `daily.time[i]` to a `WeatherData` with `forecast_date`.
 
 The display `location` name is derived from `titleCase(location.normalized)` since Open-Meteo does not return a city name in its response.
+
+> **Wind speed unit note:** Open-Meteo returns `wind_speed_10m` in km/h and it is stored as-is in `WeatherData.wind_speed`. OWM stores m/s in the same field (a documented quirk in `openweathermap.ts`). This cross-provider inconsistency pre-dates this PRD and is not introduced here, but implementors should be aware of it.
 
 ## Implementation Plan
 
@@ -330,10 +337,10 @@ The display `location` name is derived from `titleCase(location.normalized)` sin
 - With `OPENWEATHERMAP_API_KEY` unset, querying any of the 10 Chinese cities succeeds
 - Provider count: 13 → 14
 
-## Open Questions
+## Resolved Decisions
 
-- **`sh` alias conflict**: `sh` is an obvious alias for Shanghai but is also a common abbreviation used in other contexts (`shell`). Low risk since location lookup only happens on `--location` input. Adding it is fine.
-- **`cn` alias conflict**: `cn` is the ISO country code for China, but currently unmapped. Safe to add as `China` alias.
-- **Chongqing vs. municipality**: The `location.normalized` for `chongqing` will be `chongqing` after alias resolution. The `cn.json` key must match exactly.
-- **`xian` vs `xi'an`**: The apostrophe form appears in some inputs. Adding both `"xian"` and `"xi'an"` as aliases pointing to `"Xian"` in aliases, and using `"xian"` as the key in `cn.json`.
-- **`china` top-level key in `cn.json`**: Consider whether to add a `"china"` key pointing to a central location (e.g., Beijing). This allows `--location China` to work without OWM. Proposed: add `"china": [39.9042, 116.4074]` (Beijing).
+- **`sh` alias** — No conflicts in `location-aliases.json` (confirmed by grep). Added as `"Shanghai"`.
+- **`cn` alias** — Unmapped. Added as `"China"` (ISO 3166 country code).
+- **`china` key in `cn.json`** — Added `"china": [39.9042, 116.4074]` (Beijing) so `--location China` works without OWM. Capital default is reasonable.
+- **`xian` / `xi'an`** — Both alias to canonical `"Xian"` in `location-aliases.json`; `cn.json` key is `"xian"` (no apostrophe). Resolution chain: `parseLocation("Xi'an")` → normalized `"xi'an"` → alias `"Xian"` → normalized `"xian"` → matched in `cn.json`. ✅
+- **Chongqing** — Straightforward. `cn.json` key `"chongqing"` matches `location.normalized` after alias resolution.

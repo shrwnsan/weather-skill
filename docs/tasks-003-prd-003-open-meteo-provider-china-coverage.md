@@ -280,20 +280,43 @@ print('location-aliases.json OK — no conflicts, all CN entries present')
    }
    ```
 
-2. Create `fixtures/api-responses/open_meteo/manifest.json`:
+2. Create `fixtures/api-responses/open_meteo/manifest.json` using the **`urls` object format** (not `responses` array) to match the `loadFixtures()` logic in `test/setup.ts` (line 64: `Object.entries(manifest.urls)`) and `_load_manifests()` in `tests/conftest.py` (line 35: `manifest.get("urls", {}).items()`):
 
    ```json
    {
-     "provider": "open_meteo",
-     "note": "Open-Meteo is free with no API key. Fixture URL uses exact coordinates from cn.json for Shenzhen.",
-     "responses": [
-       {
-         "url": "https://api.open-meteo.com/v1/forecast?latitude=22.5431&longitude=114.0579&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&forecast_days=1&timezone=UTC",
-         "file": "shenzhen-current.json",
-         "needs_capture": false
-       }
-     ]
+     "urls": {
+       "https://api.open-meteo.com/v1/forecast?latitude=22.5431&longitude=114.0579&current=temperature_2m%2Crelative_humidity_2m%2Cweather_code%2Cwind_speed_10m%2Capparent_temperature&daily=weather_code%2Ctemperature_2m_max%2Ctemperature_2m_min%2Cprecipitation_probability_max%2Csunrise%2Csunset&forecast_days=1&timezone=UTC": "shenzhen-current.json"
+     }
    }
+   ```
+
+   > **URL encoding note:** `URLSearchParams` percent-encodes commas in parameter values. The manifest key must match the URL string as constructed by the provider's `buildUrl()` / `urllib.parse.urlencode()`. Verify the exact URL by running the provider once in verbose mode or by inspecting the fetch mock 404 log.
+
+3. Update `test/setup.ts` — add `"open_meteo"` to the `PROVIDERS` constant (line 29). Without this, `loadFixtures()` skips the `fixtures/api-responses/open_meteo/` directory entirely:
+
+   ```typescript
+   const PROVIDERS = [
+     "hko",
+     "jma",
+     "sg_nea",
+     "us_nws",
+     "openweathermap",
+     "de_dwd",
+     "nz_metservice",
+     "id_bmkg",
+     "au_bom",
+     "kr_kma",
+     "th_tmd",
+     "uk_metoffice",
+     "tw_cwa",
+     "open_meteo",  // ← add
+   ] as const;
+   ```
+
+4. Update `tests/conftest.py` — add `"open_meteo"` to `_PROVIDERS` (line 21). Without this, the `mock_http` fixture does not load Open-Meteo fixtures, causing `FileNotFoundError` in every Python test:
+
+   ```python
+   _PROVIDERS = ("hko", "jma", "sg_nea", "us_nws", "openweathermap", "open_meteo")
    ```
 
 **Verify:**
@@ -305,10 +328,10 @@ assert r['current']['temperature_2m'] == 18.4
 assert r['current']['weather_code'] == 2
 assert r['daily']['temperature_2m_max'] == [22.1]
 m = json.load(open('fixtures/api-responses/open_meteo/manifest.json'))
-assert m['responses'][0]['needs_capture'] == False
+assert 'urls' in m, 'must use urls object, not responses array'
+assert len(m['urls']) == 1
 print('Open-Meteo fixtures OK')
 "
-```
 
 ---
 
@@ -924,6 +947,8 @@ class OpenMeteoProvider(WeatherProvider):
         return forecasts
 ```
 
+> **Validation note (T-4):** `_WMO_CODE_MAP` is built with `WeatherCondition(v)` which raises `ValueError` at module import time if a value in `wmo-codes.json` is not a valid enum member. This is intentional fail-fast behaviour — a typo in the JSON will surface immediately rather than silently mapping to `UNKNOWN`. No change needed.
+
 **Verify:**
 ```bash
 python -c "
@@ -938,7 +963,6 @@ unknown = Location(raw='Atlantis', normalized='atlantis')
 assert not p.supports_location(unknown), 'atlantis should not be supported'
 print('open_meteo.py import + supports_location OK')
 "
-```
 
 ---
 
@@ -959,6 +983,14 @@ In `_build_providers()`, append **after** the `owm_key` block (last existing con
     from .providers.open_meteo import OpenMeteoProvider
     providers.append(OpenMeteoProvider())
 ```
+
+Also update `weather/providers/__init__.py` (T-5):
+1. Add to the module docstring (after the `OpenWeatherMapProvider` line):
+   ```
+   - OpenMeteoProvider: Zero-config global fallback (priority 11, free, no API key)
+   ```
+2. Add import: `from .open_meteo import OpenMeteoProvider`
+3. Add `"OpenMeteoProvider"` to `__all__`
 
 **Verify:**
 ```bash
