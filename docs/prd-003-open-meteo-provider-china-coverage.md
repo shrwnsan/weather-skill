@@ -1,7 +1,8 @@
 # PRD-003: Open-Meteo Provider + China City Coverage
 
-**Status:** Draft
+**Status:** Complete
 **Created:** 2026-05-29
+**Completed:** 2026-05-29
 **Priority:** High
 **GitHub Issue:** [#39](https://github.com/shrwnsan/weather-skill/issues/39)
 

@@ -49,7 +49,7 @@ All four tasks are independent. Each touches exactly one file. Assign all in par
 
 ---
 
-### Task 1.1 — Create `weather/data/condition_maps/wmo-codes.json`
+### Task 1.1 ✅ — Create `weather/data/condition_maps/wmo-codes.json`
 
 **Files:**
 - Create: `weather/data/condition_maps/wmo-codes.json`
@@ -109,7 +109,7 @@ print('wmo-codes.json OK')
 
 ---
 
-### Task 1.2 — Create `weather/data/cities/cn.json`
+### Task 1.2 ✅ — Create `weather/data/cities/cn.json`
 
 **Files:**
 - Create: `weather/data/cities/cn.json`
@@ -152,7 +152,7 @@ print('cn.json OK')
 
 ---
 
-### Task 1.3 — Append Chinese aliases to `weather/data/location-aliases.json`
+### Task 1.3 ✅ — Append Chinese aliases to `weather/data/location-aliases.json`
 
 **Files:**
 - Edit: `weather/data/location-aliases.json`
@@ -217,7 +217,7 @@ print('location-aliases.json OK — no conflicts, all CN entries present')
 
 ---
 
-### Task 1.4 — Create Open-Meteo test fixture
+### Task 1.4 ✅ — Create Open-Meteo test fixture
 
 **Files:**
 - Create: `fixtures/api-responses/open_meteo/shenzhen-current.json`
@@ -341,7 +341,7 @@ Run after Tasks 1.1 and 1.2 complete. Tasks 2.1 → 2.2 → 2.3 are sequential w
 
 ---
 
-### Task 2.1 — Update `src/data-loader.ts`
+### Task 2.1 ✅ — Update `src/data-loader.ts`
 
 **Files:**
 - Edit: `src/data-loader.ts`
@@ -387,7 +387,7 @@ bun -e "import { CN_CITIES, WMO_CODE_MAP } from './src/data-loader.js'; console.
 
 ---
 
-### Task 2.2 — Create `src/providers/open_meteo.ts`
+### Task 2.2 ✅ — Create `src/providers/open_meteo.ts`
 
 **Files:**
 - Create: `src/providers/open_meteo.ts`
@@ -672,7 +672,7 @@ bun run typecheck
 
 ---
 
-### Task 2.3 — Update `src/bootstrap.ts` and `src/index.ts`
+### Task 2.3 ✅ — Update `src/bootstrap.ts` and `src/index.ts`
 
 **Files:**
 - Edit: `src/bootstrap.ts`
@@ -722,7 +722,7 @@ Run after Tasks 1.1 and 1.2 complete. Runs in **parallel with Tier 1A**. Tasks 3
 
 ---
 
-### Task 3.1 — Create `weather/providers/open_meteo.py`
+### Task 3.1 ✅ — Create `weather/providers/open_meteo.py`
 
 **Files:**
 - Create: `weather/providers/open_meteo.py`
@@ -969,7 +969,7 @@ print('open_meteo.py import + supports_location OK')
 
 ---
 
-### Task 3.2 — Update `weather/bootstrap.py`
+### Task 3.2 ✅ — Update `weather/bootstrap.py`
 
 **Files:**
 - Edit: `weather/bootstrap.py`
@@ -1019,7 +1019,7 @@ Both test tasks are independent. Run in parallel after Tier 1A+1B and Task 1.4 c
 
 ---
 
-### Task 4.1 — Bun provider test
+### Task 4.1 ✅ — Bun provider test
 
 **Files:**
 - Create: `test/providers/open_meteo.test.ts`
@@ -1056,7 +1056,7 @@ bun run typecheck
 
 ---
 
-### Task 4.2 — Python provider test
+### Task 4.2 ✅ — Python provider test
 
 **Files:**
 - Create: `tests/test_open_meteo.py`
@@ -1100,7 +1100,7 @@ Run sequentially after Tier 2 passes.
 
 ---
 
-### Task 5.1 — Update `CHANGELOG.md`
+### Task 5.1 ✅ — Update `CHANGELOG.md`
 
 **Files:**
 - Edit: `CHANGELOG.md`
@@ -1134,7 +1134,7 @@ In the `[Unreleased]` section, append to (or create) the `### Added` block:
 
 ---
 
-### Task 5.2 — Update PRD status
+### Task 5.2 ✅ — Update PRD status
 
 **Files:**
 - Edit: `docs/prd-003-open-meteo-provider-china-coverage.md`

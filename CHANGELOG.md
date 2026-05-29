@@ -14,6 +14,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Open-Meteo provider** (`open-meteo`, priority 11) — zero-config global fallback below
+  OpenWeatherMap. Free, no API key required. Resolves coordinates from the merged city
+  lookup (`cn.json`, `us-nws.json`, `de-dwd.json`, `metoffice.json`). Backed by
+  ECMWF/GFS models via `api.open-meteo.com/v1/forecast`. Activates only when all
+  higher-priority providers have declined or failed (priority 10 = OWM). Implemented in
+  both Bun (`src/providers/open_meteo.ts`) and Python (`weather/providers/open_meteo.py`).
+  Registered unconditionally in `buildDefaultSkill()` / `build_default_skill()`. Provider
+  count: 13 → 14.
+- **`weather/data/cities/cn.json`** — coordinates for 10 major Chinese cities (Beijing,
+  Shanghai, Guangzhou, Shenzhen, Chengdu, Hangzhou, Wuhan, Xi'an, Nanjing, Chongqing)
+  plus a `"china"` country-level key (→ Beijing). Both runtimes read this file.
+- **Chinese city aliases** — 29 new entries in `weather/data/location-aliases.json`
+  covering Latin (`sz`, `gz`, `sh`, `bj`, `cn`, full city names), CJK script (e.g. `深圳`,
+  `北京`, `中国`), and romanisation variants (`xi'an`). Running `--location sz` now
+  resolves to Shenzhen via Open-Meteo.
+- **`weather/data/condition_maps/wmo-codes.json`** — WMO 4680 weather code → `WeatherCondition`
+  mapping (28 codes, shared by both runtimes).
 - **PRD-002b Bun provider parity** — ported the remaining 8 Python-only providers to the Bun/TypeScript runtime, bringing Bun and standalone binaries to the full 13-provider chain:
   - `src/providers/tw_cwa.ts` — Taiwan CWA (key-required, current + 7-day forecast)
   - `src/providers/uk_metoffice.ts` — UK Met Office DataHub (key-required, current + 7-day forecast)
