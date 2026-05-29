@@ -144,10 +144,10 @@ return round(temp)
 ### HKO Air Quality Health Index (AQHI)
 
 The HK scale:
-- 1-3: Low health risk
+- 1-3: Low
 - 4-6: Moderate
-- 7: High
-- 8-10: Very High
+- 7: High Risk
+- 8-10: Very High Risk
 - 10+: Serious
 
 ## Output Format

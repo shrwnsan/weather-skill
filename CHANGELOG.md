@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **HKO nighttime icon mappings** (#14) — added 14 nighttime entries (pic70-85 series) to the shared `weather/data/condition_maps/hko-icons.json`. Both Bun and Python runtimes now resolve nighttime icons instead of falling through to `Unknown`.
+- **HKO UV index precision** (#15) — both runtimes now preserve the fractional UV value from HKO (e.g. `0.2`) instead of truncating to an integer via `Math.trunc()` / `int(float())`.
+- **AQHI wording alignment** (#16) — `aqhiStr` / `aqhi_str` in both runtimes now returns "High Risk" / "Very High Risk" for AQHI 7 and 8-10, matching the Telegram and WhatsApp formatters.
+
 ### Added
 
 - **PRD-002b Bun provider parity** — ported the remaining 8 Python-only providers to the Bun/TypeScript runtime, bringing Bun and standalone binaries to the full 13-provider chain:
