@@ -55,6 +55,7 @@ export { KMAProvider } from "./providers/kr_kma.js";
 export { TMDProvider } from "./providers/th_tmd.js";
 export { UKMetOfficeProvider } from "./providers/uk_metoffice.js";
 export { CWAProvider } from "./providers/tw_cwa.js";
+export { OpenMeteoProvider } from "./providers/open_meteo.js";
 
 export { CliTextFormatter } from "./formatters/cli_text.js";
 export {

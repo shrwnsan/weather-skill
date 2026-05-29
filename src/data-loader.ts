@@ -25,6 +25,7 @@ import jmaAreaCodesRaw from "../weather/data/cities/jma-area-codes.json" with { 
 import usNwsCitiesRaw from "../weather/data/cities/us-nws.json" with { type: "json" };
 import deDwdCitiesRaw from "../weather/data/cities/de-dwd.json" with { type: "json" };
 import metofficeCitiesRaw from "../weather/data/cities/metoffice.json" with { type: "json" };
+import cnCitiesRaw from "../weather/data/cities/cn.json" with { type: "json" };
 
 // ── Condition maps (provider-specific code → WeatherCondition) ─────
 import hkoIconsRaw from "../weather/data/condition_maps/hko-icons.json" with { type: "json" };
@@ -41,6 +42,7 @@ import bmkgConditionsRaw from "../weather/data/condition_maps/bmkg-conditions.js
 import kmaPtyRaw from "../weather/data/condition_maps/kma-pty.json" with { type: "json" };
 import kmaSkyRaw from "../weather/data/condition_maps/kma-sky.json" with { type: "json" };
 import tmdConditionsRaw from "../weather/data/condition_maps/tmd-conditions.json" with { type: "json" };
+import wmoCodesRaw from "../weather/data/condition_maps/wmo-codes.json" with { type: "json" };
 
 // ── Helpers ────────────────────────────────────────────────────────
 
@@ -103,6 +105,8 @@ export const DE_DWD_CITIES: Record<string, [number, number]> =
  */
 export const METOFFICE_CITIES: Record<string, [number, number]> =
   metofficeCitiesRaw as unknown as Record<string, [number, number]>;
+export const CN_CITIES: Record<string, [number, number]> =
+  cnCitiesRaw as unknown as Record<string, [number, number]>;
 
 // Condition maps (provider-specific code → WeatherCondition)
 export const HKO_ICON_MAP: Record<string, WeatherCondition> =
@@ -160,3 +164,6 @@ export const KMA_SKY_MAP: Record<string, WeatherCondition> = buildConditionMap(
 
 export const TMD_CONDITION_MAP: Record<string, WeatherCondition> =
   buildConditionMap(tmdConditionsRaw as Record<string, string>);
+
+export const WMO_CODE_MAP: Record<string, WeatherCondition> =
+  buildConditionMap(wmoCodesRaw as Record<string, string>);
