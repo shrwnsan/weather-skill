@@ -1,7 +1,8 @@
 # Eval-002: PRD-003 + Tasks-003 Review — Open-Meteo Provider + China City Coverage
 
-**Reviewed commit:**
+**Reviewed commits:**
 - `122c7b1` — docs: add PRD-003 and tasks for Open-Meteo provider + China city coverage
+- `eae3be1` — docs: apply eval-002 findings to PRD-003 and tasks-003
 
 **Date:** 2026-05-29
 **Status:** Open (pre-implementation)
@@ -12,12 +13,12 @@
 
 | # | Severity | Issue | Status |
 |---|----------|-------|--------|
-| P-1 | **Critical** | Non-Goals states *"Python-runtime port… a separate task"* but Tasks-003 includes full Tier 1B (Python chain: tasks 3.1, 3.2) and Tier 2 task 4.2 (Python tests). The PRD and tasks contradict each other — one must be updated. | Open |
-| P-2 | Medium | Provider priority table lists BMKG at priority 9. Actual code: `weather/providers/id_bmkg.py:85` sets `priority = 8` (same as DWD). The table should show BMKG at priority 8. | Open |
-| P-3 | Medium | Bun `parseCurrent` sketch never sets `observed_at`. Open-Meteo returns `current.time` (ISO timestamp) — this should be parsed and included. The frozen-time test setup would mask the issue (undefined vs Date), but production `WeatherData` would have `observed_at: undefined`. | Open |
-| P-4 | Low | Wind speed unit inconsistency not acknowledged. Open-Meteo returns `wind_speed_10m` in km/h. OWM stores m/s (documented quirk in `openweathermap.ts`). The `WeatherData.wind_speed` field is documented as km/h in both runtimes. Open-Meteo will store km/h directly while OWM stores m/s — 3.6× visible discrepancy between providers for the same field. Not introduced by this PRD but should be flagged as a known cross-provider inconsistency. | Open |
-| P-5 | Low | Non-Goals mentions *"needs_capture: true"* for parity testing deferral, but Task 1.4 sets `needs_capture: false` (correct for a hand-crafted fixture). Update the PRD non-goal to match. | Open |
-| P-6 | Low | WMO code 66 (`"66": "rain"`) maps "Light freezing rain" to `rain` rather than `sleet`. Defensible, but a brief comment in `wmo-codes.json` would document the mapping choice. | Open |
+| P-1 | **Critical** | Non-Goals stated *"Python-runtime port… a separate task"* but Tasks-003 included full Tier 1B (Python chain: tasks 3.1, 3.2) and Tier 2 task 4.2 (Python tests). | ✅ Fixed — `eae3be1` removed the "Python-runtime port" non-goal line. PRD now lists `open_meteo.py` as a new file and `bootstrap.py` / `providers/__init__.py` as modified files. |
+| P-2 | Medium | Provider priority table listed BMKG at priority 9. Actual code: `weather/providers/id_bmkg.py:85` sets `priority = 8` (same as DWD). | ✅ Fixed — `eae3be1` corrected BMKG to priority 8. |
+| P-3 | Medium | Bun `parseCurrent` sketch never set `observed_at`. Open-Meteo returns `current.time` (ISO timestamp). | ✅ Fixed — `eae3be1` updated the provider description to state `observed_at` is set from `new Date(current.time)`. |
+| P-4 | Low | Wind speed unit inconsistency not acknowledged. Open-Meteo returns `wind_speed_10m` in km/h. OWM stores m/s (documented quirk in `openweathermap.ts`). The `WeatherData.wind_speed` field is documented as km/h in both runtimes. | ✅ Fixed — `eae3be1` added a **Wind speed unit note** blockquote in the Design section documenting the km/h (Open-Meteo) vs m/s (OWM) cross-provider discrepancy and that it pre-dates this PRD. |
+| P-5 | Low | Non-Goals mentioned *"needs_capture: true"* for parity testing deferral, but Task 1.4 set `needs_capture: false`. | ✅ Fixed — `eae3be1` updated the parity non-goal to "fixture for Open-Meteo is hand-crafted with `needs_capture: false`". Also updated the Test Assets table to match. |
+| P-6 | Low | WMO code 66 (`"66": "rain"`) maps "Light freezing rain" to `rain` rather than `sleet`. Defensible, but a brief comment in `wmo-codes.json` would document the mapping choice. | Open — cosmetic only, no code impact. |
 
 **Verified correct in PRD-003:**
 - Problem statement accurately describes the gap: no Open-Meteo provider, no Chinese city coordinates
@@ -40,12 +41,12 @@
 
 | # | Severity | Issue | Status |
 |---|----------|-------|--------|
-| T-1 | **Critical** | Task 1.4 manifest format uses `{ "responses": [{ "url": "...", "file": "..." }] }` but both `test/setup.ts` and `tests/conftest.py` expect `{ "urls": { "https://...": "filename.json" } }`. The `loadFixtures()` / `_load_manifests()` functions iterate `Object.entries(manifest.urls)` — the proposed `responses` array will never be read. Every `mockFetch`/`mock_http` call for Open-Meteo will 404, breaking both Bun and Python test suites. | Open |
-| T-2 | **Critical** | No task updates `test/setup.ts` PROVIDERS array to include `"open_meteo"`. The fixture preloader at line 16 has a hardcoded `PROVIDERS` list — without `"open_meteo"`, `loadFixtures()` skips the entire `fixtures/api-responses/open_meteo/` directory. Must be added as part of Task 1.4 or a new task. | Open |
-| T-3 | **Critical** | No task updates `tests/conftest.py` `_PROVIDERS` tuple to include `"open_meteo"`. The Python `mock_http` fixture only loads manifests for the 5 listed providers. Without `"open_meteo"`, the Python `mock_http` fixture will not serve Open-Meteo fixtures, breaking all Python tests in Task 4.2. Must be added as part of Task 1.4 or a new task. | Open |
-| T-4 | Medium | Task 3.1 Python implementation loads WMO code map as `int(k)` keys. The `wmo-codes.json` file has string keys (JSON requirement). Python `int("0")` works, but the `WeatherCondition(v)` call uses the string value from the map. The `buildConditionMap` pattern used by the Bun data-loader validates values against `VALID_CONDITION_VALUES` — the Python side has no such validation. If a typo in `wmo-codes.json` maps to an invalid condition (e.g. `"sunnyy"`), the Python `WeatherCondition("sunnyy")` will raise `ValueError` at module load time with no graceful fallback. Low risk but worth noting. | Open |
-| T-5 | Low | Task 3.2 does not mention updating `weather/providers/__init__.py`, which has a docstring listing all providers with their priority and coverage. The list should be updated to include Open-Meteo. | Open |
-| T-6 | Low | Dependency graph says Tier 2 tests "wait for Tier 1 + 1.4" but the graph visual shows no arrow from 1.4 to Tier 2. Minor doc inconsistency — the textual description is authoritative and correct. | Open |
+| T-1 | **Critical** | Task 1.4 manifest format used `{ "responses": [...] }` but both `test/setup.ts` (line 64) and `tests/conftest.py` (line 35) expect `{ "urls": { "url": "file" } }`. | ✅ Fixed — `eae3be1` rewrote the manifest to `{ "urls": { ... } }` format. Added URL encoding note: commas in `current=` and `daily=` params are percent-encoded by `URLSearchParams`, so the manifest key uses `%2C`. Also updated the verify script to assert `'urls' in m`. |
+| T-2 | **Critical** | No task updated `test/setup.ts` PROVIDERS array to include `"open_meteo"`. Without it, `loadFixtures()` skips the entire `fixtures/api-responses/open_meteo/` directory. | ✅ Fixed — `eae3be1` added step 3 to Task 1.4: append `"open_meteo"` to the `PROVIDERS` constant (line 29 of `test/setup.ts`). |
+| T-3 | **Critical** | No task updated `tests/conftest.py` `_PROVIDERS` tuple to include `"open_meteo"`. The Python `mock_http` fixture only loaded manifests for 5 providers. | ✅ Fixed — `eae3be1` added step 4 to Task 1.4: add `"open_meteo"` to `_PROVIDERS` tuple in `tests/conftest.py` (line 21). |
+| T-4 | Medium | Python `WeatherCondition(v)` call in `_WMO_CODE_MAP` construction raises `ValueError` at import time if a `wmo-codes.json` value is not a valid enum member. Unlike Bun's `buildConditionMap` (which uses `toCondition()` → silently falls through to `Unknown`), the Python side fails fast. | ✅ Acknowledged — `eae3be1` added a **Validation note** below the Task 3.1 code block stating this is intentional fail-fast behaviour: "a typo in the JSON will surface immediately rather than silently mapping to UNKNOWN. No change needed." |
+| T-5 | Low | Task 3.2 did not mention updating `weather/providers/__init__.py`, which has a docstring listing all providers. | ✅ Fixed — `eae3be1` added steps to Task 3.2: (1) add docstring entry for `OpenMeteoProvider`, (2) add import, (3) add `__all__` entry. |
+| T-6 | Low | Dependency graph text says Tier 2 tests "wait for Tier 1 + 1.4" but the graph visual shows no arrow from 1.4 to Tier 2. | Open — minor; textual description is authoritative. |
 
 **Verified correct in Tasks-003:**
 - Dependency graph is well-structured and accurate (4 parallel agents, 5 tiers)
@@ -76,15 +77,47 @@
 
 ---
 
+## Commit eae3be1 Verification
+
+All 3 critical and 4 significant/medium items from the initial review are addressed:
+
+| Original | Fix | Verified |
+|----------|-----|----------|
+| T-1 manifest format | Rewrote to `{ "urls": { ... } }` with `%2C` comma encoding | ✅ Matches `test/setup.ts:64` and `conftest.py:35` iteration pattern |
+| T-2 `test/setup.ts` PROVIDERS | Step 3 added to Task 1.4 | ✅ `"open_meteo"` appended after `"tw_cwa"` |
+| T-3 `tests/conftest.py` _PROVIDERS | Step 4 added to Task 1.4 | ✅ `"open_meteo"` appended to tuple |
+| P-1 Non-Goals contradiction | Removed "Python-runtime port" line | ✅ PRD now lists `open_meteo.py`, `bootstrap.py`, `__init__.py` |
+| P-2 BMKG priority | Corrected to 8 | ✅ Matches `id_bmkg.py:85` |
+| P-3 observed_at | Added to provider description | ✅ `new Date(current.time)` documented |
+| P-4 wind speed unit | Added blockquote note | ✅ km/h vs m/s discrepancy documented |
+| P-5 needs_capture | Updated non-goal | ✅ `needs_capture: false` everywhere now |
+| T-4 fail-fast validation | Added note | ✅ Documented as intentional |
+| T-5 __init__.py | Added to Task 3.2 | ✅ Docstring + import + __all__ |
+
+**Additional improvement verified:**
+- Open Questions → Resolved Decisions — all 5 items now have explicit ✅ resolution statements
+- PRD New Files table expanded to list both `open_meteo.ts` and `open_meteo.py`
+- PRD Modified Files table expanded to list `bootstrap.py`, `__init__.py`, `setup.ts`, `conftest.py`
+- PRD Test Assets table split into Bun and Python test files
+- Fixed two broken verify-script code fences in tasks-003 (missing closing ` ``` `)
+
+## Remaining Open Items
+
+| # | Severity | Issue | Status |
+|----------|----------|-------|--------|
+| P-6 | Low | WMO code 66 mapping choice (`"66": "rain"` for "Light freezing rain") undocumented in `wmo-codes.json`. | Open — cosmetic |
+| T-6 | Low | Dependency graph visual missing 1.4 → Tier 2 arrow. | Open — cosmetic |
+| T-1 note | Medium | **URL encoding risk at implementation time** — the manifest key uses `%2C` for commas (matching `URLSearchParams` / `urllib.parse.urlencode`). The implementor must verify the actual URL string constructed by the provider matches the manifest key exactly. Recommend logging the URL from the mock 404 message on first test run and comparing. | Open — implementation-time guard |
+
 ## Quick Wins
 
-1. **Fix manifest format in Task 1.4** — use `{ "urls": { "https://api.open-meteo.com/...": "shenzhen-current.json" } }` to match existing mock infrastructure (T-1)
-2. **Add `"open_meteo"` to `PROVIDERS` array in `test/setup.ts`** — extend Task 1.4 or create new task (T-2)
-3. **Add `"open_meteo"` to `_PROVIDERS` tuple in `tests/conftest.py`** — extend Task 1.4 or create new task (T-3)
-4. **Resolve PRD Non-Goals contradiction** — either remove "Python-runtime port" from Non-Goals or remove Tier 1B/4.2 from Tasks-003 (P-1)
-5. **Fix BMKG priority in PRD table** — change from 9 to 8 to match `id_bmkg.py:85` (P-2)
-6. **Add `observed_at` to Bun `parseCurrent`** — set from `current.time` ISO string (P-3)
-7. **Add wind speed unit note to PRD** — document the km/h (Open-Meteo) vs m/s (OWM) cross-provider discrepancy (P-4)
-8. **Update `weather/providers/__init__.py` docstring** — add Open-Meteo entry in Task 3.2 (T-5)
+1. ~~**Fix manifest format in Task 1.4**~~ ✅ Fixed in `eae3be1`
+2. ~~**Add `"open_meteo"` to `PROVIDERS` array in `test/setup.ts`**~~ ✅ Fixed in `eae3be1`
+3. ~~**Add `"open_meteo"` to `_PROVIDERS` tuple in `tests/conftest.py`**~~ ✅ Fixed in `eae3be1`
+4. ~~**Resolve PRD Non-Goals contradiction**~~ ✅ Fixed in `eae3be1`
+5. ~~**Fix BMKG priority in PRD table**~~ ✅ Fixed in `eae3be1`
+6. ~~**Add `observed_at` to Bun `parseCurrent`**~~ ✅ Fixed in `eae3be1`
+7. ~~**Add wind speed unit note to PRD**~~ ✅ Fixed in `eae3be1`
+8. ~~**Update `weather/providers/__init__.py` docstring**~~ ✅ Fixed in `eae3be1`
 9. **Add comment for WMO code 66** — document the "Light freezing rain → rain" mapping choice in `wmo-codes.json` (P-6)
-10. **Update PRD non-goal** — change "needs_capture: true" to "needs_capture: false" to match Task 1.4 (P-5)
+10. ~~**Update PRD non-goal**~~ ✅ Fixed in `eae3be1`
