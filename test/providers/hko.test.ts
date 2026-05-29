@@ -9,7 +9,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
 import { HKO_ICON_MAP } from "../../src/data-loader.js";
-import { aqhiStr, parseLocation } from "../../src/models.js";
+import { aqhiStr, makeWeatherData, parseLocation } from "../../src/models.js";
 import { HKOProvider } from "../../src/providers/hko.js";
 import { LocationNotSupportedError, WeatherCondition } from "../../src/types.js";
 import { freezeTime, restoreTime } from "../setup.js";
@@ -66,8 +66,8 @@ describe("HKOProvider", () => {
   test("aqhiStr matches Telegram formatter wording (Issue #16)", () => {
     // Drift fix: models.aqhiStr previously returned "High"/"Very High"
     // while utils.aqhiQuality (used by Telegram) returned "High Risk"/"Very High Risk".
-    expect(aqhiStr({ aqhi: 7 } as never)).toBe("7 (High Risk)");
-    expect(aqhiStr({ aqhi: 9 } as never)).toBe("9 (Very High Risk)");
+    expect(aqhiStr(makeWeatherData({ location: "test", provider_name: "test", aqhi: 7 }))).toBe("7 (High Risk)");
+    expect(aqhiStr(makeWeatherData({ location: "test", provider_name: "test", aqhi: 9 }))).toBe("9 (Very High Risk)");
   });
 
   test("getForecast returns N days", async () => {
