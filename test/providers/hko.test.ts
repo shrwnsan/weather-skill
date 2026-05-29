@@ -8,7 +8,8 @@
 
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
-import { parseLocation } from "../../src/models.js";
+import { HKO_ICON_MAP } from "../../src/data-loader.js";
+import { aqhiStr, parseLocation } from "../../src/models.js";
 import { HKOProvider } from "../../src/providers/hko.js";
 import { LocationNotSupportedError, WeatherCondition } from "../../src/types.js";
 import { freezeTime, restoreTime } from "../setup.js";
@@ -47,6 +48,26 @@ describe("HKOProvider", () => {
     // P7.4-6: pin the specific WeatherCondition mapping.
     // rhrread.Icon1 = "62" → "pic62.png" → HKO_ICON_MAP → "rain"
     expect(result.condition).toBe(WeatherCondition.Rain);
+    // Issue #15: HKO reports UV as a fractional string (fixture "0.2")
+    // Regression guard against int(float()) / Math.trunc() truncating to 0.
+    expect(result.uv_index).toBe(0.2);
+  });
+
+  test("HKO_ICON_MAP includes nighttime icons (70-85 series)", () => {
+    // Issue #14: HKO uses 70-85 series for nighttime conditions.
+    // Without these mappings, every night observation falls through to Unknown.
+    expect(HKO_ICON_MAP["pic70.png"]).toBe(WeatherCondition.Sunny);
+    expect(HKO_ICON_MAP["pic72.png"]).toBe(WeatherCondition.PartlyCloudy);
+    expect(HKO_ICON_MAP["pic77.png"]).toBe(WeatherCondition.Fog);
+    expect(HKO_ICON_MAP["pic80.png"]).toBe(WeatherCondition.Cloudy);
+    expect(HKO_ICON_MAP["pic85.png"]).toBe(WeatherCondition.Thunderstorm);
+  });
+
+  test("aqhiStr matches Telegram formatter wording (Issue #16)", () => {
+    // Drift fix: models.aqhiStr previously returned "High"/"Very High"
+    // while utils.aqhiQuality (used by Telegram) returned "High Risk"/"Very High Risk".
+    expect(aqhiStr({ aqhi: 7 } as never)).toBe("7 (High Risk)");
+    expect(aqhiStr({ aqhi: 9 } as never)).toBe("9 (Very High Risk)");
   });
 
   test("getForecast returns N days", async () => {

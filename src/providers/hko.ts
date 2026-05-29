@@ -124,7 +124,8 @@ export class HKOProvider implements IWeatherProvider {
     if (uvData.UVIndex) {
       const uvNum = Number.parseFloat(String(uvData.UVIndex));
       if (Number.isFinite(uvNum)) {
-        uvIndex = Math.trunc(uvNum);
+        // HKO reports UV as fractional values (e.g. "0.4", "3.7"); preserve precision
+        uvIndex = uvNum;
       }
     }
 

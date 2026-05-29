@@ -50,8 +50,8 @@ export function aqhiStr(data: WeatherData): string {
   if (aqhi == null) return "N/A";
   if (aqhi <= 3) return `${aqhi} (Low)`;
   if (aqhi <= 6) return `${aqhi} (Moderate)`;
-  if (aqhi <= 7) return `${aqhi} (High)`;
-  if (aqhi <= 10) return `${aqhi} (Very High)`;
+  if (aqhi <= 7) return `${aqhi} (High Risk)`;
+  if (aqhi <= 10) return `${aqhi} (Very High Risk)`;
   return `${aqhi}+ (Serious)`;
 }
 
