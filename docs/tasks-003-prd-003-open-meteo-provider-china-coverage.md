@@ -581,6 +581,9 @@ export class OpenMeteoProvider implements IWeatherProvider {
       condition,
       condition_raw: `wmo:${wmoCode}`,
       provider_name: this.name,
+      observed_at: typeof current.time === "string"
+        ? new Date(String(current.time))
+        : new Date(),
       latitude: typeof data.latitude === "number" ? data.latitude : undefined,
       longitude:
         typeof data.longitude === "number" ? data.longitude : undefined,
