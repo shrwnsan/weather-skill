@@ -168,7 +168,7 @@ describe("CLI integration", () => {
       // Sorted alphabetically per src/cli.ts → run(). Key-required
       // providers only appear when their env vars are present.
       expect(io.stderr).toContain(
-        "bmkg, bom, dwd, hko, jma, metservice, nws, sg_nea",
+        "bmkg, bom, dwd, hko, jma, metservice, nws, open-meteo, sg_nea",
       );
       expect(io.stdout).toBe("");
     });
