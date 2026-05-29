@@ -18,7 +18,7 @@ from freezegun import freeze_time
 FIXTURES_ROOT = Path(__file__).resolve().parent.parent / "fixtures" / "api-responses"
 FROZEN_TIME = "2026-01-01T00:00:00+00:00"
 
-_PROVIDERS = ("hko", "jma", "sg_nea", "us_nws", "openweathermap")
+_PROVIDERS = ("hko", "jma", "sg_nea", "us_nws", "openweathermap", "open_meteo")
 
 
 def _load_manifests() -> dict[str, dict[str, bytes]]:
