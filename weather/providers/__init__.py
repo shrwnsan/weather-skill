@@ -15,6 +15,7 @@ Available providers:
 - KMAProvider: South Korea KMA (priority 9, Korea only, requires API key)
 - TMDProvider: Thailand TMD (priority 9, Thailand only, requires API key)
 - OpenWeatherMapProvider: Global fallback (priority 10, requires API key)
+- OpenMeteoProvider: Zero-config global fallback (priority 11, free, no API key)
 """
 
 from .base import (
@@ -37,6 +38,7 @@ from .de_dwd import DWDProvider
 from .kr_kma import KMAProvider
 from .th_tmd import TMDProvider
 from .openweathermap import OpenWeatherMapProvider
+from .open_meteo import OpenMeteoProvider
 
 __all__ = [
     "WeatherProvider",
@@ -56,6 +58,7 @@ __all__ = [
     "KMAProvider",
     "TMDProvider",
     "OpenWeatherMapProvider",
+    "OpenMeteoProvider",
 ]
 
 

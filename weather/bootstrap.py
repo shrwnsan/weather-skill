@@ -96,6 +96,10 @@ def _build_providers():
         from .providers.openweathermap import OpenWeatherMapProvider
         providers.append(OpenWeatherMapProvider(api_key=owm_key))
 
+    # Free zero-config global fallback — always registered.
+    from .providers.open_meteo import OpenMeteoProvider
+    providers.append(OpenMeteoProvider())
+
     return providers
 
 
