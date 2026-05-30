@@ -6,9 +6,9 @@ Ships in **three** distribution formats — pick whichever fits your agent's run
 
 | Runtime | Install | Providers | Notes |
 |---------|---------|-----------|-------|
-| Python  | `pip install weather-skill` | **13** | Reference implementation; full provider chain. |
-| Bun / TypeScript | Clone or install from GitHub source | **13** | Full provider chain. Ideal for TypeScript runtimes and Docker images without Python. npm publication is optional/future. |
-| Standalone binary | Download `weather-linux-x64` (~90 MB) or `weather-darwin-arm64` (~61 MB) from [Releases](https://github.com/shrwnsan/weather-skill/releases) | **13** | Same as Bun, zero-install. Single self-contained ELF / Mach-O. |
+| Python  | `pip install weather-skill` | **14** | Reference implementation; full provider chain. |
+| Bun / TypeScript | Clone or install from GitHub source | **14** | Full provider chain. Ideal for TypeScript runtimes and Docker images without Python. npm publication is optional/future. |
+| Standalone binary | Download `weather-linux-x64` (~90 MB) or `weather-darwin-arm64` (~61 MB) from [Releases](https://github.com/shrwnsan/weather-skill/releases) | **14** | Same as Bun, zero-install. Single self-contained ELF / Mach-O. |
 
 All three produce **byte-identical** `--format json` output for the same input — guaranteed in CI by the cross-runtime parity gate (PRD-002 Phase 7.7).
 
@@ -70,7 +70,7 @@ python -m weather.cli --location "Hong Kong" --format telegram --send
 
 The exact same flags work with the Bun and binary distributions — substitute `bun run src/cli.ts` or `./weather-linux-x64` for `python -m weather.cli`.
 
-**All environment variables are optional.** 8 of 13 providers work without any API key. The skill outputs to stdout by default — agents capture this and route to their own channels. Env vars are only needed for specific providers or direct Telegram delivery.
+**All environment variables are optional.** 9 of 14 providers work without any API key. The skill outputs to stdout by default — agents capture this and route to their own channels. Env vars are only needed for specific providers or direct Telegram delivery.
 
 ## Usage Examples
 
@@ -95,14 +95,14 @@ weather -l "Hong Kong" --format telegram --send --chat-id "<YOUR_CHAT_ID>"
 ```python
 from weather import WeatherSkill
 from weather.providers.hko import HKOProvider
-from weather.providers.openweathermap import OpenWeatherMapProvider
+from weather.providers.open_meteo import OpenMeteoProvider
 from weather.formatters.telegram import TelegramFormatter
 from weather.senders.telegram import TelegramSender
 
 # Initialize with providers
 skill = WeatherSkill()
 skill.add_provider(HKOProvider())  # Hong Kong (priority 1)
-skill.add_provider(OpenWeatherMapProvider(api_key=os.environ["OPENWEATHERMAP_API_KEY"]))  # Global (priority 10)
+skill.add_provider(OpenMeteoProvider())  # Global zero-config fallback (priority 11)
 skill.add_formatter("telegram", TelegramFormatter())
 skill.add_sender("telegram", TelegramSender(
     bot_token=os.environ["TELEGRAM_BOT_TOKEN"],
@@ -137,14 +137,14 @@ For a manual provider chain (mirrors the Python example above):
 import {
   WeatherSkill,
   HKOProvider,
-  OpenWeatherMapProvider,
+  OpenMeteoProvider,
   TelegramFormatter,
   TelegramSender,
 } from "@shrwnsan/weather-skill";
 
 const skill = new WeatherSkill();
 skill.addProvider(new HKOProvider());
-skill.addProvider(new OpenWeatherMapProvider(process.env.OPENWEATHERMAP_API_KEY!));
+skill.addProvider(new OpenMeteoProvider());
 skill.addFormatter("telegram", new TelegramFormatter());
 skill.addSender("telegram", new TelegramSender({
   bot_token: process.env.TELEGRAM_BOT_TOKEN!,
@@ -160,7 +160,7 @@ await skill.send(message, "telegram");
 
 ## Providers
 
-The Bun/TypeScript package and the compiled binary currently ship **all 13** providers. The batch-2 PRD-002b providers (CWA, UK Met Office, BOM, MetService, BMKG, DWD, KMA, TMD) have been ported to Bun and are covered by provider fixture tests.
+The Bun/TypeScript package and the compiled binary currently ship **all 14** providers. The batch-2 PRD-002b providers (CWA, UK Met Office, BOM, MetService, BMKG, DWD, KMA, TMD) have been ported to Bun and are covered by provider fixture tests.
 
 | Provider | Coverage | API Key | Priority | Forecast | Air Quality | Bun |
 |----------|----------|---------|----------|----------|-------------|-----|
@@ -177,6 +177,7 @@ The Bun/TypeScript package and the compiled binary currently ship **all 13** pro
 | KMA | South Korea | Required | 9 | 3-day | No | ✅ |
 | TMD | Thailand | Required | 9 | 7-day | No | ✅ |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI via Air Pollution API | ✅ |
+| Open-Meteo | Global | Free | 11 | 16-day | No | ✅ |
 
 ### Provider Selection Logic
 
@@ -192,16 +193,18 @@ The Bun/TypeScript package and the compiled binary currently ship **all 13** pro
 10. **Germany locations** → DWD provider (priority 8)
 11. **South Korea locations** → KMA provider (priority 9, requires API key)
 12. **Thailand locations** → TMD provider (priority 9, requires API key)
-13. **Other locations** → OpenWeatherMap provider (priority 10, requires API key)
+13. **Other locations** → OpenWeatherMap provider (priority 10, if API key is configured)
+14. **Fallback for other locations** → Open-Meteo provider (priority 11, no API key)
 
-**Location aliases with no dedicated provider** (routed to OpenWeatherMap):
+**Location aliases with no dedicated provider** (routed to global fallbacks):
 - 🇮🇳 India — 20 cities including Hindi names (दिल्ली, मुंबई) and legacy names (Bombay, Calcutta)
 - 🇨🇦 Canada — 15 cities including airport codes (YYZ, YVR, YUL) and French names (Montréal, Québec)
+- 🇨🇳 China — 10 major cities + country-level alias/coordinates (`cn`, `中国`, `sz`, `bj`, `sh`)
 
 ### Default Behavior
 
 - **No location specified?** Agent attempts to infer from user context or prompts for location
-- **No OWM API key?** Agent prompts user to sign up (free tier: 1000 calls/day)
+- **No OWM API key?** Requests still work via Open-Meteo fallback (priority 11)
 
 ## Output Formats
 
@@ -245,7 +248,7 @@ Warm and humid with rain expected — perfect weather for a cozy day indoors.
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key |
+| `OPENWEATHERMAP_API_KEY` | Optional global | OpenWeatherMap API key (priority-10 global provider + AQI support) |
 | `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
 | `METOFFICE_API_KEY` | For UK | UK Met Office API key |
 | `KMA_SERVICE_KEY` | For S. Korea | Korea KMA service key |
@@ -262,6 +265,7 @@ Warm and humid with rain expected — perfect weather for a cozy day indoors.
 - USA (NWS)
 - Indonesia (BMKG)
 - Germany (DWD via Bright Sky)
+- Global (Open-Meteo)
 
 **Requires API key:**
 - Taiwan (CWA) - Sign up at [opendata.cwa.gov.tw](https://opendata.cwa.gov.tw/)
@@ -285,7 +289,7 @@ Default location is **Hong Kong**. The HKO provider is used automatically for HK
 
 ## Documentation
 
-- [Provider Selection](docs/provider-selection.md) — How HKO/OWM selection works, feels-like calculation, air quality
+- [Provider Selection](docs/provider-selection.md) — Provider auto-selection order, fallbacks, feels-like calculation, air quality
 
 ## File Structure
 
@@ -300,23 +304,23 @@ weather-skill/
 │   ├── provider-selection.md
 │   ├── prd-002-bun-runtime-support.md      # Bun port spec
 │   └── tasks-002-prd-002-bun-runtime-support.md
-├── weather/              # Python package — 13 providers (reference impl)
+├── weather/              # Python package — 14 providers (reference impl)
 │   ├── cli.py
 │   ├── models.py
 │   ├── skill.py
 │   ├── bootstrap.py
 │   ├── data/             # Shared JSON data (loaded by both runtimes)
-│   ├── providers/        # 13 providers
+│   ├── providers/        # 14 providers
 │   ├── formatters/       # telegram, whatsapp, cli_text
 │   └── senders/          # telegram
-├── src/                  # Bun/TypeScript package — 13 providers
+├── src/                  # Bun/TypeScript package — 14 providers
 │   ├── cli.ts
 │   ├── bootstrap.ts
 │   ├── skill.ts
 │   ├── models.ts
 │   ├── types.ts
 │   ├── data-loader.ts    # JSON-module imports of weather/data/*
-│   ├── providers/        # 13 provider ports
+│   ├── providers/        # 14 provider ports
 │   ├── formatters/       # cli_text, telegram, whatsapp
 │   └── senders/          # telegram
 ├── tests/                # Python test suite (pytest)

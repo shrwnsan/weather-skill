@@ -1,7 +1,7 @@
 ---
 name: weather-skill
 description: Retrieves current weather and forecasts for user-specified locations and formats results for chat platforms. Use when users ask about weather conditions, forecast outlooks, AQHI or UV levels, or location-based weather summaries.
-compatibility: Available as both a Python package (13 providers) and a Bun/TypeScript package (13 providers, also distributed as standalone Linux x86-64 and macOS arm64 binaries that need no runtime install). Telegram send flow requires TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
+compatibility: Available as both a Python package (14 providers) and a Bun/TypeScript package (14 providers, also distributed as standalone Linux x86-64 and macOS arm64 binaries that need no runtime install). Telegram send flow requires TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
 ---
 
 # Weather Skill
@@ -42,7 +42,7 @@ This skill provides weather information for any location, with special support f
 |----------|----------|-------------|
 | `TELEGRAM_BOT_TOKEN` | For Telegram | Telegram bot token |
 | `TELEGRAM_CHAT_ID` | For Telegram | Default chat ID |
-| `OPENWEATHERMAP_API_KEY` | For global | OpenWeatherMap API key (fallback) |
+| `OPENWEATHERMAP_API_KEY` | Optional global | OpenWeatherMap API key (priority-10 global provider + AQI) |
 | `CWA_API_KEY` | For Taiwan | Taiwan CWA API key |
 | `METOFFICE_API_KEY` | For UK | UK Met Office API key |
 | `KMA_SERVICE_KEY` | For S. Korea | Korea KMA service key |
@@ -53,11 +53,11 @@ This skill provides weather information for any location, with special support f
 1. **No location specified?** Agent attempts to infer from user context or prompts for location
 2. **Provider auto-selection?** `--provider auto` uses the full provider chain — selects the highest-priority provider matching the location
 3. **No API key for required provider?** Falls back to next provider in chain
-4. **No OWM API key?** Agent prompts user to sign up at [openweathermap.org/api](https://openweathermap.org/api)
+4. **No OWM API key?** Requests still work via Open-Meteo (priority 11 fallback)
 
 ## Providers
 
-The Bun/TypeScript package currently ships **all 13** providers. The batch-2 PRD-002b providers (CWA, UK Met Office, BOM, MetService, BMKG, DWD, KMA, TMD) have been ported to Bun and are covered by provider fixture tests. `@shrwnsan/weather-skill` is the package name in `package.json`; npm publication is optional/future, so agents should use direct repository/skill installation or GitHub release binaries by default.
+The Bun/TypeScript package currently ships **all 14** providers. The batch-2 PRD-002b providers (CWA, UK Met Office, BOM, MetService, BMKG, DWD, KMA, TMD) have been ported to Bun and are covered by provider fixture tests. `@shrwnsan/weather-skill` is the package name in `package.json`; npm publication is optional/future, so agents should use direct repository/skill installation or GitHub release binaries by default.
 
 | Provider | Coverage | API Key | Priority | Bun |
 |----------|----------|---------|----------|-----|
@@ -74,6 +74,7 @@ The Bun/TypeScript package currently ships **all 13** providers. The batch-2 PRD
 | KMA | South Korea | Required | 9 | ✅ |
 | TMD | Thailand | Required | 9 | ✅ |
 | OpenWeatherMap | Global | Required | 10 (fallback) | ✅ |
+| Open-Meteo | Global | Free | 11 (zero-config fallback) | ✅ |
 
 ## Output Formats
 
@@ -244,25 +245,25 @@ weather-skill/
 │   ├── provider-selection.md
 │   ├── prd-002-bun-runtime-support.md
 │   └── tasks-002-prd-002-bun-runtime-support.md
-├── weather/              # Python package (13 providers)
+├── weather/              # Python package (14 providers)
 │   ├── cli.py
 │   ├── models.py
 │   ├── bootstrap.py
 │   ├── data/             # Shared JSON data (loaded by both runtimes)
-│   ├── providers/        # 13 providers (hko, sg_nea, jma, tw_cwa,
+│   ├── providers/        # 14 providers (hko, sg_nea, jma, tw_cwa,
 │   │                     #   uk_metoffice, au_bom, nz_metservice,
 │   │                     #   us_nws, id_bmkg, de_dwd, kr_kma,
-│   │                     #   th_tmd, openweathermap)
+│   │                     #   th_tmd, openweathermap, open_meteo)
 │   ├── formatters/       # telegram, whatsapp, cli_text
 │   └── senders/          # telegram
-├── src/                  # Bun/TypeScript package (13 providers)
+├── src/                  # Bun/TypeScript package (14 providers)
 │   ├── cli.ts
 │   ├── bootstrap.ts
 │   ├── skill.ts
 │   ├── models.ts
 │   ├── types.ts
 │   ├── data-loader.ts    # JSON-module imports of weather/data/*
-│   ├── providers/        # 13 provider ports
+│   ├── providers/        # 14 provider ports
 │   ├── formatters/       # cli_text, telegram, whatsapp
 │   └── senders/          # telegram
 ├── tests/                # Python test suite (pytest)

@@ -54,6 +54,25 @@ describe("OpenMeteoProvider", () => {
       expect(result.sunset).toBe("2026-01-01T17:58");
       expect(result.wind_speed).toBe(11.2);
       expect(result.observed_at).toBeInstanceOf(Date);
+      expect(result.observed_at?.toISOString()).toBe("2026-01-01T12:00:00.000Z");
+    });
+  });
+
+  describe("getForecast (Shenzhen fixture)", () => {
+    test("parses fixture daily fields into forecast rows", async () => {
+      const result = await provider.getForecast(parseLocation("Shenzhen"), 1);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]?.location).toBe("Shenzhen");
+      expect(result[0]?.provider_name).toBe("open-meteo");
+      expect(result[0]?.condition).toBe(WeatherCondition.PartlyCloudy);
+      expect(result[0]?.condition_raw).toBe("wmo:2");
+      expect(result[0]?.temp_high).toBe(22.1);
+      expect(result[0]?.temp_low).toBe(14.3);
+      expect(result[0]?.precipitation_chance).toBe(10);
+      expect(result[0]?.sunrise).toBe("2026-01-01T06:52");
+      expect(result[0]?.sunset).toBe("2026-01-01T17:58");
+      expect(result[0]?.forecast_date?.toISOString()).toBe("2026-01-01T00:00:00.000Z");
     });
   });
 

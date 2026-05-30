@@ -31,6 +31,7 @@ const CURRENT_PARAMS =
   "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,apparent_temperature";
 const DAILY_PARAMS =
   "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset";
+const HAS_TIMEZONE_SUFFIX = /(?:Z|[+-]\d{2}:?\d{2})$/;
 
 export class OpenMeteoProvider implements IWeatherProvider {
   readonly name = "open-meteo";
@@ -171,9 +172,7 @@ export class OpenMeteoProvider implements IWeatherProvider {
       condition,
       condition_raw: `wmo:${wmoCode}`,
       provider_name: this.name,
-      observed_at: typeof current.time === "string"
-        ? new Date(String(current.time))
-        : new Date(),
+      observed_at: this.parseObservedAt(current.time),
       latitude: typeof data.latitude === "number" ? data.latitude : undefined,
       longitude:
         typeof data.longitude === "number" ? data.longitude : undefined,
@@ -241,6 +240,13 @@ export class OpenMeteoProvider implements IWeatherProvider {
         ...(typeof sunsets[i] === "string" ? { sunset: sunsets[i] } : {}),
       });
     });
+  }
+
+  private parseObservedAt(rawTime: unknown): Date {
+    if (typeof rawTime !== "string") return new Date();
+    const iso = HAS_TIMEZONE_SUFFIX.test(rawTime) ? rawTime : `${rawTime}Z`;
+    const parsed = new Date(iso);
+    return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
   }
 }
 
