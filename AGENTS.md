@@ -14,6 +14,38 @@ Ships in three byte-identical-output runtimes — **Python**, **Bun/TypeScript**
 | Bun ≥1.1.30 | `src/cli.ts` | `bun run src/cli.ts --location "Hong Kong"` |
 | Standalone binary | `weather-linux-x64` / `weather-darwin-arm64` | `./weather-linux-x64 --location "Hong Kong"` |
 
+## File Copy Guide (Agent Local Install)
+
+If your agent copies files to its local workspace instead of using `pip install` or `git clone`, copy **only** the files for your target runtime:
+
+### Python agent
+
+```bash
+cp -r weather/ pyproject.toml your-agent-workspace/
+```
+
+No other files are needed. The Python package is fully self-contained — all shared JSON data lives inside `weather/data/` and is loaded via `importlib.resources`.
+
+### Bun / TypeScript agent
+
+```bash
+cp -r src/ weather/data/ your-agent-workspace/
+cp package.json tsconfig.json bunfig.toml bun.lock your-agent-workspace/
+```
+
+**⚠️ `weather/data/` is required** — Bun's `src/data-loader.ts` imports from `../weather/data/*.json` at build time. Do NOT omit this directory or the compiled binary will have no city tables, condition maps, or location aliases.
+
+You do **not** need: `weather/*.py`, `weather/providers/`, `weather/formatters/`, `weather/senders/`, `tests/`, `test/`, `fixtures/`, `docs/`.
+
+### Standalone binary agent
+
+No files to copy. Download the binary from [GitHub Releases](https://github.com/shrwnsan/weather-skill/releases) — it bundles the Bun runtime + all `weather/data/*.json`.
+
+```bash
+curl -L -o weather https://github.com/shrwnsan/weather-skill/releases/latest/download/weather-linux-x64
+chmod +x weather
+```
+
 All three produce **byte-identical** `--format json` output for the same input — verified by parity snapshots in CI.
 
 **No external Python dependencies.** Network calls use `urllib.request` + `asyncio.run_in_executor`.
