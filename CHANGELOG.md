@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0] - 2026-05-30
+
+### Added
+
+- **AGENTS.md** — agent orientation file auto-loaded by pi/CLAUDE.md-aware agents on project entry.
+
+### Changed
+
+- Bumped version to 0.3.0.
+
 ## [Unreleased]
 
 ### Fixed
