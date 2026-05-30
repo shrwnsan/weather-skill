@@ -26,7 +26,8 @@ The skill automatically selects the best provider based on location:
 10. **Germany** → DWD via Bright Sky (free)
 11. **South Korea** → KMA (data.go.kr, requires API key)
 12. **Thailand** → TMD (data.tmd.go.th, requires API key)
-13. **Other** → OpenWeatherMap (www.openweathermap.org)
+13. **Other** → OpenWeatherMap (www.openweathermap.org, if API key configured)
+14. **Fallback for other** → Open-Meteo (api.open-meteo.com, no API key)
 
 ## Provider Matrix
 
@@ -45,6 +46,7 @@ The skill automatically selects the best provider based on location:
 | KMA | South Korea | Required | 9 | 3-day | No |
 | TMD | Thailand | Required | 9 | 7-day | No |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI |
+| Open-Meteo | Global | Free | 11 | 16-day | No |
 
 ## Selection Flow
 
@@ -75,7 +77,8 @@ The skill automatically selects the best provider based on location:
 │ 8. DWD (Germany)                            │
 │ 9. KMA (S. Korea, needs API key)            │
 │ 9. TMD (Thailand, needs API key)            │
-│ 10. OpenWeatherMap (global fallback)        │
+│ 10. OpenWeatherMap (global fallback, if key)│
+│ 11. Open-Meteo (global zero-config fallback)│
 └──────────────┬──────────────────────────────┘
                │
                ▼
@@ -98,6 +101,7 @@ The skill automatically selects the best provider based on location:
 | NWS | USA | None |
 | BMKG | Indonesia | None |
 | DWD (Bright Sky) | Germany | None |
+| Open-Meteo | Global | None |
 
 ### Requires API Key
 

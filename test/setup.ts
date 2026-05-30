@@ -40,6 +40,7 @@ const PROVIDERS = [
   "th_tmd",
   "uk_metoffice",
   "tw_cwa",
+  "open_meteo",
 ] as const;
 
 // ── Fixture loading ─────────────────────────────────────────────────────
