@@ -14,9 +14,78 @@ Ships in three byte-identical-output runtimes — **Python**, **Bun/TypeScript**
 | Bun ≥1.1.30 | `src/cli.ts` | `bun run src/cli.ts --location "Hong Kong"` |
 | Standalone binary | `weather-linux-x64` / `weather-darwin-arm64` | `./weather-linux-x64 --location "Hong Kong"` |
 
-All three produce **byte-identical** `--format json` output for the same input — verified by parity snapshots in CI.
+## Installation Guide for Agents
 
-**No external Python dependencies.** Network calls use `urllib.request` + `asyncio.run_in_executor`.
+There are two ways to use this skill: **as a skill** (instructions only, loaded by the agent harness on demand) or **as source code** (the agent executes the weather commands itself).
+
+### Option A — Install as a Skill (any Agent Skills–compatible harness)
+
+This repo ships a `SKILL.md` at the root, following the [Agent Skills specification](https://agentskills.io). Any harness that supports the spec can install it automatically:
+
+```bash
+npx skills add shrwnsan/weather-skill
+```
+
+The `skills` CLI ([vercel-labs/skills](https://github.com/vercel-labs/skills)) auto-detects your harness and symlinks/copies `SKILL.md` to the correct directory. No source code is copied — the agent reads the skill instructions and then calls the installed `weather` command (via pip, bun, or binary).
+
+To install for a specific harness:
+
+```bash
+npx skills add shrwnsan/weather-skill -a claude-code   # Claude Code
+npx skills add shrwnsan/weather-skill -a codex          # OpenAI Codex
+npx skills add shrwnsan/weather-skill -a cursor         # Cursor
+npx skills add shrwnsan/weather-skill -a pi             # Pi
+npx skills add shrwnsan/weather-skill -a opencode       # OpenCode
+npx skills add shrwnsan/weather-skill -a hermes-agent    # Hermes Agent
+npx skills add shrwnsan/weather-skill -a openclaw        # OpenClaw
+npx skills add shrwnsan/weather-skill -a gemini-cli     # Gemini CLI
+npx skills add shrwnsan/weather-skill -a roo            # Roo Code
+npx skills add shrwnsan/weather-skill -a github-copilot  # GitHub Copilot
+# ...and 46 more — run: npx skills add shrwnsan/weather-skill --list
+```
+
+Global (all projects) vs project scope:
+
+```bash
+npx skills add shrwnsan/weather-skill -g               # global (~/<harness>/skills/)
+npx skills add shrwnsan/weather-skill                  # project (./<harness>/skills/)
+```
+
+You only need `SKILL.md` and a working `weather` runtime (see Option B).
+
+### Option B — Install as Source Code (runtime-specific)
+
+If your agent copies source files instead of using pip/bun/skill install, copy **only** the files for your target runtime:
+
+#### Python
+
+```bash
+cp -r weather/ pyproject.toml your-agent-workspace/
+```
+
+No other files are needed. The Python package is fully self-contained — all shared JSON data lives inside `weather/data/` and is loaded via `importlib.resources`.
+
+#### Bun / TypeScript
+
+```bash
+cp -r src/ weather/data/ your-agent-workspace/
+cp package.json tsconfig.json bunfig.toml bun.lock your-agent-workspace/
+```
+
+**⚠️ `weather/data/` is required** — Bun's `src/data-loader.ts` imports from `../weather/data/*.json` at build time. Do NOT omit this directory or the compiled binary will have no city tables, condition maps, or location aliases.
+
+You do **not** need: `weather/*.py`, `weather/providers/`, `weather/formatters/`, `weather/senders/`, `tests/`, `test/`, `fixtures/`, `docs/`.
+
+#### Standalone binary
+
+No files to copy. Download the binary from [GitHub Releases](https://github.com/shrwnsan/weather-skill/releases) — it bundles the Bun runtime + all `weather/data/*.json`.
+
+```bash
+curl -L -o weather https://github.com/shrwnsan/weather-skill/releases/latest/download/weather-linux-x64
+chmod +x weather
+```
+
+All three runtimes produce **byte-identical** `--format json` output for the same input — verified by parity snapshots in CI. No external Python dependencies; network calls use `urllib.request` + `asyncio.run_in_executor`.
 
 ## Testing
 
