@@ -31,6 +31,10 @@ describe("OpenMeteoProvider", () => {
       expect(provider.supportsLocation(parseLocation("Atlantis"))).toBe(false);
     });
 
+    test("returns true for Nanshan district (Shenzhen)", () => {
+      expect(provider.supportsLocation(parseLocation("Nanshan"))).toBe(true);
+    });
+
     test("returns true for country-level 'china' key", () => {
       expect(provider.supportsLocation(parseLocation("China"))).toBe(true);
     });
