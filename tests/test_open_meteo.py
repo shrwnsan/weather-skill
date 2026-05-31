@@ -21,6 +21,10 @@ class TestSupportsLocation:
         loc = Location(raw="Atlantis", normalized="atlantis")
         assert OpenMeteoProvider().supports_location(loc) is False
 
+    def test_nanshan_district(self):
+        loc = Location(raw="Nanshan", normalized="nanshan")
+        assert OpenMeteoProvider().supports_location(loc) is True
+
     def test_country_level_key(self):
         loc = Location(raw="China", normalized="china")
         assert OpenMeteoProvider().supports_location(loc) is True
