@@ -16,7 +16,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Nanshan district (Shenzhen)** (#43) — added `nanshan` to `weather/data/cities/cn.json` with coords (22.5333, 113.9333). Covers the major tech district west of Shenzhen city centre, distinct from the default `shenzhen` coords near Luohu/Futian.
+- **Nanshan test coverage** (#43) — added `supportsLocation`/`supports_location` tests for Nanshan in both Bun (`test/providers/open_meteo.test.ts`) and Python (`tests/test_open_meteo.py`).
+
 ### Fixed
+
+- **Chongqing longitude** (#43) — corrected from 106.9123 to 106.9233.
 
 - **HKO nighttime icon mappings** (#14) — added 14 nighttime entries (pic70-85 series) to the shared `weather/data/condition_maps/hko-icons.json`. Both Bun and Python runtimes now resolve nighttime icons instead of falling through to `Unknown`.
 - **HKO UV index precision** (#15) — both runtimes now preserve the fractional UV value from HKO (e.g. `0.2`) instead of truncating to an integer via `Math.trunc()` / `int(float())`.
