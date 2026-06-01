@@ -14,6 +14,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Bumped version to 0.3.0.
 
+## [0.3.3] - 2026-06-01
+
+### Fixed
+
+- **Open-Meteo sunrise/sunset formatting** (#42) — ISO 8601 timestamps (e.g. `2026-01-01T06:52`) now render as `06:52` in all formatters. Fix applied at the provider level in both Bun and Python runtimes.
+
 ## [0.3.2] - 2026-06-01
 
 ### Added
