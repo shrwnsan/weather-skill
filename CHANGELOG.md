@@ -14,6 +14,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Bumped version to 0.3.0.
 
+## [0.3.2] - 2026-06-01
+
+### Added
+
+- **UV index for Open-Meteo** (#46) — added `uv_index_max` to daily params in both Bun (`src/providers/open_meteo.ts`) and Python (`weather/providers/open_meteo.py`). UV index now appears in current weather and forecast output for all locations served by the Open-Meteo provider.
+
+### Changed
+
+- **CLI text formatter UV display** — UV index line now shows `6.2 (High)` instead of bare `6`, matching WhatsApp and Telegram formatters. Applies to both Bun and Python runtimes.
+
 ## [Unreleased]
 
 ### Added
