@@ -171,8 +171,8 @@ class OpenMeteoProvider(WeatherProvider):
             temp_low=min_temps[0] if min_temps else None,
             precipitation_chance=precip_chances[0] if precip_chances else None,
             uv_index=uv_indices[0] if uv_indices else None,
-            sunrise=sunrises[0] if sunrises else None,
-            sunset=sunsets[0] if sunsets else None,
+            sunrise=_format_time(sunrises[0]) if sunrises else None,
+            sunset=_format_time(sunsets[0]) if sunsets else None,
             condition=condition,
             condition_raw=f"wmo:{wmo_code}",
             observed_at=observed_at,
@@ -211,9 +211,23 @@ class OpenMeteoProvider(WeatherProvider):
                         precip_chances[i] if i < len(precip_chances) else None
                     ),
                     uv_index=uv_indices[i] if i < len(uv_indices) else None,
-                    sunrise=sunrises[i] if i < len(sunrises) else None,
-                    sunset=sunsets[i] if i < len(sunsets) else None,
+                    sunrise=_format_time(sunrises[i]) if i < len(sunrises) else None,
+                    sunset=_format_time(sunsets[i]) if i < len(sunsets) else None,
                     provider_name=self.name,
                 )
             )
         return forecasts
+
+
+def _format_time(iso: str) -> str:
+    """Extract HH:MM from an ISO 8601 timestamp string.
+
+    >>> _format_time("2026-01-01T06:52")
+    '06:52'
+    """
+    m = _TIME_RE.search(iso)
+    return m.group(1) if m else iso
+
+
+import re as _re
+_TIME_RE = _re.compile(r"(\d{2}:\d{2})")
