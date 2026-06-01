@@ -47,8 +47,8 @@ class TestGetCurrentShenzhen:
         assert weather.temp_high == 22.1
         assert weather.temp_low == 14.3
         assert weather.precipitation_chance == 10
-        assert weather.sunrise == "2026-01-01T06:52"
-        assert weather.sunset == "2026-01-01T17:58"
+        assert weather.sunrise == "06:52"
+        assert weather.sunset == "17:58"
         assert weather.wind_speed == 11.2
         assert weather.uv_index == 6.2
         assert weather.provider_name == "open-meteo"
@@ -73,8 +73,8 @@ class TestGetForecastShenzhen:
         assert forecast[0].temp_high == 22.1
         assert forecast[0].temp_low == 14.3
         assert forecast[0].precipitation_chance == 10
-        assert forecast[0].sunrise == "2026-01-01T06:52"
-        assert forecast[0].sunset == "2026-01-01T17:58"
+        assert forecast[0].sunrise == "06:52"
+        assert forecast[0].sunset == "17:58"
         assert forecast[0].uv_index == 6.2
         assert forecast[0].forecast_date == date(2026, 1, 1)
 
