@@ -57,6 +57,7 @@ describe("OpenMeteoProvider", () => {
       expect(result.sunrise).toBe("2026-01-01T06:52");
       expect(result.sunset).toBe("2026-01-01T17:58");
       expect(result.wind_speed).toBe(11.2);
+      expect(result.uv_index).toBe(6.2);
       expect(result.observed_at).toBeInstanceOf(Date);
       expect(result.observed_at?.toISOString()).toBe("2026-01-01T12:00:00.000Z");
     });
@@ -76,6 +77,7 @@ describe("OpenMeteoProvider", () => {
       expect(result[0]?.precipitation_chance).toBe(10);
       expect(result[0]?.sunrise).toBe("2026-01-01T06:52");
       expect(result[0]?.sunset).toBe("2026-01-01T17:58");
+      expect(result[0]?.uv_index).toBe(6.2);
       expect(result[0]?.forecast_date?.toISOString()).toBe("2026-01-01T00:00:00.000Z");
     });
   });

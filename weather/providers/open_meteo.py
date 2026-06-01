@@ -42,7 +42,7 @@ _CURRENT_PARAMS = (
 )
 _DAILY_PARAMS = (
     "weather_code,temperature_2m_max,temperature_2m_min,"
-    "precipitation_probability_max,sunrise,sunset"
+    "precipitation_probability_max,sunrise,sunset,uv_index_max"
 )
 
 
@@ -146,10 +146,9 @@ class OpenMeteoProvider(WeatherProvider):
         max_temps = daily.get("temperature_2m_max", [])
         min_temps = daily.get("temperature_2m_min", [])
         precip_chances = daily.get("precipitation_probability_max", [])
+        uv_indices = daily.get("uv_index_max", [])
         sunrises = daily.get("sunrise", [])
         sunsets = daily.get("sunset", [])
-
-        # Parse observed_at from current.time (ISO string).
         observed_at = datetime.now(timezone.utc)
         raw_time = current.get("time")
         if isinstance(raw_time, str):
@@ -171,6 +170,7 @@ class OpenMeteoProvider(WeatherProvider):
             temp_high=max_temps[0] if max_temps else None,
             temp_low=min_temps[0] if min_temps else None,
             precipitation_chance=precip_chances[0] if precip_chances else None,
+            uv_index=uv_indices[0] if uv_indices else None,
             sunrise=sunrises[0] if sunrises else None,
             sunset=sunsets[0] if sunsets else None,
             condition=condition,
@@ -188,6 +188,7 @@ class OpenMeteoProvider(WeatherProvider):
         max_temps: list[float] = daily.get("temperature_2m_max", [])
         min_temps: list[float] = daily.get("temperature_2m_min", [])
         precip_chances: list[int] = daily.get("precipitation_probability_max", [])
+        uv_indices: list[float] = daily.get("uv_index_max", [])
         sunrises: list[str] = daily.get("sunrise", [])
         sunsets: list[str] = daily.get("sunset", [])
 
@@ -209,6 +210,7 @@ class OpenMeteoProvider(WeatherProvider):
                     precipitation_chance=(
                         precip_chances[i] if i < len(precip_chances) else None
                     ),
+                    uv_index=uv_indices[i] if i < len(uv_indices) else None,
                     sunrise=sunrises[i] if i < len(sunrises) else None,
                     sunset=sunsets[i] if i < len(sunsets) else None,
                     provider_name=self.name,

@@ -29,7 +29,7 @@ describe("CliTextFormatter", () => {
         "💧 Humidity: 84%",
         "💨 Wind: East-southeast force 4",
         "🌧️ Rain chance: 70%",
-        "☀️ UV Index: 7",
+        "☀️ UV Index: 7.0 (High)",
         "🌫️ AQHI: 4 (Moderate)",
         "📍 Provider: hko",
       ].join("\n"),
