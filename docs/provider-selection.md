@@ -46,7 +46,7 @@ The skill automatically selects the best provider based on location:
 | KMA | South Korea | Required | 9 | 3-day | No |
 | TMD | Thailand | Required | 9 | 7-day | No |
 | OpenWeatherMap | Global | Required | 10 | 5-day | AQI |
-| Open-Meteo | Global | Free | 11 | 16-day | No |
+| Open-Meteo | Global | Free | 11 | 16-day | No (AQI API available via enrichment) |
 
 ## Selection Flow
 
@@ -141,9 +141,9 @@ return round(temp)
 
 | Provider | Air Quality Source |
 |----------|-------------------|
-| HKO | AQHI (HK scale 1-10+) |
+| HKO | AQHI (HK scale 1–10+) |
 | SG NEA | PSI (1-hr, 24-hr) |
-| OpenWeatherMap | AQI (US EPA scale 1-500) |
+| OpenWeatherMap | AQI (US EPA scale 1–500) |
 
 ### HKO Air Quality Health Index (AQHI)
 
@@ -153,6 +153,10 @@ The HK scale:
 - 7: High Risk
 - 8-10: Very High Risk
 - 10+: Serious
+
+### Enrichment Gap
+
+Most providers (JMA, KMA, Met Office, DWD, NWS, BOM, MetService, BMKG, TMD, CWA, Open-Meteo) do not provide air quality data. Open-Meteo offers a separate [Air Quality API](https://open-meteo.com/en/docs/air-quality-api) (free, no key, global, CAMS model-based) that could fill this gap as a **post-fetch enrichment step** — independent of whichever weather provider wins. See [PRD-004: Air Quality Enrichment Layer](./prd-004-air-quality-enrichment.md) for the proposed architecture.
 
 ## Output Format
 
