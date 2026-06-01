@@ -54,7 +54,9 @@ class CliTextFormatter(WeatherFormatter):
             lines.append(f"🌧️ Rain chance: {data.precipitation_chance}%")
 
         if data.uv_index is not None:
-            lines.append(f"☀️ UV Index: {data.uv_index}")
+            lines.append(
+                f"☀️ UV Index: {data.uv_index:.1f} ({self._uv_description(data.uv_index)})"
+            )
 
         if data.aqhi is not None:
             lines.append(f"🌫️ AQHI: {data.aqhi_str}")
@@ -90,3 +92,17 @@ class CliTextFormatter(WeatherFormatter):
             lines.append(f"{date_str}: {temp_high} / {temp_low} — {condition}")
 
         return "\n".join(lines)
+
+    @staticmethod
+    def _uv_description(uv_index: float) -> str:
+        """Map UV index to a textual descriptor."""
+        if uv_index < 3:
+            return "Low"
+        elif uv_index < 6:
+            return "Moderate"
+        elif uv_index < 8:
+            return "High"
+        elif uv_index < 11:
+            return "Very High"
+        else:
+            return "Extreme"
