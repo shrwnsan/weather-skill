@@ -100,7 +100,7 @@ class WeatherSkill:
         Returns:
             Parsed Location object
         """
-        normalized = normalize_location(location_str)
+        normalized = normalize_location(location_str).lower()
         return Location(
             raw=location_str,
             normalized=normalized,
