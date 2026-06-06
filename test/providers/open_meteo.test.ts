@@ -59,7 +59,9 @@ describe("OpenMeteoProvider", () => {
       expect(result.wind_speed).toBe(11.2);
       expect(result.uv_index).toBe(6.2);
       expect(result.observed_at).toBeInstanceOf(Date);
-      expect(result.observed_at?.toISOString()).toBe("2026-01-01T12:00:00.000Z");
+      // current.time "2026-01-01T12:00" is local (Asia/Shanghai, +08:00);
+      // with timezone=auto it converts to 04:00 UTC.
+      expect(result.observed_at?.toISOString()).toBe("2026-01-01T04:00:00.000Z");
     });
   });
 

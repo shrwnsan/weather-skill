@@ -39,6 +39,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- **Open-Meteo sunrise/sunset timezone** (#53) — provider now requests `timezone=auto` instead of the hardcoded `timezone=UTC`, so Open-Meteo returns sunrise/sunset in the location's local time (matching HKO and other providers). Open-Meteo resolves the timezone server-side from lat/lon, handling DST and half-hour offsets correctly for every location, including direct coordinates. `observed_at` is converted back to UTC using the response's `utc_offset_seconds`. Fixed in both Bun (`src/providers/open_meteo.ts`) and Python (`weather/providers/open_meteo.py`).
+
 - **Chongqing longitude** (#43) — corrected from 106.9123 to 106.9233.
 
 - **HKO nighttime icon mappings** (#14) — added 14 nighttime entries (pic70-85 series) to the shared `weather/data/condition_maps/hko-icons.json`. Both Bun and Python runtimes now resolve nighttime icons instead of falling through to `Unknown`.
