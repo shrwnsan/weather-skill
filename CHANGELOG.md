@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+## [0.3.4] - 2026-06-06
+
+### Fixed
+
+- **Open-Meteo sunrise/sunset local time** (#53, #54) — Open-Meteo previously requested `timezone=UTC`, so sunrise/sunset were returned in UTC while other providers (HKO, JMA, etc.) return local time. Switched to `timezone=auto`, letting Open-Meteo resolve the timezone server-side from lat/lon (DST- and half-hour-offset aware). `observed_at` timestamps now correctly convert back to UTC using the response's `utc_offset_seconds`. Fixed in both Bun and Python runtimes.
+
+- **`normalize_location` lowercase parity** (#55) — Python runtime now lowercases the result of `normalize_location()`, matching the TypeScript runtime. Bare city names ("Shenzhen") and alias-resolved names ("sz" → "Shenzhen") now correctly route to provider city keys which are all lowercase.
+
 ## [0.3.0] - 2026-05-30
 
 ### Added
