@@ -1,6 +1,6 @@
 """Open-Meteo provider tests (PRD-003)."""
 
-from datetime import date
+from datetime import date, datetime, timezone
 
 import pytest
 
@@ -53,7 +53,12 @@ class TestGetCurrentShenzhen:
         assert weather.uv_index == 6.2
         assert weather.provider_name == "open-meteo"
         assert weather.location == "Shenzhen"
+        # current.time "2026-01-01T12:00" is local (Asia/Shanghai, +08:00);
+        # with timezone=auto it converts to 04:00 UTC.
         assert weather.observed_at is not None
+        assert weather.observed_at == datetime(
+            2026, 1, 1, 4, 0, tzinfo=timezone.utc
+        )
 
 
 class TestGetForecastShenzhen:

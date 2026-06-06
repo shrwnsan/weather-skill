@@ -10,7 +10,7 @@ import asyncio
 import json
 import urllib.parse
 import urllib.request
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Optional
 
 from ..data.loader import load_json
@@ -80,7 +80,7 @@ class OpenMeteoProvider(WeatherProvider):
             "current": _CURRENT_PARAMS,
             "daily": _DAILY_PARAMS,
             "forecast_days": "1",
-            "timezone": "UTC",
+            "timezone": "auto",
         }
         data = await self._fetch(params)
         return self._parse_current(location, data)
@@ -99,7 +99,7 @@ class OpenMeteoProvider(WeatherProvider):
             "longitude": f"{lon:.4f}",
             "daily": _DAILY_PARAMS,
             "forecast_days": str(min(days, 16)),
-            "timezone": "UTC",
+            "timezone": "auto",
         }
         data = await self._fetch(params)
         return self._parse_forecast(location, data, days)
@@ -153,9 +153,15 @@ class OpenMeteoProvider(WeatherProvider):
         raw_time = current.get("time")
         if isinstance(raw_time, str):
             try:
-                observed_at = datetime.fromisoformat(raw_time).replace(
-                    tzinfo=timezone.utc
-                )
+                parsed = datetime.fromisoformat(raw_time)
+                if parsed.tzinfo is None:
+                    # With `timezone=auto`, `current.time` is local time with
+                    # no offset. Use `utc_offset_seconds` to recover UTC.
+                    offset = data.get("utc_offset_seconds") or 0
+                    parsed = parsed.replace(
+                        tzinfo=timezone(timedelta(seconds=offset))
+                    )
+                observed_at = parsed.astimezone(timezone.utc)
             except (ValueError, TypeError):
                 pass
 

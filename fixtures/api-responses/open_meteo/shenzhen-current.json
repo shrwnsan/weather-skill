@@ -2,9 +2,9 @@
   "latitude": 22.5,
   "longitude": 114.0625,
   "generationtime_ms": 0.25,
-  "utc_offset_seconds": 0,
-  "timezone": "GMT",
-  "timezone_abbreviation": "GMT",
+  "utc_offset_seconds": 28800,
+  "timezone": "Asia/Shanghai",
+  "timezone_abbreviation": "GMT+8",
   "elevation": 8.0,
   "current_units": {
     "time": "iso8601",
