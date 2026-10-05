@@ -28,7 +28,7 @@ import {
 const BASE_URL = "https://api.open-meteo.com/v1/forecast";
 
 const CURRENT_PARAMS =
-  "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,apparent_temperature";
+  "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,apparent_temperature";
 const DAILY_PARAMS =
   "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max";
 const HAS_TIMEZONE_SUFFIX = /(?:Z|[+-]\d{2}:?\d{2})$/;
@@ -143,6 +143,11 @@ export class OpenMeteoProvider implements IWeatherProvider {
         ? daily.temperature_2m_min[0]
         : undefined;
 
+    const windDirDeg =
+      typeof current.wind_direction_10m === "number"
+        ? current.wind_direction_10m
+        : undefined;
+
     const windSpeedKmh =
       typeof current.wind_speed_10m === "number"
         ? current.wind_speed_10m
@@ -189,6 +194,7 @@ export class OpenMeteoProvider implements IWeatherProvider {
         ? { feels_like: current.apparent_temperature }
         : {}),
       ...(windSpeedKmh != null ? { wind_speed: windSpeedKmh } : {}),
+      ...(windDirDeg != null ? { wind_direction: degToCompass(windDirDeg) } : {}),
       ...(tempHigh != null ? { temp_high: tempHigh } : {}),
       ...(tempLow != null ? { temp_low: tempLow } : {}),
       ...(precipChance != null ? { precipitation_chance: precipChance } : {}),
@@ -284,6 +290,11 @@ function titleCase(s: string): string {
  * Extract HH:MM from an ISO 8601 timestamp string.
  * "2026-01-01T06:52" → "06:52"
  */
+function degToCompass(deg: number): string {
+  const directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+  return directions[Math.round(deg / 22.5) % 16]!;
+}
+
 function formatTime(iso: string): string {
   const m = iso.match(/(\d{2}:\d{2})/);
   return m ? m[1]! : iso;
